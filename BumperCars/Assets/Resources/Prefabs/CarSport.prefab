@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4289134004983489135}
   - component: {fileID: 8164978664360074965}
   - component: {fileID: 6655035611431369694}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: AttackTag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 743500620876206278}
   - component: {fileID: 743500620877500646}
   - component: {fileID: 743500620878500390}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel off road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 7485195211925961316}
   - component: {fileID: 3694309400068176747}
   - component: {fileID: 1763448425147240846}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,7 +270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8880572519981129660}
   - component: {fileID: 2162506405048343507}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel rear right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,7 +340,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2667612147485963874}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel rear left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2667612147533709643}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel rear right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2667612147939734079}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel front right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -436,7 +436,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6770058225873369158}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: WheelControllers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3374017016621588855}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Sports
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -509,7 +509,7 @@ GameObject:
   - component: {fileID: 3374017016622883161}
   - component: {fileID: 3374017016624014233}
   - component: {fileID: 3374017016619717625}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: spoiler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -615,7 +615,7 @@ GameObject:
   - component: {fileID: 3374017016622883163}
   - component: {fileID: 3374017016624014235}
   - component: {fileID: 3374017016619717627}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: mirrors and handles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -721,7 +721,7 @@ GameObject:
   - component: {fileID: 3374017016622883165}
   - component: {fileID: 3374017016624014237}
   - component: {fileID: 3374017016619717629}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: exhaust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -931,7 +931,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5045382131602844255}
   - component: {fileID: 7939058178632635409}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel front left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1005,7 +1005,7 @@ GameObject:
   - component: {fileID: 5453962073445333455}
   - component: {fileID: 9128069612484599889}
   - component: {fileID: 2828998944914479184}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Attacker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1110,9 +1110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae3bd81c7bdb1d45a28e2b5feeb63b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactForce: 50000
-  lowFrictionStiffness: 0.1
-  frictionRestoreDelay: 2
+  carBody: {fileID: 4362034234820931592}
 --- !u!1 &3850192194666622900
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,7 +1120,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8015071191309942745}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Wheels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1160,7 +1158,7 @@ GameObject:
   - component: {fileID: 3649771308873213891}
   - component: {fileID: 2896856093516451276}
   - component: {fileID: 6189216679616676935}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: StateTag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1261,7 +1259,7 @@ GameObject:
   - component: {fileID: 6442972780504096712}
   - component: {fileID: 6442972780500705256}
   - component: {fileID: 6442972780501671208}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel off road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1344,7 +1342,7 @@ GameObject:
   - component: {fileID: 6442972781358947221}
   - component: {fileID: 6442972781358177205}
   - component: {fileID: 6442972781357046133}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel off road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1427,7 +1425,7 @@ GameObject:
   - component: {fileID: 6442972781440167100}
   - component: {fileID: 6442972781443558556}
   - component: {fileID: 6442972781442592348}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel off road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1509,7 +1507,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2800438897089797824}
   - component: {fileID: 8585706539179299726}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel front right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1580,7 +1578,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1670644690392180918}
   - component: {fileID: 6391577176617670989}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel rear left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1651,7 +1649,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8520312856572064872}
   - component: {fileID: 8520312856572064873}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: engine sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1780,7 +1778,7 @@ GameObject:
   - component: {fileID: 8520312856724400038}
   - component: {fileID: 4086720807411230617}
   - component: {fileID: 4362034234820931592}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: CarSport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1876,7 +1874,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8520312856821424699}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: basic effects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1910,7 +1908,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8520312857033501650}
   - component: {fileID: 8520312857033501651}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: screeching sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2037,7 +2035,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8520312857586510981}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: car body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2070,7 +2068,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8520312858441432369}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: wheel front left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2104,7 +2102,7 @@ GameObject:
   - component: {fileID: 4026186628824612934}
   - component: {fileID: 890981582284980696}
   - component: {fileID: 112430715671218596}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

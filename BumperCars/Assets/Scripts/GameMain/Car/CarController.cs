@@ -18,7 +18,7 @@ namespace Lachesis.GamePlay
         public float idealRPM = 20;
         public float maxRPM = 100;
         public float moveTorque = 30000;
-        [FormerlySerializedAs("breakTorque")] public float handBreakTorque = 60000;
+        public float handBreakTorque = 60000;
         public float autoBreakTorque = 30000;
         public float antiRoll = 20000f;
         public Transform centerOfGravity;
@@ -37,6 +37,9 @@ namespace Lachesis.GamePlay
         public Transform leftBackTrans;
         public Transform rightFrontTrans;
         public Transform rightBackTrans;
+        
+        
+        
         private readonly List<WheelCollider> wheelColliders = new();
 
         private float m_carTurnValue;
@@ -68,11 +71,11 @@ namespace Lachesis.GamePlay
             foreach (var collider in wheelColliders)
             {
                 var forwardFriction = collider.forwardFriction;
-                forwardFriction.stiffness = GameEntry.instance.globalConfig.defaultCarForwardFrictionStiffness;
+                forwardFriction.stiffness = GameEntry.globalConfig.defaultCarForwardFrictionStiffness;
                 collider.forwardFriction = forwardFriction;
 
                 var sidewaysFriction = collider.forwardFriction;
-                sidewaysFriction.stiffness = GameEntry.instance.globalConfig.defaultCarSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness = GameEntry.globalConfig.defaultCarSidewaysFrictionStiffness;
                 collider.sidewaysFriction = sidewaysFriction;
             }
 
@@ -148,10 +151,10 @@ namespace Lachesis.GamePlay
             DoRollBar(leftBackCollider, rightBackCollider);
 
             if (m_carTurnValue < -0.05f) //左转向
-                targetAngle = -maxAngle;
+                targetAngle = maxAngle*m_carTurnValue;
 
             else if (m_carTurnValue > 0.05f) //右转向
-                targetAngle = maxAngle;
+                targetAngle = maxAngle*m_carTurnValue;
 
             else //松开转向后，方向打回
                 targetAngle = 0;
@@ -207,5 +210,6 @@ namespace Lachesis.GamePlay
             if (groundedR)
                 bodyRb.AddForceAtPosition(wheelR.transform.up * -antiRollForce, wheelR.transform.position);
         }
+        
     }
 }

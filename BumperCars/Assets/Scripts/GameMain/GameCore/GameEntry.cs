@@ -16,7 +16,7 @@ namespace Lachesis.GamePlay
 
         public string entranceProcedureTypeName; //初始流程
 
-        public GlobalConfig globalConfig;
+        public static GlobalConfig globalConfig;
 
         private ProcedureBase m_EntranceProcedure;
 
@@ -40,6 +40,7 @@ namespace Lachesis.GamePlay
             EventManager = GetModule<EventManager>();
             PlayerInput = GetModule<PlayerInput>();
             PlayerInput.Initialize();
+            globalConfig = Resources.Load<GlobalConfig>("Config/GlobalConfig");
             if (ProcedureManager == null)
             {
                 Debug.LogError("Procedure manager is invalid.");

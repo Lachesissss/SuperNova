@@ -22,7 +22,9 @@ namespace Lachesis.GamePlay
             this.procedureOwner = procedureOwner;
             //changeScene = false;
             Debug.Log("进入主战斗流程");
-            GameEntry.instance.StartCoroutine(LoadResourceAsync("Prefabs/CarSport"));
+            GameEntry.instance.StartCoroutine(LoadGameObjectAsync("Prefabs/CarPlayer", Vector3.zero, Quaternion.identity));
+            GameEntry.instance.StartCoroutine(LoadGameObjectAsync("Prefabs/CarEnemy", Vector3.zero+new Vector3(2,0,0), Quaternion.identity));
+            //GameEntry.instance.StartCoroutine(LoadGameObjectAsync("Prefabs/CarEnemy", Vector3.zero+new Vector3(-2,0,0), Quaternion.identity));
         }
 
         protected internal override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -40,7 +42,7 @@ namespace Lachesis.GamePlay
             base.OnDestroy(procedureOwner);
         }
 
-        private IEnumerator LoadResourceAsync(string resourcePath)
+        private IEnumerator LoadGameObjectAsync(string resourcePath, Vector3 pos, Quaternion rot)
         {
             var request = Resources.LoadAsync<GameObject>(resourcePath);
             yield return request;
@@ -48,13 +50,7 @@ namespace Lachesis.GamePlay
             var prefab = request.asset as GameObject;
             if (prefab != null)
             {
-                var go = CreateCar(prefab, Vector3.zero, Quaternion.identity);
-                CreateCar(prefab, GameEntry.instance.globalConfig.Player1StarPosition + new Vector3(2, 0, 0), Quaternion.identity);
-                CreateCar(prefab, GameEntry.instance.globalConfig.Player1StarPosition + new Vector3(-2, 0, 0), Quaternion.identity);
-                var player = go.AddComponent<Player>();
-                go.name = "playerCar";
-                player.carController = go.GetComponent<CarController>();
-                if (player.carController == null) Debug.LogError("未找到CarController");
+                Create(prefab, pos,rot);
             }
             else
             {
@@ -62,7 +58,7 @@ namespace Lachesis.GamePlay
             }
         }
 
-        private GameObject CreateCar(GameObject prefab, Vector3 pos, Quaternion rot)
+        private GameObject Create(GameObject prefab, Vector3 pos, Quaternion rot)
         {
             var go = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
             go.transform.position = pos;

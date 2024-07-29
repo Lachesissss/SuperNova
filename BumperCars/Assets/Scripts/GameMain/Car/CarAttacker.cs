@@ -5,10 +5,9 @@ namespace Lachesis.GamePlay
 {
     public class CarAttacker : MonoBehaviour
     {
-        public float impactForce = 50000f; // 冲击力大小
-        public float frictionRestoreDelay = 2f; // 恢复摩擦力的延迟时间
-        private bool hasCollided;
-
+        private bool hasCollided;//碰撞冷却标记
+        private Vector3 deltaPos = new Vector3(0,0.05f,0);
+        public Rigidbody carBody;
         private void OnTriggerEnter(Collider other)
         {
             if (hasCollided) return;
@@ -17,15 +16,14 @@ namespace Lachesis.GamePlay
             if (otherRigidbody != null && otherRigidbody != GetComponent<Rigidbody>())
             {
                 var otherWheelColliders = otherRigidbody.GetComponentsInChildren<WheelCollider>();
-
-                // 标记已经发生碰撞
+                otherRigidbody.transform.position += deltaPos;
                 hasCollided = true;
-                // 施加瞬间力
+                // 施加瞬间水平力
                 var forceDirection = (otherRigidbody.transform.position - transform.position).normalized;
-                // 确保力是水平的
+                var rate =  Vector3.Dot(forceDirection,transform.forward) ;
                 forceDirection.y = 0;
                 forceDirection = forceDirection.normalized;
-                otherRigidbody.AddForce(forceDirection * impactForce, ForceMode.Impulse);
+                otherRigidbody.velocity = forceDirection.normalized * GameEntry.globalConfig.impactSpeed+rate*carBody.velocity;
 
                 // 暂时降低摩擦力
                 StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
@@ -37,7 +35,6 @@ namespace Lachesis.GamePlay
 
         private IEnumerator ResetCollisionFlag()
         {
-            // 等待一段时间再重置碰撞标记
             yield return new WaitForSeconds(0.5f);
             hasCollided = false;
         }
@@ -47,35 +44,28 @@ namespace Lachesis.GamePlay
         {
             for (var i = 0; i < wheelColliders.Length; i++)
             {
+                
                 var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = GameEntry.instance.globalConfig.underAttackCarForwardFrictionStiffness;
+                forwardFriction.stiffness = GameEntry.globalConfig.underAttackCarForwardFrictionStiffness;
                 wheelColliders[i].forwardFriction = forwardFriction;
 
                 var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = GameEntry.instance.globalConfig.underAttackSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness = GameEntry.globalConfig.underAttackSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
-
-                // var softSuspension = new JointSpring
-                // {
-                //     spring = 0,
-                //     damper = 0,
-                //     targetPosition = wheelColliders[i].suspensionSpring.targetPosition
-                // };
-                // wheelColliders[i].suspensionSpring = softSuspension;
             }
 
             // 等待一段时间
-            yield return new WaitForSeconds(frictionRestoreDelay);
+            yield return new WaitForSeconds(GameEntry.globalConfig.frictionRestoreDelay);
 
             // 恢复原来的摩擦力设置
             for (var i = 0; i < wheelColliders.Length; i++)
             {
                 var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = GameEntry.instance.globalConfig.defaultCarForwardFrictionStiffness;
+                forwardFriction.stiffness = GameEntry.globalConfig.defaultCarForwardFrictionStiffness;
                 wheelColliders[i].forwardFriction = forwardFriction;
 
                 var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = GameEntry.instance.globalConfig.defaultCarSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness = GameEntry.globalConfig.defaultCarSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
         }
