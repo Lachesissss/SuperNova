@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -50,6 +49,7 @@ namespace Lachesis.GamePlay
 
         private bool m_isHandBrake;
 
+        private GlobalConfig m_globalConfig;
         public float GetSpeed()
         {
             return rightBackCollider.radius * Mathf.PI * rightBackCollider.rpm * 60f / 1000f;
@@ -63,7 +63,7 @@ namespace Lachesis.GamePlay
         private void Awake()
         {
             if (centerOfGravity != null) bodyRb.centerOfMass = centerOfGravity.position;
-
+            m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
             wheelColliders.Add(leftBackCollider);
             wheelColliders.Add(leftFrontCollider);
             wheelColliders.Add(rightBackCollider);
@@ -71,11 +71,11 @@ namespace Lachesis.GamePlay
             foreach (var collider in wheelColliders)
             {
                 var forwardFriction = collider.forwardFriction;
-                forwardFriction.stiffness = GameEntry.globalConfig.defaultCarForwardFrictionStiffness;
+                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
                 collider.forwardFriction = forwardFriction;
 
                 var sidewaysFriction = collider.forwardFriction;
-                sidewaysFriction.stiffness = GameEntry.globalConfig.defaultCarSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
                 collider.sidewaysFriction = sidewaysFriction;
             }
 

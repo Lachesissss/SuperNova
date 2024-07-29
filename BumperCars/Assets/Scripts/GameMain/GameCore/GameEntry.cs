@@ -16,8 +16,6 @@ namespace Lachesis.GamePlay
 
         public string entranceProcedureTypeName; //初始流程
 
-        public static GlobalConfig globalConfig;
-
         private ProcedureBase m_EntranceProcedure;
 
         public ProcedureBase CurrentProcedure => ProcedureManager.CurrentProcedure;
@@ -26,11 +24,13 @@ namespace Lachesis.GamePlay
 
         public static EventManager EventManager { get; private set; }
 
+        public static ConfigManager ConfigManager { get; private set; }
         public static FSMManager FSMManager { get; private set; }
 
+        public static EntityManager EntityManager { get; private set; }
         public static ProcedureManager ProcedureManager { get; private set; }
 
-        public static PlayerInput PlayerInput { get; private set; }
+        public static PlayerInputManager PlayerInputManager { get; private set; }
 
         private void Awake()
         {
@@ -38,9 +38,13 @@ namespace Lachesis.GamePlay
             ProcedureManager = GetModule<ProcedureManager>();
             FSMManager = GetModule<FSMManager>();
             EventManager = GetModule<EventManager>();
-            PlayerInput = GetModule<PlayerInput>();
-            PlayerInput.Initialize();
-            globalConfig = Resources.Load<GlobalConfig>("Config/GlobalConfig");
+            PlayerInputManager = GetModule<PlayerInputManager>();
+            PlayerInputManager.Initialize();
+            ConfigManager = GetModule<ConfigManager>();
+            ConfigManager.Initialize();
+            EntityManager = GetModule<EntityManager>();
+            EntityManager.SetConfig(ConfigManager.GetConfig<EntityConfig>());
+
             if (ProcedureManager == null)
             {
                 Debug.LogError("Procedure manager is invalid.");

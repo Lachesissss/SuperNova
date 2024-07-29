@@ -45,22 +45,32 @@
     <Analyzer Include="K:\Unity\Editor\2022.3.39f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\GameMain\Input\PlayerInput.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Config\ConfigManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ProcedureChangeEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Car\AI\CarAIPatrolState.cs" />
+    <Compile Include="Assets\CarAI\Scripts\controllingCarAI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\TypeNamePair.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureMenu.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventPool.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattle.cs" />
     <Compile Include="Assets\Scripts\GameMain\Car\Player.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMBase.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Car\AI\CarAI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Config\EntityConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBase.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Entity\EntityManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Car\CarController.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameModule.cs" />
+    <Compile Include="Assets\CarAI\Scripts\CarAI.cs" />
+    <Compile Include="Assets\CarAI\Scripts\SensorManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Car\AI\CarAIChaseState.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Car\AI\CarAIState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\GameEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Car\CarAttacker.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameEntry.cs" />
@@ -644,6 +654,10 @@
     <ProjectReference Include="UnityEngine.UI.Player.csproj">
       <Project>{be3b1062-7863-c342-2b6f-3e57b9bebc55}</Project>
       <Name>UnityEngine.UI.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Navigation.Player.csproj">
+      <Project>{6911706d-961a-3713-a08f-5782c539679f}</Project>
+      <Name>Unity.AI.Navigation.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Player.csproj">
       <Project>{25225081-5cd8-ea1b-948d-3117a04b8fe6}</Project>

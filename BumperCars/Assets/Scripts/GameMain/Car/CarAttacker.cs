@@ -8,6 +8,13 @@ namespace Lachesis.GamePlay
         private bool hasCollided;//碰撞冷却标记
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
         public Rigidbody carBody;
+        private GlobalConfig m_globalConfig;
+
+        private void Awake()
+        {
+            m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (hasCollided) return;
@@ -23,7 +30,7 @@ namespace Lachesis.GamePlay
                 var rate =  Vector3.Dot(forceDirection,transform.forward) ;
                 forceDirection.y = 0;
                 forceDirection = forceDirection.normalized;
-                otherRigidbody.velocity = forceDirection.normalized * GameEntry.globalConfig.impactSpeed+rate*carBody.velocity;
+                otherRigidbody.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + rate * carBody.velocity;
 
                 // 暂时降低摩擦力
                 StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
@@ -46,26 +53,26 @@ namespace Lachesis.GamePlay
             {
                 
                 var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = GameEntry.globalConfig.underAttackCarForwardFrictionStiffness;
+                forwardFriction.stiffness = m_globalConfig.underAttackCarForwardFrictionStiffness;
                 wheelColliders[i].forwardFriction = forwardFriction;
 
                 var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = GameEntry.globalConfig.underAttackSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness = m_globalConfig.underAttackSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
 
             // 等待一段时间
-            yield return new WaitForSeconds(GameEntry.globalConfig.frictionRestoreDelay);
+            yield return new WaitForSeconds(m_globalConfig.frictionRestoreDelay);
 
             // 恢复原来的摩擦力设置
             for (var i = 0; i < wheelColliders.Length; i++)
             {
                 var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = GameEntry.globalConfig.defaultCarForwardFrictionStiffness;
+                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
                 wheelColliders[i].forwardFriction = forwardFriction;
 
                 var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = GameEntry.globalConfig.defaultCarSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
         }

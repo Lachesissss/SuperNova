@@ -1,4 +1,3 @@
-using Lachesis.Core;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -9,10 +8,10 @@ namespace Lachesis.GamePlay
 
         private void Update()
         {
-            carController.ChangeCarTurnState(GameEntry.PlayerInput.steeringDeltaP1);
-            carController.ChangeCarForwardState(GameEntry.PlayerInput.motorDeltaP1);
-            carController.ChangeCarBoostState(GameEntry.PlayerInput.boostP1);
-            carController.ChangeCarHandBrakeState(GameEntry.PlayerInput.handbrakeP1);
+            carController.ChangeCarTurnState(GameEntry.PlayerInputManager.steeringDeltaP1);
+            carController.ChangeCarForwardState(GameEntry.PlayerInputManager.motorDeltaP1);
+            carController.ChangeCarBoostState(GameEntry.PlayerInputManager.boostP1);
+            carController.ChangeCarHandBrakeState(GameEntry.PlayerInputManager.handbrakeP1);
         }
     }
 }
