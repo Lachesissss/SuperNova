@@ -72,6 +72,8 @@ MonoBehaviour:
   leftBackTrans: {fileID: 8582218119381718682}
   rightFrontTrans: {fileID: 6922057182505409440}
   rightBackTrans: {fileID: 477835939059542409}
+  name: 
+  lastAttackerName: 
 --- !u!54 &5660093502109558111
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -113,8 +115,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carController: {fileID: 6554621917657163297}
   destination: {fileID: 0}
+  steeringDelta: 0
+  motorDelta: 0
+  boost: 0
+  handBrake: 0
+  postionToFollow: {x: 0, y: 0, z: 0}
+  allowMovement: 0
   NavMeshLayers:
   - Walkable
+  currentWayPoint: 0
+  AIFOV: 180
+  NavMeshLayerBite: 0
+  waypoints: []
   ShowGizmos: 1
   Debugger: 0
 --- !u!1 &356839594897892500
@@ -1075,6 +1087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carBody: {fileID: 5660093502109558111}
+  selfController: {fileID: 6554621917657163297}
 --- !u!1 &4311633703379341358
 GameObject:
   m_ObjectHideFlags: 0

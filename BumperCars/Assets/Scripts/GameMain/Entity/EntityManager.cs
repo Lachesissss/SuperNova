@@ -15,7 +15,13 @@ namespace Lachesis.GamePlay
         //PickupItem
         Coin,
         SkillCard1,
-        SkillCard2
+        SkillCard2,
+        
+        //BattleField
+        BattleField,
+        
+        //UI
+        BattleUI,
     }
     
     public class EntityManager : GameModule
@@ -37,7 +43,7 @@ namespace Lachesis.GamePlay
             }
         }
 
-        public GameObject CreateEntity<T>(EntityEnum entityEnum,Vector3 pos, Quaternion rot, object userData = null) where T : Entity
+        public T CreateEntity<T>(EntityEnum entityEnum,Vector3 pos, Quaternion rot, object userData = null) where T : Entity
         {
             GameObject obj = null;
             if (m_hideEntityPool[entityEnum].Count > 0)
@@ -65,22 +71,58 @@ namespace Lachesis.GamePlay
                 entityComponent.OnInit(pos,rot, userData);
             }
             
-            return obj;
+            return entityComponent;
         }
 
-        public void ReturnEntity<T>(EntityEnum entityEnum, GameObject gameObject, Action<GameObject> returnFun) where T : Entity
+        public T CreateEntity<T>(EntityEnum entityEnum, Transform parent, object userData = null) where T : Entity
         {
-            var entityComponent = gameObject.GetComponent<T>();
+            GameObject obj = null;
+            if(!m_hideEntityPool.ContainsKey(entityEnum))
+            {
+                Debug.LogError($"未找到实体枚举{entityEnum.ToString()},请检查EntityConfig");
+                return null;
+            }
+            
+            if (m_hideEntityPool[entityEnum].Count > 0)
+            {
+                obj = m_hideEntityPool[entityEnum][0];
+                m_hideEntityPool[entityEnum].RemoveAt(0);
+                m_activeEntityDict[entityEnum].Add(obj);
+                obj.SetActive(true);
+            }
+            else
+            {
+                obj = Object.Instantiate(m_entityDict[entityEnum],parent);
+                m_activeEntityDict[entityEnum].Add(obj);
+                obj.SetActive(true);
+            }
+            
+            var entityComponent = obj.GetComponent<T>();
             if(entityComponent==null)
             {
-                Debug.LogError($"返回实体失败，prefab上不存在预期的Component{typeof(T).Name}，请检查EntityConfig");
+                Debug.LogError($"获取实体失败prefab上不存在预期的Component:{typeof(T).Name}，请检查EntityConfig");
+                return null;
+            }
+            else
+            {
+                entityComponent.OnInit(userData);
+            }
+            
+            return entityComponent;
+        }
+        public void ReturnEntity<T>(EntityEnum entityEnum, GameObject obj) where T:Entity
+        {
+            var entityComponent = obj.GetComponent<T>();
+            if(entityComponent==null)
+            {
+                Debug.LogError($"返回实体失败prefab上不存在预期的Component:{typeof(T).Name}，请检查EntityConfig");
                 return;
             }
+            
             entityComponent.OnReturnToPool();
-            m_activeEntityDict[entityEnum].Remove(gameObject);
-            m_hideEntityPool[entityEnum].Add(gameObject);
-            gameObject.SetActive(false);
-            if (returnFun != null) returnFun.Invoke(gameObject);
+            m_activeEntityDict[entityEnum].Remove(obj);
+            m_hideEntityPool[entityEnum].Add(obj);
+            obj.SetActive(false);
         }
         
         public List<Transform> GetEntityTransforms(EntityEnum entityEnum)

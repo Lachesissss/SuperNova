@@ -11,6 +11,11 @@ namespace Lachesis.GamePlay
             gameObject.transform.position = pos;
             gameObject.transform.rotation = rot;
         }
+        
+        public virtual void OnInit(object userData = null)
+        {
+            
+        }
        
        public virtual void OnReturnToPool()
        {

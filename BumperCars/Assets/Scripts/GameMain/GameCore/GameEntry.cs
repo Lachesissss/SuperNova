@@ -15,7 +15,9 @@ namespace Lachesis.GamePlay
         private static readonly List<GameModule> s_GameModules = new();
 
         public string entranceProcedureTypeName; //初始流程
-
+        
+        public GameObject canvasRoot;
+        
         private ProcedureBase m_EntranceProcedure;
 
         public ProcedureBase CurrentProcedure => ProcedureManager.CurrentProcedure;
