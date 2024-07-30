@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Lachesis.GamePlay
 {
-    public class CarAI : MonoBehaviour
+    public class CarAI : Entity
     {
         public CarController carController;
         public Transform destination; 
@@ -17,7 +17,7 @@ namespace Lachesis.GamePlay
         public float motorDelta;
         public bool boost;
         public bool handBrake;
-       
+        public NavMeshPath navMeshPath;
         public Vector3 postionToFollow = Vector3.zero;
         public bool allowMovement;
         
@@ -55,6 +55,7 @@ namespace Lachesis.GamePlay
             currentWayPoint = 0;
             allowMovement = false;
             postionToFollow = Vector3.zero;
+            navMeshPath = new NavMeshPath();
         }
 
         private void Start()
@@ -62,7 +63,7 @@ namespace Lachesis.GamePlay
             m_FsmManager = GameEntry.FSMManager;
             CarAIState[] carAIStates = {new CarAIChaseState(), new CarAIPatrolState()};
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
-            m_CarAIFsm.Start<CarAIChaseState>();
+            m_CarAIFsm.Start<CarAIPatrolState>();
             CalculateNavMashLayerBite();
         }
 
@@ -144,7 +145,7 @@ namespace Lachesis.GamePlay
         
         public void ListOptimizer()
         {
-            if (currentWayPoint > 1 && waypoints.Count > 5)
+            if (currentWayPoint > 1 && waypoints.Count > 3)
             {
                 waypoints.RemoveAt(0);
                 currentWayPoint--;
@@ -168,10 +169,11 @@ namespace Lachesis.GamePlay
                     }
                     Gizmos.DrawWireSphere(waypoints[i], 2f);
                 }
-                CalculateFOV();
+                //DrawFOV();
+                DrawTargetArea();
             }
 
-            void CalculateFOV()
+            void DrawFOV()
             {
                 Gizmos.color = Color.white;
                 float totalFOV = AIFOV * 2;
@@ -183,6 +185,47 @@ namespace Lachesis.GamePlay
                 Vector3 rightRayDirection = rightRayRotation * transform.forward;
                 Gizmos.DrawRay(transform.position, leftRayDirection * rayRange);
                 Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
+            }
+            
+            void DrawTargetArea()
+            {
+                if(destination==null)
+                {
+                    Gizmos.color = Color.red;
+                }
+                else
+                {
+                    Gizmos.color = Color.green;
+                }
+
+                float angleStep = 360.0f / 100;
+                var radius = GameEntry.ConfigManager.GetConfig<GlobalConfig>().CarAISearchRange;
+                for (int i = 0; i < 100; i++)
+                {
+                    float angleCurrent = i * angleStep * Mathf.Deg2Rad; 
+                    float angleNext = (i + 1) * angleStep * Mathf.Deg2Rad; 
+    
+                    Vector3 pointCurrent = transform.position + new Vector3(Mathf.Cos(angleCurrent), 1f/radius, Mathf.Sin(angleCurrent)) * radius;
+                    Vector3 pointNext = transform.position + new Vector3(Mathf.Cos(angleNext), 1f/radius, Mathf.Sin(angleNext)) * radius;
+
+                    Gizmos.DrawLine(pointCurrent, pointNext);
+                }
+            }
+        }
+
+        public override void OnInit(Vector3 pos, Quaternion rot, object userData = null)
+        {
+            base.OnInit(pos, rot, userData);
+        }
+
+        public override void OnReturnToPool()
+        {
+            base.OnReturnToPool();
+            var rb = carController.bodyRb;
+            if(rb!=null)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
         }
     }

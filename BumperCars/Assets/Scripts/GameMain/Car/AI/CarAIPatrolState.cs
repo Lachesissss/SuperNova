@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace Lachesis.GamePlay
 {
@@ -18,6 +20,7 @@ namespace Lachesis.GamePlay
         protected internal override void OnEnter(FSM<CarAI> carAI)
         {
             base.OnEnter(carAI);
+            Debug.Log($"{owner.name}进入巡逻状态");
             owner.Reset();
         }
 
@@ -25,10 +28,6 @@ namespace Lachesis.GamePlay
         {
             base.OnUpdate(carAI, elapseSeconds, realElapseSeconds);
             
-            if(owner.destination ==null)
-            {
-                owner.destination = TryGetPlayerTransform();
-            }
             if(carAI.Owner.destination!=null)
             {
                 ChangeState<CarAIChaseState>(carAI);
@@ -42,11 +41,24 @@ namespace Lachesis.GamePlay
             
         }
         
-        //TODO：自动探测周围一定范围内的玩家
-        private Transform TryGetPlayerTransform()
-        {
-            return null;
-        }
+        //自动探测周围一定范围内的玩家
+        // private Transform TryGetPlayerTransform()
+        // {
+        //     var playerTrans = GameEntry.EntityManager.GetEntityTransforms(EntityEnum.CarPlayer);
+        //     float searchRange = GameEntry.ConfigManager.GetConfig<GlobalConfig>().CarAISearchRange;
+        //     float minDis = Single.PositiveInfinity;
+        //     Transform nearPlayerTrans = null;
+        //     foreach (var trans in playerTrans)
+        //     {
+        //         var dis = Vector3.Distance(owner.transform.position, trans.position);
+        //         if(minDis>dis)
+        //         {
+        //             minDis = dis;
+        //             nearPlayerTrans = trans;
+        //         }
+        //     }
+        //     return nearPlayerTrans;
+        // }
         
         private void SetSteeringMove() // Applies steering to the Current waypoint
         {
@@ -82,7 +94,30 @@ namespace Lachesis.GamePlay
         
         public void RandomPath() // Creates a path to a random destination
         {
-            NavMeshPath path = new NavMeshPath();
+            //检测范围内是否有玩家，有的话将玩家设为目标
+            NavMeshPath path = owner.navMeshPath;
+            float searchRange = GameEntry.ConfigManager.GetConfig<GlobalConfig>().CarAISearchRange;
+            var playerTrans = GameEntry.EntityManager.GetEntityTransforms(EntityEnum.CarPlayer);
+            float minDis = Single.PositiveInfinity;
+            Transform nearPlayerTrans = null;
+            foreach (var trans in playerTrans)
+            {
+                if(NavMesh.SamplePosition(trans.position, out NavMeshHit hit, 1, owner.NavMeshLayerBite) &&
+                   NavMesh.CalculatePath(owner.transform.position, hit.position, owner.NavMeshLayerBite, path))
+                {
+                    var dis = Vector3.Distance(owner.transform.position, trans.position);
+                    if(minDis>dis)
+                    {
+                        minDis = dis;
+                        if(minDis<searchRange)
+                            nearPlayerTrans = trans;
+                    }
+                }
+            }
+            owner.destination = nearPlayerTrans;
+            
+            
+            
             Vector3 sourcePostion;
 
             if (owner.waypoints.Count == 0)
@@ -129,8 +164,8 @@ namespace Lachesis.GamePlay
                 {
                     owner.DebugLog("Failed to generate a random path. Invalid Path. Generating a new one", false);
                 }
+            }
         }
-    }
         
         protected internal override void OnLeave(FSM<CarAI> carAI, bool isShutdown)
         {

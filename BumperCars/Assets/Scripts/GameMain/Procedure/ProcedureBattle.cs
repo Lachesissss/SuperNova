@@ -23,16 +23,8 @@ namespace Lachesis.GamePlay
             Debug.Log("进入主战斗流程");
             // GameEntry.instance.StartCoroutine(LoadGameObjectAsync("Prefabs/CarPlayer", Vector3.zero, Quaternion.identity));
             // GameEntry.instance.StartCoroutine(LoadGameObjectAsync("Prefabs/CarEnemy", Vector3.zero+new Vector3(2,0,0), Quaternion.identity));
-            GameEntry.EntityManager.CreateEntity(EntityEnum.CarPlayer, go =>
-            {
-                go.transform.position = Vector3.zero;
-                go.transform.rotation = Quaternion.identity;
-            });
-            GameEntry.EntityManager.CreateEntity(EntityEnum.CarEnemy, go =>
-            {
-                go.transform.position = Vector3.zero + new Vector3(2, 0, 0);
-                go.transform.rotation = Quaternion.identity;
-            });
+            GameEntry.EntityManager.CreateEntity<Player>(EntityEnum.CarPlayer, Vector3.zero,Quaternion.identity);
+            GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarEnemy,Vector3.zero + new Vector3(2, 0, 0), Quaternion.identity);
             //GameEntry.instance.StartCoroutine(LoadGameObjectAsync("Prefabs/CarEnemy", Vector3.zero+new Vector3(-2,0,0), Quaternion.identity));
         }
 
