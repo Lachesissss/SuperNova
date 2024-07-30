@@ -19,7 +19,7 @@ namespace Lachesis.GamePlay
             base.OnInit(pos, rot, userData);
             if(userData is string str)
             {
-                carController.name = str;
+                carController.carName = str;
             }
         }
 

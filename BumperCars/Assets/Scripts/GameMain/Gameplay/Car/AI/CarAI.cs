@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Lachesis.Core;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace Lachesis.GamePlay
 {
@@ -68,7 +64,7 @@ namespace Lachesis.GamePlay
             CalculateNavMashLayerBite();
             if(userData is string str)
             {
-                carController.name = str;
+                carController.carName = str;
             }
         }
 

@@ -47,8 +47,12 @@ namespace Lachesis.GamePlay
                 var otherCar = otherRigidbody.GetComponent<CarController>();
                 if(otherCar!=null)
                 {
-                    otherCar.lastAttackerName = m_selfController.name;
-                    otherCar.lastAttackedTime = DateTime.Now;
+                    var attackInfo = new AttackInfo();
+                    attackInfo.attacker = m_selfController.carName;
+                    attackInfo.underAttacker = otherCar.carName;
+                    attackInfo.attackTime = DateTime.Now;
+                    attackInfo.attackType = AttackType.Collide;
+                    GameEntry.EventManager.Fire(this, AttackEventArgs.Create(attackInfo));
                 }
             }
         }

@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using Lachesis.GamePlay;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,6 +21,7 @@ namespace Lachesis.GamePlay
             base.OnEnter(carAI);
             Debug.Log($"{owner.name}进入追逐状态");
             owner.Reset();
+            
             m_curlostTargetTime = 0;
         }
 
@@ -34,6 +32,7 @@ namespace Lachesis.GamePlay
             if(!Targeting(realElapseSeconds))
             {
                 ChangeState<CarAIPatrolState>(carAI);
+                return;
             }
             owner.carController.ChangeCarTurnState(owner.steeringDelta);
             owner.carController.ChangeCarForwardState(owner.motorDelta);
@@ -107,12 +106,23 @@ namespace Lachesis.GamePlay
                     owner.allowMovement = false;
                 else
                 {
-                    owner.postionToFollow = owner.waypoints[owner.currentWayPoint];
-                    owner.allowMovement = true;
-                    if (Vector3.Distance(owner.transform.position, owner.postionToFollow) < 2)
-                        owner.currentWayPoint++;
+                    if (Vector3.Distance(owner.waypoints[owner.currentWayPoint], owner.destination.position) > 3.5)
+                        //离目标太远的路径点就抛弃掉，重新创建路径
+                        owner.waypoints.RemoveAt(owner.currentWayPoint);
+                    //CustomPath(owner.destination);
+                    if (owner.currentWayPoint >= owner.waypoints.Count)
+                    {
+                        owner.allowMovement = false;
+                    }
+                    else
+                    {
+                        owner.postionToFollow = owner.waypoints[owner.currentWayPoint];
+                        owner.allowMovement = true;
+                        if (Vector3.Distance(owner.transform.position, owner.postionToFollow) < 2)
+                            owner.currentWayPoint++;
+                    }
                 }
-
+                
                 if (owner.currentWayPoint >= owner.waypoints.Count - 1)
                     CustomPath(owner.destination);
             }
@@ -146,7 +156,7 @@ namespace Lachesis.GamePlay
                 NavMesh.CalculatePath(sourcePostion, hit.position, NavMeshAreaBite, path))
             {
                 if (path.corners.ToList().Count() > 1&& owner.CheckForAngle(path.corners[1], sourcePostion, direction))
-                {
+                {   //这里不知道为啥第一次会生成一个奇怪位置的waypoints但是目前表现正常先不管
                     owner.waypoints.AddRange(path.corners.ToList());
                     owner.DebugLog("Custom Path generated successfully", false);
                 }

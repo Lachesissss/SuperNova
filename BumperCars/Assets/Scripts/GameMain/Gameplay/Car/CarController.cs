@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,12 +36,9 @@ namespace Lachesis.GamePlay
         public Transform leftBackTrans;
         public Transform rightFrontTrans;
         public Transform rightBackTrans;
-        
-        public string name;
-        [HideInInspector]
-        public string lastAttackerName;
-        [HideInInspector]
-        public DateTime lastAttackedTime;
+
+        //既是名字，也是id
+        public string carName;
         
         private readonly List<WheelCollider> wheelColliders = new();
 
@@ -83,7 +79,6 @@ namespace Lachesis.GamePlay
                 sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
                 collider.sidewaysFriction = sidewaysFriction;
             }
-            lastAttackedTime = DateTime.Now;
             Reset();
         }
 

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -30,7 +28,8 @@ namespace Lachesis.GamePlay
             
             if(carAI.Owner.destination!=null)
             {
-                ChangeState<CarAIChaseState>(carAI);
+                ChangeState<CarAIChaseState>(carAI); //注意：changestate下一帧才生效，因此当前帧如果不想执行后续逻辑就必须return
+                return;
             }
             owner.carController.ChangeCarTurnState(owner.steeringDelta);
             owner.carController.ChangeCarForwardState(owner.motorDelta);

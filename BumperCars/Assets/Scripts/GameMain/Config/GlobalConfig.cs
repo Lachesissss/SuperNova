@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GlobalConfig", menuName = "ScriptableObject/GlobalConfig", order = 0)]
 public class GlobalConfig : ScriptableObject
@@ -14,4 +13,6 @@ public class GlobalConfig : ScriptableObject
     public float carAISearchRange = 12f;//AI索敌范围
     public float playerReviveTime = 5f;//玩家复活间隔
     public int targetScore = 10;//获胜分数
+    public string p1Name = "玩家1";
+    public string p2Name = "玩家2";
 }

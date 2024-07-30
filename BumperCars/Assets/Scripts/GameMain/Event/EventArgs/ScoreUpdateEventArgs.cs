@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Lachesis.Core;
-namespace Lachesis.Gameplay
+
+namespace Lachesis.GamePlay
 {
     public class ScoreUpdateEventArgs: GameEventArgs
     {
