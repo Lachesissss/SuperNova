@@ -10,7 +10,22 @@ namespace Lachesis.GamePlay
         {
             carController.ChangeCarTurnState(GameEntry.PlayerInputManager.steeringDeltaP1);
             carController.ChangeCarForwardState(GameEntry.PlayerInputManager.motorDeltaP1);
-            carController.ChangeCarBoostState(GameEntry.PlayerInputManager.boostP1);
+            if(GameEntry.PlayerInputManager.boostP1)
+            {
+                carController.DoBoost();
+            }
+            if(GameEntry.PlayerInputManager.skill1P1)
+            {
+                carController.ActivateSkill(0, GetSkillTarget());
+            }
+            if(GameEntry.PlayerInputManager.skill2P1)
+            {
+                carController.ActivateSkill(1, GetSkillTarget());
+            }
+            if(GameEntry.PlayerInputManager.skill3P1)
+            {
+                carController.ActivateSkill(2, GetSkillTarget());
+            }
             carController.ChangeCarHandBrakeState(GameEntry.PlayerInputManager.handbrakeP1);
         }
 
@@ -21,17 +36,17 @@ namespace Lachesis.GamePlay
             {
                 carController.carName = str;
             }
+            carController.Reset();
         }
 
         public override void OnReturnToPool()
         {
             base.OnReturnToPool();
-            var rb = carController.bodyRb;
-            if(rb!=null)
-            {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+        }
+        
+        private CarController GetSkillTarget()
+        {
+            return null;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Lachesis.GamePlay
     {
         private bool isGoBattle;
         private ProcedureOwner procedureOwner;
-
+        private MenuUI m_menuUI;
         protected internal override void OnInit(ProcedureOwner procedureOwner)
         {
             base.OnInit(procedureOwner);
@@ -20,12 +20,9 @@ namespace Lachesis.GamePlay
             base.OnEnter(procedureOwner);
 
             this.procedureOwner = procedureOwner;
-            isGoBattle = false;
             Debug.Log("进入主菜单流程");
-            
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle)));
-            if (isGoBattle) ChangeState<ProcedureBattle>(procedureOwner);
-
+            isGoBattle = false;
+            m_menuUI = GameEntry.EntityManager.CreateEntity<MenuUI>(EntityEnum.MenuUI, GameEntry.instance.canvasRoot.transform);
             // GameEntry.Event.Subscribe(ChangeSceneEventArgs.EventId, OnChangeScene);
             // GameEntry.Event.Subscribe(LoadLevelEventArgs.EventId, OnLoadLevel);
             //
@@ -48,12 +45,18 @@ namespace Lachesis.GamePlay
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
 
-            if (isGoBattle) ChangeState<ProcedureBattle>(procedureOwner);
+            if (isGoBattle)
+            {
+                ChangeState<ProcedureBattle>(procedureOwner);
+                return;
+            } 
         }
 
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
             base.OnLeave(procedureOwner, isShutdown);
+            GameEntry.EntityManager.ReturnEntity<MenuUI>(EntityEnum.MenuUI, m_menuUI.gameObject);
+            m_menuUI = null;
             // GameEntry.Sound.StopMusic();
             //
             // GameEntry.Event.Unsubscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenUIFormSuccess);

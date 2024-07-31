@@ -14,7 +14,7 @@ namespace Lachesis.GamePlay
 
         //PickupItem
         Coin,
-        SkillCard1,
+        SkillPickUpItem,
         SkillCard2,
         
         //BattleField
@@ -22,6 +22,8 @@ namespace Lachesis.GamePlay
         
         //UI
         BattleUI,
+        MenuUI,
+        WinSettlementUI,
     }
     
     public class EntityManager : GameModule

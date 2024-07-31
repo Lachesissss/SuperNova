@@ -244,16 +244,16 @@ public class FSM<T> : FSMBase where T : class
     {
     }
 
-    internal void ChangeState<TState>() where TState : FSMState<T>
+    internal void ChangeState<TState>(object userData = null) where TState : FSMState<T>
     {
-        ChangeState(typeof(TState));
+        ChangeState(typeof(TState), userData);
     }
 
     /// <summary>
     ///     切换当前有限状态机状态。
     /// </summary>
     /// <param name="stateType">要切换到的有限状态机状态类型。</param>
-    internal void ChangeState(Type stateType)
+    internal void ChangeState(Type stateType, object userData = null)
     {
         if (CurrentState == null) Debug.LogError("Current state is invalid.");
 
@@ -263,6 +263,7 @@ public class FSM<T> : FSMBase where T : class
         CurrentState.OnLeave(this, false);
         m_CurrentStateTime = 0f;
         CurrentState = state;
+        state.userData = userData;
         CurrentState.OnEnter(this);
     }
 

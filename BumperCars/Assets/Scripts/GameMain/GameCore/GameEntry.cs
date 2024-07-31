@@ -30,6 +30,8 @@ namespace Lachesis.GamePlay
         public static FSMManager FSMManager { get; private set; }
 
         public static EntityManager EntityManager { get; private set; }
+        public static AtlasManager AtlasManager { get; private set; }
+        public static SkillManager SkillManager { get; private set; }
         public static ProcedureManager ProcedureManager { get; private set; }
 
         public static PlayerInputManager PlayerInputManager { get; private set; }
@@ -46,6 +48,10 @@ namespace Lachesis.GamePlay
             ConfigManager.Initialize();
             EntityManager = GetModule<EntityManager>();
             EntityManager.SetConfig(ConfigManager.GetConfig<EntityConfig>());
+            AtlasManager = GetModule<AtlasManager>();
+            AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
+            SkillManager = GetModule<SkillManager>();
+            SkillManager.Initialize();
 
             if (ProcedureManager == null)
             {

@@ -61,24 +61,26 @@ namespace Lachesis.GamePlay
             CarAIState[] carAIStates = {new CarAIChaseState(), new CarAIPatrolState()};
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
             m_CarAIFsm.Start<CarAIPatrolState>();
+            NavMeshLayerBite = 0;
             CalculateNavMashLayerBite();
             if(userData is string str)
             {
                 carController.carName = str;
             }
+            carController.Reset();
         }
 
         public override void OnReturnToPool()
         {
             base.OnReturnToPool();
             m_CarAIFsm.Clear();
-            Reset();
-            var rb = carController.bodyRb;
-            if(rb!=null)
-            {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+            // Reset();
+            // var rb = carController.bodyRb;
+            // if(rb!=null)
+            // {
+            //     rb.velocity = Vector3.zero;
+            //     rb.angularVelocity = Vector3.zero;
+            // }
         }
         private void CalculateNavMashLayerBite()
         {
@@ -203,7 +205,10 @@ namespace Lachesis.GamePlay
                     Gizmos.DrawWireSphere(waypoints[i], 2f);
                 }
                 //DrawFOV();
-                DrawTargetArea();
+                if (Application.isPlaying)
+                {
+                    DrawTargetArea();
+                }
             }
 
             void DrawFOV()

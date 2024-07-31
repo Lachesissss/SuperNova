@@ -33,7 +33,7 @@ namespace Lachesis.GamePlay
                 hasCollided = true;
                 // 施加瞬间水平力
                 var forceDirection = (otherRigidbody.transform.position - transform.position).normalized;
-                var rate =  Vector3.Dot(forceDirection,transform.forward) ;
+                var rate =  Vector3.Dot(forceDirection,carBody.velocity.normalized) ;
                 forceDirection.y = 0;
                 forceDirection = forceDirection.normalized;
                 otherRigidbody.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + rate * carBody.velocity;

@@ -13,6 +13,7 @@ public class GlobalConfig : ScriptableObject
     public float carAISearchRange = 12f;//AI索敌范围
     public float playerReviveTime = 5f;//玩家复活间隔
     public int targetScore = 10;//获胜分数
+    public float carBoostCoolingTime = 5f;//冲刺冷却
     public string p1Name = "玩家1";
     public string p2Name = "玩家2";
 }

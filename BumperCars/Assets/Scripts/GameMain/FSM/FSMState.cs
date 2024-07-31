@@ -10,6 +10,7 @@ public abstract class FSMState<T> where T : class
     {
     }
 
+    public object userData;
     /// <summary>
     ///     有限状态机状态初始化时调用。
     /// </summary>
@@ -58,7 +59,7 @@ public abstract class FSMState<T> where T : class
     /// </summary>
     /// <typeparam name="TState">要切换到的有限状态机状态类型。</typeparam>
     /// <param name="fsm">有限状态机引用。</param>
-    protected void ChangeState<TState>(FSM<T> fsm) where TState : FSMState<T>
+    protected void ChangeState<TState>(FSM<T> fsm, object userData = null) where TState : FSMState<T>
     {
         if (fsm == null)
         {
@@ -66,7 +67,7 @@ public abstract class FSMState<T> where T : class
             return;
         }
 
-        fsm.ChangeState<TState>();
+        fsm.ChangeState<TState>(userData);
     }
 
     /// <summary>
@@ -74,7 +75,7 @@ public abstract class FSMState<T> where T : class
     /// </summary>
     /// <param name="fsm">有限状态机引用。</param>
     /// <param name="stateType">要切换到的有限状态机状态类型。</param>
-    protected void ChangeState(FSM<T> fsm, Type stateType)
+    protected void ChangeState(FSM<T> fsm, Type stateType, object userData = null)
     {
         if (fsm == null)
         {
@@ -94,6 +95,6 @@ public abstract class FSMState<T> where T : class
             return;
         }
 
-        fsm.ChangeState(stateType);
+        fsm.ChangeState(stateType, userData);
     }
 }

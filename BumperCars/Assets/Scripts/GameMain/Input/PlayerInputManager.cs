@@ -14,10 +14,17 @@ namespace Lachesis.GamePlay
         public bool skill2P1 { get; private set; }
         public bool skill3P1 { get; private set; }
 
+        public enum InputType
+        {
+            GetAxisRaw,
+            GetButtonDown,
+        }
+        
         private struct InputSetting
         {
             public string Name;
             public bool Invert;
+            public InputType inputType;
         }
 
         public bool enableInput = true;
@@ -44,15 +51,15 @@ namespace Lachesis.GamePlay
 
         public void Initialize()
         {
-            forwardInputP1 = new InputSetting { Name = "Vertical_P1", Invert = false };
-            reverseInputP1 = new InputSetting { Name = "Vertical_P1", Invert = true };
-            steerRightInputP1 = new InputSetting { Name = "Horizontal_P1", Invert = false };
-            steerLeftInputP1 = new InputSetting { Name = "Horizontal_P1", Invert = true };
-            fire1InputP1 = new InputSetting { Name = "Fire1_P1", Invert = false };
-            fire2InputP1 = new InputSetting { Name = "Fire2_P1", Invert = false };
-            fire3InputP1 = new InputSetting { Name = "Fire3_P1", Invert = false };
-            handbrakeInputP1 = new InputSetting { Name = "Handbrake_P1", Invert = false };
-            boostInputP1 = new InputSetting { Name = "Boost_P1", Invert = false };
+            forwardInputP1 = new InputSetting { Name = "Vertical_P1", Invert = false, inputType = InputType.GetAxisRaw};
+            reverseInputP1 = new InputSetting { Name = "Vertical_P1", Invert = true , inputType = InputType.GetAxisRaw};
+            steerRightInputP1 = new InputSetting { Name = "Horizontal_P1",Invert = false, inputType = InputType.GetAxisRaw};
+            steerLeftInputP1 = new InputSetting { Name = "Horizontal_P1",Invert = true, inputType = InputType.GetAxisRaw };
+            fire1InputP1 = new InputSetting { Name = "Fire1_P1", Invert = false , inputType = InputType.GetButtonDown};
+            fire2InputP1 = new InputSetting { Name = "Fire2_P1", Invert = false , inputType = InputType.GetButtonDown};
+            fire3InputP1 = new InputSetting { Name = "Fire3_P1", Invert = false , inputType = InputType.GetButtonDown};
+            handbrakeInputP1 = new InputSetting { Name = "Handbrake_P1", Invert = false , inputType = InputType.GetAxisRaw};
+            boostInputP1 = new InputSetting { Name = "Boost_P1", Invert = false , inputType = InputType.GetButtonDown};
         }
 
         internal override void Update(float elapseSeconds, float realElapseSeconds)
@@ -71,11 +78,21 @@ namespace Lachesis.GamePlay
 
         private float GetInput(InputSetting v)
         {
-            float value = 0;
-            value = Input.GetAxisRaw(v.Name);
-            //Debug.Log($"{v.Name}:{value}");
-            if (v.Invert) value *= -1;
-            return Mathf.Clamp01(value);
+            if(v.inputType==InputType.GetAxisRaw)
+            {
+                float value = 0;
+                value = Input.GetAxisRaw(v.Name);
+                //Debug.Log($"{v.Name}:{value}");
+                if (v.Invert) value *= -1;
+                return Mathf.Clamp01(value);
+            }
+            else if(v.inputType == InputType.GetButtonDown)
+            {
+                var boolValue = Input.GetButtonDown(v.Name);
+                return boolValue?1:0;
+            }
+            
+            return 0;
         }
 
         internal override void Shutdown()

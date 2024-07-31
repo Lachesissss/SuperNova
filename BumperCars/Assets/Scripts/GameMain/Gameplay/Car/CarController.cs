@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Lachesis.Core;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -36,29 +39,35 @@ namespace Lachesis.GamePlay
         public Transform leftBackTrans;
         public Transform rightFrontTrans;
         public Transform rightBackTrans;
-
+        
+        [FormerlySerializedAs("SkillSlots")] public List<Skill> skillSlots = new List<Skill>();
+        
         //既是名字，也是id
         public string carName;
         
-        private readonly List<WheelCollider> wheelColliders = new();
+        public readonly List<WheelCollider> wheelColliders = new();
 
         private float m_carTurnValue;
 
         private float m_carForwardValue;
 
-        private bool m_isBoost;
+        private bool m_canBoost;
 
         private bool m_isHandBrake;
+        
+        private static readonly int s_maxSkillCount = 3;
 
         private GlobalConfig m_globalConfig;
+        
+        private Vector3 deltaPos = new Vector3(0,0.05f,0);
         public float GetSpeed()
         {
             return rightBackCollider.radius * Mathf.PI * rightBackCollider.rpm * 60f / 1000f;
         }
-
+        
         public float GetRPM()
         {
-            return rightBackCollider.rpm;
+            return (rightBackCollider.rpm+rightFrontCollider.rpm+leftBackCollider.rpm+leftFrontCollider.rpm)/4f;
         }
 
         private void Awake()
@@ -79,17 +88,108 @@ namespace Lachesis.GamePlay
                 sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
                 collider.sidewaysFriction = sidewaysFriction;
             }
-            Reset();
+            //Reset();
         }
 
+        private void OnGetSkill(object sender, GameEventArgs e)
+        {
+            if (e is GetSkillEventArgs args)
+            {
+                if(skillSlots.Count<s_maxSkillCount&&args.userName==carName)
+                {
+                    var newSkill = GameEntry.SkillManager.CreateSkill(args.skillEnum);
+                    skillSlots.Add(newSkill);
+                    Debug.Log($"{carName} 获得了技能卡 {newSkill.skillName}");
+                }
+            }
+        }
+
+        private void OnEnable()
+        {
+            GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnGetSkill);
+        }
+
+        private void OnDisable()
+        {
+            GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
+        }
+
+        //释放技能，可以没有目标
+        public void ActivateSkill(int index, CarController target = null)
+        {
+            if(index> skillSlots.Count-1)
+            {
+                return;
+            }
+            else
+            {
+                skillSlots[index].Activate(this, target);
+                skillSlots.RemoveAt(index);
+            }
+        }
+        
+        public void DoBoost()
+        {
+            if(!m_canBoost) return;
+            transform.position += deltaPos;
+            
+            var forceDirection = transform.forward;
+            forceDirection.y = 0;
+            forceDirection = forceDirection.normalized;
+            bodyRb.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + bodyRb.velocity;
+            
+            // 暂时降低摩擦力
+            StartCoroutine(TemporarilyReduceFriction(wheelColliders));
+            // 冷却时间
+            StartCoroutine(StartBoostCoolingTime());
+        }
+        
+        private IEnumerator StartBoostCoolingTime()
+        {
+            m_canBoost = false;
+            yield return new WaitForSeconds(GameEntry.ConfigManager.GetConfig<GlobalConfig>().carBoostCoolingTime);
+            m_canBoost = true;
+        }
+        
+        private IEnumerator TemporarilyReduceFriction(List<WheelCollider> wheelColliders)
+        {
+            for (var i = 0; i < wheelColliders.Count; i++)
+            {
+                
+                var forwardFriction = wheelColliders[i].forwardFriction;
+                forwardFriction.stiffness = m_globalConfig.underAttackCarForwardFrictionStiffness;
+                wheelColliders[i].forwardFriction = forwardFriction;
+
+                var sidewaysFriction = wheelColliders[i].forwardFriction;
+                sidewaysFriction.stiffness = m_globalConfig.underAttackSidewaysFrictionStiffness;
+                wheelColliders[i].sidewaysFriction = sidewaysFriction;
+            }
+
+            // 等待一段时间
+            yield return new WaitForSeconds(m_globalConfig.frictionRestoreDelay);
+
+            // 恢复原来的摩擦力设置
+            for (var i = 0; i < wheelColliders.Count; i++)
+            {
+                var forwardFriction = wheelColliders[i].forwardFriction;
+                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
+                wheelColliders[i].forwardFriction = forwardFriction;
+
+                var sidewaysFriction = wheelColliders[i].forwardFriction;
+                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
+                wheelColliders[i].sidewaysFriction = sidewaysFriction;
+            }
+        }
+        
         public void Reset()
         {
             m_carForwardValue = 0;
             m_carTurnValue = 0;
-            m_isBoost = false;
             m_isHandBrake = false;
+            m_canBoost = true;
             bodyRb.velocity = Vector3.zero;
             bodyRb.angularVelocity = Vector3.zero;
+            skillSlots.Clear();
             // 确保所有的 WheelColliders 初始状态下不施加动力或转矩
             foreach (var wheel in wheelColliders)
             {
@@ -97,7 +197,7 @@ namespace Lachesis.GamePlay
                 wheel.brakeTorque = Mathf.Infinity; // 应用无穷大的刹车力，防止车移动
                 wheel.steerAngle = 0;
             }
-
+            StopAllCoroutines();
             // 等待一帧以确保所有物理计算完成
             StartCoroutine(ResetBrakeTorque());
         }
@@ -126,7 +226,7 @@ namespace Lachesis.GamePlay
 
         public void ChangeCarBoostState(bool isBoost)
         {
-            m_isBoost = isBoost;
+
         }
 
         public void ChangeCarHandBrakeState(bool isHandBrake)
@@ -210,6 +310,8 @@ namespace Lachesis.GamePlay
             if (groundedR)
                 bodyRb.AddForceAtPosition(wheelR.transform.up * -antiRollForce, wheelR.transform.position);
         }
+        
+        
         
     }
 }

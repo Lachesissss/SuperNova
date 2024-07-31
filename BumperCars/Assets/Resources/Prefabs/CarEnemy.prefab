@@ -72,8 +72,7 @@ MonoBehaviour:
   leftBackTrans: {fileID: 8582218119381718682}
   rightFrontTrans: {fileID: 6922057182505409440}
   rightBackTrans: {fileID: 477835939059542409}
-  name: 
-  lastAttackerName: 
+  carName: 
 --- !u!54 &5660093502109558111
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -472,6 +471,7 @@ GameObject:
   - component: {fileID: 4980326013388346101}
   - component: {fileID: 3530526674143773791}
   - component: {fileID: 5923555503836390161}
+  - component: {fileID: 7972786449193598570}
   m_Layer: 3
   m_Name: body
   m_TagString: Untagged
@@ -566,6 +566,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 76ce9dae0d5d5704cbcec774875d6470, type: 3}
+--- !u!114 &7972786449193598570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209084938417026460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f3f4153a9f87b24f842ea5b96d7a5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carController: {fileID: 6554621917657163297}
 --- !u!1 &2674042974874680824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1087,7 +1100,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carBody: {fileID: 5660093502109558111}
-  selfController: {fileID: 6554621917657163297}
 --- !u!1 &4311633703379341358
 GameObject:
   m_ObjectHideFlags: 0
