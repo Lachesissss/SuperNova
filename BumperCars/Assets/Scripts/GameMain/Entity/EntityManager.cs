@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
@@ -142,8 +141,21 @@ namespace Lachesis.GamePlay
 
         }
 
+        //所有还处于激活状态的实体调用OnReturnToPool()并回池
         internal override void Shutdown()
         {
+            foreach (var kv in m_activeEntityDict)
+                if (kv.Value is { Count: > 0 })
+                    foreach (var gameObject in kv.Value)
+                    {
+                        var entity = gameObject.GetComponent<Entity>();
+                        entity.OnReturnToPool();
+                        gameObject.SetActive(false);
+                    }
+
+            m_activeEntityDict.Clear();
+            m_hideEntityPool.Clear();
+            m_entityDict.Clear();
         }
     }
 }

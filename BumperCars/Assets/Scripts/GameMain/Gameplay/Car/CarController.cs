@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
@@ -7,7 +6,7 @@ using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
-    public class CarController : MonoBehaviour
+    public class CarController : EntityComponent
     {
         public enum DriverMode
         {
@@ -88,6 +87,7 @@ namespace Lachesis.GamePlay
                 sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
                 collider.sidewaysFriction = sidewaysFriction;
             }
+            
             //Reset();
         }
 
@@ -104,12 +104,13 @@ namespace Lachesis.GamePlay
             }
         }
 
-        private void OnEnable()
+        public override void OnEntityInit(object userData = null)
         {
             GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnGetSkill);
+            Reset();
         }
 
-        private void OnDisable()
+        public override void OnEntityReturnToPool()
         {
             GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
         }
@@ -180,8 +181,8 @@ namespace Lachesis.GamePlay
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
         }
-        
-        public void Reset()
+
+        private void Reset()
         {
             m_carForwardValue = 0;
             m_carTurnValue = 0;

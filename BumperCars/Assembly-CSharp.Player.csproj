@@ -52,15 +52,19 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarController.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIChaseState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\ConfigManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillPickUpItem.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ProcedureChangeEventArgs.cs" />
     <Compile Include="Assets\CarAI\Scripts\controllingCarAI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\Player.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\TypeNamePair.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\MenuUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureMenu.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventPool.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Config\AtlasConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattle.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleField.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\AttackInfo.cs" />
@@ -69,8 +73,10 @@
     <Compile Include="Assets\Scripts\GameMain\Entity\Entity.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBase.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityManager.cs" />
-    <Compile Include="Assets\Scripts\GameMain\UI\BattleUI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SkillItem.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameModule.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\GetSkillEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\BattleUI.cs" />
     <Compile Include="Assets\CarAI\Scripts\CarAI.cs" />
     <Compile Include="Assets\CarAI\Scripts\SensorManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\AttackEventArgs.cs" />
@@ -79,7 +85,15 @@
     <Compile Include="Assets\Scripts\GameMain\Event\GameEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ScoreUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIPatrolState.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\AtlasManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SmashSkill.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementUI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PlayerSkillSlot.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameEntry.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarBody.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlement.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSM.cs" />
     <Reference Include="UnityEngine">
       <HintPath>K:\Unity\Editor\2022.3.39f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\Variations\mono\Managed\UnityEngine.dll</HintPath>

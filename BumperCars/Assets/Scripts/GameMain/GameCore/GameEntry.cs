@@ -41,13 +41,13 @@ namespace Lachesis.GamePlay
             instance = this;
             ProcedureManager = GetModule<ProcedureManager>();
             FSMManager = GetModule<FSMManager>();
-            EventManager = GetModule<EventManager>();
             PlayerInputManager = GetModule<PlayerInputManager>();
             PlayerInputManager.Initialize();
             ConfigManager = GetModule<ConfigManager>();
             ConfigManager.Initialize();
             EntityManager = GetModule<EntityManager>();
-            EntityManager.SetConfig(ConfigManager.GetConfig<EntityConfig>());
+            EntityManager.SetConfig(ConfigManager.GetConfig<EntityConfig>()); //EntityManager应该在EventManager之前ShutDown，防止Unsubscribe不存在的事件Handler
+            EventManager = GetModule<EventManager>(); //这里先简单处理一下，后面给GameMoudle加个priority
             AtlasManager = GetModule<AtlasManager>();
             AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
             SkillManager = GetModule<SkillManager>();

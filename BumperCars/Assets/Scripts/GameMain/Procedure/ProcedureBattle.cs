@@ -122,6 +122,8 @@ namespace Lachesis.GamePlay
             {
                 GameEntry.EntityManager.ReturnEntity<Player>(EntityEnum.CarPlayer, player.gameObject);
             }
+
+            GameEntry.instance.StopAllCoroutines();
             GameEntry.EntityManager.ReturnEntity<BattleUI>(EntityEnum.BattleUI, m_battleUI.gameObject);
             GameEntry.EntityManager.ReturnEntity<BattleField>(EntityEnum.BattleField, m_battleField.gameObject);
             m_battleField = null;

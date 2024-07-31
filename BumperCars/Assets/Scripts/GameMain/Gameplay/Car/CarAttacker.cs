@@ -36,7 +36,7 @@ namespace Lachesis.GamePlay
                 var rate =  Vector3.Dot(forceDirection,carBody.velocity.normalized) ;
                 forceDirection.y = 0;
                 forceDirection = forceDirection.normalized;
-                otherRigidbody.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + rate * carBody.velocity;
+                otherRigidbody.velocity = otherRigidbody.velocity + forceDirection.normalized * m_globalConfig.impactSpeed + rate * carBody.velocity;
 
                 // 暂时降低摩擦力
                 StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));

@@ -36,7 +36,6 @@ namespace Lachesis.GamePlay
             {
                 carController.carName = str;
             }
-            carController.Reset();
         }
 
         public override void OnReturnToPool()
