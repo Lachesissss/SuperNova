@@ -23,6 +23,7 @@ namespace Lachesis.GamePlay
         private void OnGoBackToTitleBtnClicked()
         {
             GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
+            goBackToTittleBtn.onClick.RemoveAllListeners();
         }
 
         public override void OnReturnToPool(bool isShutDown = false)

@@ -55,6 +55,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillPickUpItem.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ProcedureChangeEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
     <Compile Include="Assets\CarAI\Scripts\controllingCarAI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
@@ -69,6 +70,9 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleField.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\AttackInfo.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMBase.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SkillSlot.cs" />
+    <Compile Include="Assets\Travis Game Assets\Status Effects\Demo Scene\Scripts\StatusEffectsPreview.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\StrongerSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\EntityConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\Entity.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBase.cs" />
@@ -89,11 +93,14 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\AtlasManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SmashSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementUI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerBattleUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PlayerSkillSlot.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameEntry.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarBody.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightningBoltScript.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlement.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\Skill.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Config\SkillConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSM.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
@@ -101,6 +108,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Travis Game Assets\Status Effects\Readme.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />

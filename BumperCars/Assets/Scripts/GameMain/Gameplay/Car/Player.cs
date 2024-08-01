@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -45,8 +46,28 @@ namespace Lachesis.GamePlay
         }
         
         private CarController GetSkillTarget()
-        {
-            return null;
+        {//先统一获取最近的实体
+            float minDis = Single.PositiveInfinity;
+            CarController closestCar = null;
+            foreach (var ai in ProcedureBattle.carEnemies)
+            {
+                var dis =Vector3.Distance(ai.transform.position, transform.position);
+                if(minDis>dis)
+                {
+                    minDis = dis;
+                    closestCar = ai.carController;
+                }
+            }
+            foreach (var player in ProcedureBattle.carPlayers)
+            {
+                var dis =Vector3.Distance(player.transform.position, transform.position);
+                if(minDis>dis&&player.carController.name!=carController.name)
+                {
+                    minDis = dis;
+                    closestCar = player.carController;
+                }
+            }
+            return closestCar;
         }
     }
 }

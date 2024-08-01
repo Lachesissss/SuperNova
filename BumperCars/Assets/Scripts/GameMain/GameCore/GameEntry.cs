@@ -46,12 +46,11 @@ namespace Lachesis.GamePlay
             ConfigManager = GetModule<ConfigManager>();
             ConfigManager.Initialize();
             EntityManager = GetModule<EntityManager>();
-            EntityManager.SetConfig(ConfigManager.GetConfig<EntityConfig>()); //EntityManager应该在EventManager之前ShutDown，防止Unsubscribe不存在的事件Handler
+            EntityManager.Initialize(ConfigManager.GetConfig<EntityConfig>()); //EntityManager应该在EventManager之前ShutDown，防止Unsubscribe不存在的事件Handler
             EventManager = GetModule<EventManager>(); //这里先简单处理一下，后面给GameMoudle加个priority
             AtlasManager = GetModule<AtlasManager>();
-            AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
             SkillManager = GetModule<SkillManager>();
-            SkillManager.Initialize();
+            
 
             if (ProcedureManager == null)
             {
@@ -100,7 +99,8 @@ namespace Lachesis.GamePlay
             }
 
             ProcedureManager.Initialize(GetModule<FSMManager>(), procedureBases);
-
+            AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
+            SkillManager.Initialize(ConfigManager.GetConfig<SkillConfig>());
             yield return new WaitForEndOfFrame();
 
             ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());

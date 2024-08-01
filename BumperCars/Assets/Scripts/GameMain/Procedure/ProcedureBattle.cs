@@ -15,8 +15,8 @@ namespace Lachesis.GamePlay
 
         private static Dictionary<string, AttackInfo> lastAttackInfoDict; //key：被攻击的carName，value：最近一次攻击信息
         private static Dictionary<string, int> m_playerScoreDict;
-        private static List<CarAI> carEnemies;
-        private static List<Player> carPlayers;
+        public static List<CarAI> carEnemies;
+        public static List<Player> carPlayers;
         private BattleUI m_battleUI;
         private string p1Name;
         private string p2Name;
@@ -149,31 +149,7 @@ namespace Lachesis.GamePlay
                 if(i>=carEnemies.Count) break;
                 if(carEnemies[i].transform.position.y<m_battleField.dieOutTrans.position.y)
                 {
-                    var carName = carEnemies[i].carController.carName;
-                    if (lastAttackInfoDict.TryGetValue(carName, out var attackInfo))
-                    {
-                        //没有被攻击记录或已有记录在3秒之前，则判定为自杀
-                        var now = DateTime.Now;
-                        var span = now - attackInfo.attackTime;
-                        if (span.TotalSeconds < 3f)
-                        {
-                            var killer = attackInfo.attacker;
-                            Debug.Log($"{carName} 在与{killer}的激烈碰撞中牺牲了！");
-                            if (m_playerScoreDict.ContainsKey(killer))
-                            {
-                                m_playerScoreDict[killer]+=5;
-                                GameEntry.EventManager.Fire(this, ScoreUpdateEventArgs.Create(m_playerScoreDict[p1Name], m_playerScoreDict[p2Name]));
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log($"{carName} Ta自杀了...");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log($"{carName} Ta自杀了...");
-                    }
+                    DeathProcess(carEnemies[i].carController);
                     GameEntry.EntityManager.ReturnEntity(EntityEnum.CarEnemy, carEnemies[i]);
                     carEnemies.RemoveAt(i);
                     i--;
@@ -185,40 +161,55 @@ namespace Lachesis.GamePlay
                 if(i>=carPlayers.Count) break;
                 if(carPlayers[i].transform.position.y<m_battleField.dieOutTrans.position.y)
                 {
-                    var carName = carPlayers[i].carController.carName;
-                    if (lastAttackInfoDict.TryGetValue(carName, out var attackInfo))
-                    {
-                        var now = DateTime.Now;
-                        var span = now - attackInfo.attackTime;
-                        if (span.TotalSeconds < 3f)
-                        {
-                            //这些后面都要变成tips
-                            var killer = attackInfo.attacker;
-
-                            Debug.Log($"{carPlayers[i].carController.carName} 在与{killer}的激烈碰撞中牺牲了！");
-                            if (m_playerScoreDict.ContainsKey(killer))
-                            {
-                                m_playerScoreDict[killer]++;
-                                GameEntry.EventManager.Fire(ScoreUpdateEventArgs.EventId,
-                                    ScoreUpdateEventArgs.Create(m_playerScoreDict[p1Name], m_playerScoreDict[p2Name]));
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log($"{carName} Ta自杀了...");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log($"{carName} Ta自杀了...");
-                    }
-                    
-                    
+                    DeathProcess(carPlayers[i].carController);
                     GameEntry.EntityManager.ReturnEntity(EntityEnum.CarPlayer, carPlayers[i]);
                     GameEntry.instance.GameStartCoroutine(DelayToRevive());
                     carPlayers.RemoveAt(i);
                     i--;
                 }
+            }
+        }
+        
+        private void DeathProcess(CarController controller)
+        {
+            var carName = controller.carName;
+            if (lastAttackInfoDict.TryGetValue(carName, out var attackInfo))
+            {
+                var now = DateTime.Now;
+                var span = now - attackInfo.attackTime;
+                if (span.TotalSeconds < 3f)
+                {
+                    //这些后面都要变成tips
+                    var killer = attackInfo.attacker;
+
+                    if(attackInfo.attackType==AttackType.Collide)
+                    {
+                        Debug.Log($"{controller.carName} 在与{killer}的激烈碰撞中牺牲了！");
+                    }
+                    else if(attackInfo.attackType==AttackType.Skill)
+                    {
+                        if(attackInfo.userData is SkillEnum skillEnum)
+                        {
+                            var skillCfg = GameEntry.SkillManager.GetSkillConfigItem(skillEnum);
+                            Debug.Log($"{controller.carName} 被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}！");
+                        }
+                    }
+                            
+                    if (m_playerScoreDict.ContainsKey(killer))
+                    {
+                        m_playerScoreDict[killer]+=5;
+                        GameEntry.EventManager.Fire(ScoreUpdateEventArgs.EventId,
+                            ScoreUpdateEventArgs.Create(m_playerScoreDict[p1Name], m_playerScoreDict[p2Name]));
+                    }
+                }
+                else
+                {
+                    Debug.Log($"{carName} Ta自杀了...");
+                }
+            }
+            else
+            {
+                Debug.Log($"{carName} Ta自杀了...");
             }
         }
         
@@ -241,6 +232,9 @@ namespace Lachesis.GamePlay
         {
             yield return new WaitForSeconds(GameEntry.ConfigManager.GetConfig<GlobalConfig>().playerReviveTime);
             var carPlayer = GameEntry.EntityManager.CreateEntity<Player>(EntityEnum.CarPlayer, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation);
+            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
+                targetScore = GameEntry.ConfigManager.GetConfig<GlobalConfig>().targetScore, carPlayer = carPlayer};
+            m_battleUI.RefreshAll(battleUIData);
             carPlayers.Add(carPlayer);
         }
         

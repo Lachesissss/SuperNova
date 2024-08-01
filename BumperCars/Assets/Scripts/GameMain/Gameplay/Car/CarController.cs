@@ -23,7 +23,8 @@ namespace Lachesis.GamePlay
         public float autoBreakTorque = 10000;
         public float antiRoll = 2000f;
         public Transform centerOfGravity;
-
+        public CarAttacker carAttacker;
+        
         public float maxAngle;
         public float targetAngle;
         public float returnAngleSpeed = 400;
@@ -54,7 +55,7 @@ namespace Lachesis.GamePlay
 
         private bool m_isHandBrake;
         
-        private static readonly int s_maxSkillCount = 3;
+        private int m_maxSkillCount = 3;
 
         private GlobalConfig m_globalConfig;
         
@@ -72,22 +73,14 @@ namespace Lachesis.GamePlay
         public override void OnEntityInit(object userData = null)
         {
             base.OnEntityInit();
+            m_maxSkillCount = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
             if (centerOfGravity != null) bodyRb.centerOfMass = centerOfGravity.position;
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
             wheelColliders.Add(leftBackCollider);
             wheelColliders.Add(leftFrontCollider);
             wheelColliders.Add(rightBackCollider);
             wheelColliders.Add(rightFrontCollider);
-            foreach (var collider in wheelColliders)
-            {
-                var forwardFriction = collider.forwardFriction;
-                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
-                collider.forwardFriction = forwardFriction;
-
-                var sidewaysFriction = collider.forwardFriction;
-                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
-                collider.sidewaysFriction = sidewaysFriction;
-            }
+            carAttacker.Init(this, bodyRb);
             
             //Reset();
         }
@@ -96,15 +89,56 @@ namespace Lachesis.GamePlay
         {
             if (e is GetSkillEventArgs args)
             {
-                if(skillSlots.Count<s_maxSkillCount&&args.userName==carName)
+                if(args.userName==carName)
                 {
-                    var newSkill = GameEntry.SkillManager.CreateSkill(args.skillEnum);
-                    skillSlots.Add(newSkill);
-                    Debug.Log($"{carName} 获得了技能卡 {newSkill.skillName}");
+                    for(var i=0;i<skillSlots.Count;i++)
+                    {
+                        if(skillSlots[i]==null)
+                        {
+                            skillSlots[i] = GameEntry.SkillManager.CreateSkill(args.skillEnum);
+                            GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
+                            Debug.Log($"{carName} 获得了技能卡 {skillSlots[i].skillName},并装配在了{i+1}号技能槽");
+                            break;
+                        }
+                    }
                 }
             }
         }
-
+        
+        //释放技能，可以没有目标
+        public void ActivateSkill(int index, CarController target = null)
+        {
+            if(skillSlots[index]==null)
+            {
+                return;
+            }
+            else
+            {
+                if(skillSlots[index].isNeedTarget&&target==null)
+                {
+                    Debug.Log($"{carName} 释放 {skillSlots[index].skillName}失败，需要目标");
+                    return;
+                }
+                skillSlots[index].Activate(this, target);
+                Debug.Log($"{carName} 释放了技能 {skillSlots[index].skillName}");
+                if(!m_globalConfig.isUnlimitedFire) //无限火力
+                {
+                    skillSlots[index] = null;
+                }
+                GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
+            }
+        }
+        
+        public bool IsSkillSlotFull()
+        {
+            foreach (var skill in skillSlots)
+            {
+                if(skill==null)
+                    return false;
+            }
+            return true;
+        }
+        
         public override void OnEntityReCreateFromPool(object userData = null)
         {
             base.OnEntityReCreateFromPool(userData);
@@ -116,20 +150,10 @@ namespace Lachesis.GamePlay
         {
             base.OnEntityReturnToPool(isShutDown);
             GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
-        }
-
-        //释放技能，可以没有目标
-        public void ActivateSkill(int index, CarController target = null)
-        {
-            if(index> skillSlots.Count-1)
-            {
-                return;
-            }
-            else
-            {
-                skillSlots[index].Activate(this, target);
-                skillSlots.RemoveAt(index);
-            }
+            if(isShutDown) return;
+            StopAllCoroutines();
+            carAttacker.StopAllCoroutines();
+            
         }
         
         public void DoBoost()
@@ -193,7 +217,10 @@ namespace Lachesis.GamePlay
             m_canBoost = true;
             bodyRb.velocity = Vector3.zero;
             bodyRb.angularVelocity = Vector3.zero;
-            skillSlots.Clear();
+            skillSlots = new List<Skill>();
+            carAttacker.Reset();
+            for(var i=0;i<GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;i++)
+                skillSlots.Add(null);
             // 确保所有的 WheelColliders 初始状态下不施加动力或转矩
             foreach (var wheel in wheelColliders)
             {
@@ -201,7 +228,17 @@ namespace Lachesis.GamePlay
                 wheel.brakeTorque = Mathf.Infinity; // 应用无穷大的刹车力，防止车移动
                 wheel.steerAngle = 0;
             }
-            StopAllCoroutines();
+            foreach (var collider in wheelColliders)
+            {
+                var forwardFriction = collider.forwardFriction;
+                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
+                collider.forwardFriction = forwardFriction;
+
+                var sidewaysFriction = collider.forwardFriction;
+                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
+                collider.sidewaysFriction = sidewaysFriction;
+            }
+            
             // 等待一帧以确保所有物理计算完成
             StartCoroutine(ResetBrakeTorque());
         }

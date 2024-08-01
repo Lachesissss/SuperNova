@@ -16,4 +16,6 @@ public class GlobalConfig : ScriptableObject
     public float carBoostCoolingTime = 5f;//冲刺冷却
     public string p1Name = "玩家1";
     public string p2Name = "玩家2";
+    public int maxSkillCount = 3;//最大技能数量
+    public bool isUnlimitedFire = true;//是否无限火力(技能卡不会被消耗)
 }

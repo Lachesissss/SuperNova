@@ -14,16 +14,25 @@ namespace Lachesis.GamePlay
             foreach (var component in entityComponents) component.OnEntityInit(userData);
         }
 
+        //通过反射获取所有的实体组件，包括组件和组件的迭代器
         private void GetEntityComponents()
         {
             entityComponents = new List<EntityComponent>();
             var fields = GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             foreach (var field in fields)
-                if (field.FieldType.IsSubclassOf(typeof(EntityComponent)) || field.FieldType == typeof(EntityComponent))
+                if (typeof(EntityComponent).IsAssignableFrom(field.FieldType))
                 {
                     var value = field.GetValue(this) as EntityComponent;
                     if (value != null) entityComponents.Add(value);
+                }
+                else if (typeof(IEnumerable<EntityComponent>).IsAssignableFrom(field.FieldType))
+                {
+                    IEnumerable<EntityComponent> collection = (IEnumerable<EntityComponent>)field.GetValue(this);
+                    if (collection != null)
+                    {
+                        entityComponents.AddRange(collection);
+                    }
                 }
         }
         

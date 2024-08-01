@@ -13,13 +13,13 @@ namespace Lachesis.GamePlay
         public string underAttacker;
         public DateTime attackTime;
         public AttackType attackType;
+        public object userData;
     }
 
     public enum AttackType
     {
         Collide,
-        Skill1,
-        Skill2
+        Skill,
     }
     
 }

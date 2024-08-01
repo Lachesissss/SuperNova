@@ -8,17 +8,23 @@ namespace Lachesis.GamePlay
     {
         private bool hasCollided;//碰撞冷却标记
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
-        public Rigidbody carBody;
+        private Rigidbody m_carBody;
         private GlobalConfig m_globalConfig;
         private CarController m_selfController;
         private void Awake()
         {
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
-            m_selfController = carBody.GetComponent<CarController>();
-            if(m_selfController==null)
-            {
-                Debug.LogError("出错了,没有找到属于的车辆控制器");
-            }
+        }
+
+        public void Init(CarController ctrl, Rigidbody body)
+        {
+            m_selfController = ctrl;
+            m_carBody = body;
+        }
+
+        public void Reset()
+        {
+            hasCollided = false;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -33,10 +39,10 @@ namespace Lachesis.GamePlay
                 hasCollided = true;
                 // 施加瞬间水平力
                 var forceDirection = (otherRigidbody.transform.position - transform.position).normalized;
-                var rate =  Vector3.Dot(forceDirection,carBody.velocity.normalized) ;
+                var rate =  Vector3.Dot(forceDirection,m_carBody.velocity.normalized) ;
                 forceDirection.y = 0;
                 forceDirection = forceDirection.normalized;
-                otherRigidbody.velocity = otherRigidbody.velocity + forceDirection.normalized * m_globalConfig.impactSpeed + rate * carBody.velocity;
+                otherRigidbody.velocity += (forceDirection.normalized * m_globalConfig.impactSpeed + rate * m_carBody.velocity)*(m_carBody.mass/otherRigidbody.mass);
 
                 // 暂时降低摩擦力
                 StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));

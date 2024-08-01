@@ -23,6 +23,9 @@ namespace Lachesis.GamePlay
         BattleUI,
         MenuUI,
         WinSettlementUI,
+        
+        //Effect
+        LightningBolt,
     }
     
     public class EntityManager : GameModule
@@ -33,7 +36,7 @@ namespace Lachesis.GamePlay
 
         private EntityConfig m_entityConfig;
         private List<Transform> m_entitTransforms = new();
-        public void SetConfig(EntityConfig config)
+        public void Initialize(EntityConfig config)
         {
             m_entityConfig = config;
             foreach (var entityResource in m_entityConfig.entityResources)
@@ -124,9 +127,10 @@ namespace Lachesis.GamePlay
         {
             foreach (var kv in m_activeEntityDict)
             {
-                foreach (var entity in kv.Value)
+                for(int i=0;i<kv.Value.Count;i++)
                 {
-                    entity.OnUpdate(elapseSeconds,realElapseSeconds);
+                    if(i>kv.Value.Count) break; //有可能在update中删除其他实体或自己
+                    kv.Value[i].OnUpdate(elapseSeconds,realElapseSeconds);
                 }
             }
         }
@@ -135,9 +139,10 @@ namespace Lachesis.GamePlay
         {
             foreach (var kv in m_activeEntityDict)
             {
-                foreach (var entity in kv.Value)
+                for(int i=0;i<kv.Value.Count;i++)
                 {
-                    entity.OnFixedUpdate(fixedElapseSeconds);
+                    if(i>kv.Value.Count) break;
+                    kv.Value[i].OnFixedUpdate(fixedElapseSeconds);
                 }
             }
         }

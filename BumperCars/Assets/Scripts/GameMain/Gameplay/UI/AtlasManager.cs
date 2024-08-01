@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -15,6 +16,7 @@ namespace Lachesis.GamePlay
     {
         private AtlasConfig m_atlasConfig;
         private Dictionary<AtlasEnum, SpriteAtlas> m_atlasDict = new();
+        //private Dictionary<AtlasEnum, string> m_atlasPath = new();
         
         public void SetConfig(AtlasConfig config)
         {
@@ -22,6 +24,7 @@ namespace Lachesis.GamePlay
             foreach (var atlasResource in m_atlasConfig.atlasResources)
             {
                 m_atlasDict.Add(atlasResource.atlasEnum, atlasResource.atlas);
+                //m_atlasPath.Add(atlasResource.atlasEnum, atlasResource.atlasPath);
             }
         }
         
