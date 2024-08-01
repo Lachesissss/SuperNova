@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Lachesis.Core;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -7,7 +8,9 @@ namespace Lachesis.GamePlay
     public class Entity : MonoBehaviour
     {
         private List<EntityComponent> entityComponents;
+        public ProcedureBase BelongProcedure { get; private set; }
 
+        public EntityEnum entityEnum;
         public virtual void OnInit(object userData = null)
         {
             GetEntityComponents();
@@ -50,11 +53,13 @@ namespace Lachesis.GamePlay
         {
             gameObject.transform.position = pos;
             gameObject.transform.rotation = rot;
+            BelongProcedure = GameEntry.ProcedureManager.CurrentProcedure;
             foreach (var component in entityComponents) component.OnEntityReCreateFromPool(userData);
         }
         
         public virtual void OnReCreateFromPool(object userData = null)
         {
+            BelongProcedure = GameEntry.ProcedureManager.CurrentProcedure;
             foreach (var component in entityComponents) component.OnEntityReCreateFromPool(userData);
         }
        

@@ -17,6 +17,7 @@ namespace Lachesis.GamePlay
         private static Dictionary<string, int> m_playerScoreDict;
         public static List<CarAI> carEnemies;
         public static List<Player> carPlayers;
+        public static List<Entity> userEntities; //其他实体再创建的实体先放在这里，后面考虑把ProcedureBattle里的数据移到一个BattleManager里
         private BattleUI m_battleUI;
         private string p1Name;
         private string p2Name;
@@ -44,6 +45,7 @@ namespace Lachesis.GamePlay
         {
             base.OnEnter(procedureOwner);
             this.procedureOwner = procedureOwner;
+            GameEntry.instance.StopAllCoroutines();
             isGoMenu = false;
             isGoSettlement = false;
             m_settlementData = null;
@@ -57,11 +59,12 @@ namespace Lachesis.GamePlay
             carPlayers.Add(carPlayer);
             var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarEnemy,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, $"人机{carAiIndex++}");
             carEnemies.Add(carAi);
-            
-            //测试
-            GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, Vector3.zero, Quaternion.identity, SkillEnum.Smash);
-        }
 
+            //测试,创建技能卡
+            GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, Vector3.zero, Quaternion.identity, SkillEnum.Lighting);
+            GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, new Vector3(-2, 0, 2), Quaternion.identity, SkillEnum.Stronger);
+        }
+        
         protected internal override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
@@ -115,18 +118,18 @@ namespace Lachesis.GamePlay
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
             base.OnLeave(procedureOwner, isShutdown);
-            foreach (var ai in carEnemies)
-            {
-                GameEntry.EntityManager.ReturnEntity(EntityEnum.CarEnemy, ai);
-            }
-            foreach (var player in carPlayers)
-            {
-                GameEntry.EntityManager.ReturnEntity(EntityEnum.CarPlayer, player);
-            }
-
-            GameEntry.instance.StopAllCoroutines();
-            GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleUI, m_battleUI);
-            GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleField, m_battleField);
+            // foreach (var ai in carEnemies)
+            // {
+            //     GameEntry.EntityManager.ReturnEntity(EntityEnum.CarEnemy, ai);
+            // }
+            // foreach (var player in carPlayers)
+            // {
+            //     GameEntry.EntityManager.ReturnEntity(EntityEnum.CarPlayer, player);
+            // }
+            //
+            // GameEntry.instance.StopAllCoroutines();
+            // GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleUI, m_battleUI);
+            // GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleField, m_battleField);
             m_battleField = null;
             m_battleUI = null;
             lastAttackInfoDict.Clear();

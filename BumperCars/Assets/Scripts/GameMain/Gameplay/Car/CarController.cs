@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -41,12 +40,14 @@ namespace Lachesis.GamePlay
         public Transform rightBackTrans;
         
         public List<Skill> skillSlots = new List<Skill>();
+
+        private List<Entity> m_effectEntities;
         
         //既是名字，也是id
         public string carName;
         
         public readonly List<WheelCollider> wheelColliders = new();
-
+        
         private float m_carTurnValue;
 
         private float m_carForwardValue;
@@ -54,12 +55,21 @@ namespace Lachesis.GamePlay
         private bool m_canBoost;
 
         private bool m_isHandBrake;
-        
-        private int m_maxSkillCount = 3;
 
         private GlobalConfig m_globalConfig;
         
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
+
+        public void AddEffectEntity(Entity entity)
+        {
+            m_effectEntities.Add(entity);
+        }
+
+        public void RemoveEffectEntity(Entity entity)
+        {
+            m_effectEntities.Remove(entity);
+        }
+        
         public float GetSpeed()
         {
             return rightBackCollider.radius * Mathf.PI * rightBackCollider.rpm * 60f / 1000f;
@@ -73,7 +83,7 @@ namespace Lachesis.GamePlay
         public override void OnEntityInit(object userData = null)
         {
             base.OnEntityInit();
-            m_maxSkillCount = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
+            
             if (centerOfGravity != null) bodyRb.centerOfMass = centerOfGravity.position;
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
             wheelColliders.Add(leftBackCollider);
@@ -81,7 +91,7 @@ namespace Lachesis.GamePlay
             wheelColliders.Add(rightBackCollider);
             wheelColliders.Add(rightFrontCollider);
             carAttacker.Init(this, bodyRb);
-            
+            m_effectEntities = new List<Entity>();
             //Reset();
         }
 
@@ -120,7 +130,8 @@ namespace Lachesis.GamePlay
                     return;
                 }
                 skillSlots[index].Activate(this, target);
-                Debug.Log($"{carName} 释放了技能 {skillSlots[index].skillName}");
+                var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
+                Debug.Log($"{carName} 释放了技能[{skillSlots[index].skillName}],{config.activateText}!");
                 if(!m_globalConfig.isUnlimitedFire) //无限火力
                 {
                     skillSlots[index] = null;
@@ -152,6 +163,10 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
             if(isShutDown) return;
             StopAllCoroutines();
+            foreach (var effectEntity in m_effectEntities)
+                //这里可能有风险，一个特效去销毁另一个特效的话，不过一般不会这么写
+                GameEntry.EntityManager.ReturnEntity(effectEntity.entityEnum, effectEntity);
+            m_effectEntities.Clear();
             carAttacker.StopAllCoroutines();
             
         }
@@ -175,7 +190,7 @@ namespace Lachesis.GamePlay
         private IEnumerator StartBoostCoolingTime()
         {
             m_canBoost = false;
-            yield return new WaitForSeconds(GameEntry.ConfigManager.GetConfig<GlobalConfig>().carBoostCoolingTime);
+            yield return new WaitForSeconds(m_globalConfig.carBoostCoolingTime);
             m_canBoost = true;
         }
         
@@ -217,9 +232,10 @@ namespace Lachesis.GamePlay
             m_canBoost = true;
             bodyRb.velocity = Vector3.zero;
             bodyRb.angularVelocity = Vector3.zero;
+            bodyRb.mass = m_globalConfig.defaultCarMass;
             skillSlots = new List<Skill>();
             carAttacker.Reset();
-            for(var i=0;i<GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;i++)
+            for (var i = 0; i < m_globalConfig.maxSkillCount; i++)
                 skillSlots.Add(null);
             // 确保所有的 WheelColliders 初始状态下不施加动力或转矩
             foreach (var wheel in wheelColliders)

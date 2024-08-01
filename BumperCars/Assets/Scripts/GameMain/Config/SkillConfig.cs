@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace Lachesis.GamePlay
         public SkillEnum skillEnum;
         public string skillName;
         public string iconName;
+        public string activateText;
         public string killText;
         public bool isNeedTarget;
     }

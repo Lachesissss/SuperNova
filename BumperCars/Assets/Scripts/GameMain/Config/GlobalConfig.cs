@@ -18,4 +18,6 @@ public class GlobalConfig : ScriptableObject
     public string p2Name = "玩家2";
     public int maxSkillCount = 3;//最大技能数量
     public bool isUnlimitedFire = true;//是否无限火力(技能卡不会被消耗)
+    public int defaultCarMass = 1500;
+    public int strongerCarMass = 2500;
 }

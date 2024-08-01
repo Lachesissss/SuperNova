@@ -25,7 +25,8 @@ namespace Lachesis.GamePlay
         WinSettlementUI,
         
         //Effect
-        LightningBolt,
+        LightningEffect,
+        StrongerEffect
     }
     
     public class EntityManager : GameModule
@@ -102,11 +103,14 @@ namespace Lachesis.GamePlay
                 obj.SetActive(true);
                 obj.GetComponent<T>().OnInit(); //仅在第一次创建时调用的函数
             }
+
+            entity.entityEnum = entityEnum;
             entity.OnReCreateFromPool(userData);
             return entity as T;
         }
         public void ReturnEntity(EntityEnum entityEnum, Entity entity)
         {
+            if (!m_activeEntityDict[entityEnum].Contains(entity)) return; //重复回收已经回收的实体，直接返回
             entity.OnReturnToPool();
             m_activeEntityDict[entityEnum].Remove(entity);
             m_hideEntityPool[entityEnum].Add(entity);
@@ -160,6 +164,20 @@ namespace Lachesis.GamePlay
             m_activeEntityDict.Clear();
             m_hideEntityPool.Clear();
             m_entityDict.Clear();
+        }
+
+        public void ClearProcedureEntity(ProcedureBase procedureBase)
+        {
+            foreach (var kv in m_activeEntityDict)
+                for (var i = 0; i < kv.Value.Count; i++)
+                {
+                    if (i > kv.Value.Count) break; //有可能在update中删除其他实体或自己
+                    if (kv.Value[i].BelongProcedure == procedureBase)
+                    {
+                        ReturnEntity(kv.Key, kv.Value[i]);
+                        i--;
+                    }
+                }
         }
     }
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+using Lachesis.GamePlay;
 using ProcedureOwner = FSM<Lachesis.Core.ProcedureManager>;
 
 namespace Lachesis.Core
@@ -43,6 +43,7 @@ namespace Lachesis.Core
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
             base.OnLeave(procedureOwner, isShutdown);
+            GameEntry.EntityManager.ClearProcedureEntity(this); //自动回收本流程创建的但还没有回收的实体
         }
 
         /// <summary>

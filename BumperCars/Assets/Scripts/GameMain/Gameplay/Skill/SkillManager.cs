@@ -1,18 +1,17 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Lachesis.GamePlay
 {
     public enum SkillEnum
     {
         Slip,
-        Smash,
+        Lighting,
         Swap,
-        Summon
+        Summon,
+        Stronger
     }
     
     //TODO:改成Skill的对象池实现
@@ -24,7 +23,8 @@ namespace Lachesis.GamePlay
         public void Initialize(SkillConfig skillConfig)
         {
             //这个type只能在代码里先这么配了
-            skillTypeDict.Add(SkillEnum.Smash, typeof(SmashSkill));
+            skillTypeDict.Add(SkillEnum.Lighting, typeof(LightingSkill));
+            skillTypeDict.Add(SkillEnum.Stronger, typeof(StrongerSkill));
             foreach (var kv in skillTypeDict)
             {
                 if(!kv.Value.IsSubclassOf(typeof(Skill)))
