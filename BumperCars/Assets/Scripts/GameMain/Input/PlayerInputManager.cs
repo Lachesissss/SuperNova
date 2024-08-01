@@ -76,6 +76,11 @@ namespace Lachesis.GamePlay
             }
         }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            
+        }
+
         private float GetInput(InputSetting v)
         {
             if(v.inputType==InputType.GetAxisRaw)

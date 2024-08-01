@@ -8,9 +8,10 @@ namespace Lachesis.GamePlay
     {
         private List<EntityComponent> entityComponents;
 
-        private void Awake()
+        public virtual void OnInit(object userData = null)
         {
             GetEntityComponents();
+            foreach (var component in entityComponents) component.OnEntityInit(userData);
         }
 
         private void GetEntityComponents()
@@ -26,21 +27,32 @@ namespace Lachesis.GamePlay
                 }
         }
         
-        public virtual void OnInit(Vector3 pos, Quaternion rot, object userData = null)
+        public virtual void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            foreach (var component in entityComponents) component.OnEntityUpdate(elapseSeconds,realElapseSeconds);
+        }
+        
+        public virtual void OnFixedUpdate(float fixedElapseSeconds)
+        {
+            foreach (var component in entityComponents) component.OnEntityFixedUpdate(fixedElapseSeconds);
+        }
+        
+        public virtual void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             gameObject.transform.position = pos;
             gameObject.transform.rotation = rot;
-            foreach (var component in entityComponents) component.OnEntityInit(userData);
+            foreach (var component in entityComponents) component.OnEntityReCreateFromPool(userData);
         }
         
-        public virtual void OnInit(object userData = null)
+        public virtual void OnReCreateFromPool(object userData = null)
         {
-            foreach (var component in entityComponents) component.OnEntityInit(userData);
+            foreach (var component in entityComponents) component.OnEntityReCreateFromPool(userData);
         }
        
-       public virtual void OnReturnToPool()
+        //如果是ShutDown时触发的回收，应避免gameobject相关操作，gameobject可能在实体被回收前被Destory
+       public virtual void OnReturnToPool(bool isShutDown = false)
        {
-           foreach (var component in entityComponents) component.OnEntityReturnToPool();
+           foreach (var component in entityComponents) component.OnEntityReturnToPool(isShutDown);
        }
     }
 }

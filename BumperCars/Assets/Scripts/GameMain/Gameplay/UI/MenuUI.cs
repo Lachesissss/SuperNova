@@ -11,9 +11,9 @@ namespace Lachesis.GamePlay
         public Button singleModeBtn;
         public Button doubleModeBtn;
 
-        public override void OnInit(object userData = null)
+        public override void OnReCreateFromPool(object userData = null)
         {
-            base.OnInit(userData);
+            base.OnReCreateFromPool(userData);
             singleModeBtn.onClick.AddListener(OnEnterSingleMode);
             doubleModeBtn.onClick.AddListener(OnEnterDoubleMode);
         }
@@ -27,9 +27,9 @@ namespace Lachesis.GamePlay
         {
             GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), "Double"));
         }
-        public override void OnReturnToPool()
+        public override void OnReturnToPool(bool isShutDown = false)
         {
-            base.OnReturnToPool();
+            base.OnReturnToPool(isShutDown);
             singleModeBtn.onClick.RemoveAllListeners();
             doubleModeBtn.onClick.RemoveAllListeners();
         }

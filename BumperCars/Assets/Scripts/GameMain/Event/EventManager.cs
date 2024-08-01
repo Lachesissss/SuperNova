@@ -37,6 +37,11 @@ namespace Lachesis.Core
             m_EventPool.Update(elapseSeconds, realElapseSeconds);
         }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            
+        }
+
         /// <summary>
         ///     关闭并清理事件管理器。
         /// </summary>

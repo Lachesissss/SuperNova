@@ -8,9 +8,9 @@ namespace Lachesis.GamePlay
     {
         public SkillEnum skillEnum;
 
-        public override void OnInit(Vector3 pos, Quaternion rot, object userData = null)
+        public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
-            base.OnInit(pos, rot, userData);
+            base.OnReCreateFromPool(pos, rot, userData);
             if(userData is SkillEnum skill)
             {
                 skillEnum = skill;
@@ -24,7 +24,7 @@ namespace Lachesis.GamePlay
                 var controller = other.GetComponent<CarBody>().carController;
                 //发出获取技能卡的事件
                 GameEntry.EventManager.Fire(this, GetSkillEventArgs.Create(skillEnum, controller.carName));
-                GameEntry.EntityManager.ReturnEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, this.gameObject);
+                GameEntry.EntityManager.ReturnEntity(EntityEnum.SkillPickUpItem, this);
             }
         }
     }

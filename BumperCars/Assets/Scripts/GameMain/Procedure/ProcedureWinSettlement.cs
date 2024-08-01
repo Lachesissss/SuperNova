@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Lachesis.Core;
 using UnityEngine;
 using ProcedureOwner = FSM<Lachesis.Core.ProcedureManager>;
@@ -49,7 +46,7 @@ namespace Lachesis.GamePlay
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
             base.OnLeave(procedureOwner, isShutdown);
-            GameEntry.EntityManager.ReturnEntity<WinSettlementUI>(EntityEnum.WinSettlementUI, m_settlementUI.gameObject);
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.WinSettlementUI, m_settlementUI);
         }
         
         protected internal override void OnDestroy(ProcedureOwner procedureOwner)

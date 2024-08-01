@@ -18,23 +18,25 @@ namespace Lachesis.GamePlay
         private string m_p1Name;
         private string m_p2Name;
         private int m_targetScore;
-        
+        private Player m_player;
         
         public struct BattleUIData
         {
             public string p1Name;
             public string p2Name;
             public int targetScore;
+            public Player carPlayer;
         }
         
-        public override void OnInit(object userData = null)
+        public override void OnReCreateFromPool(object userData = null)
         {
-            base.OnInit(userData);
+            base.OnReCreateFromPool(userData);
             GameEntry.EventManager.Subscribe(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
             if(userData is BattleUIData battleUIData)
             {
                 m_p1Name = battleUIData.p1Name;
                 m_p2Name = battleUIData.p2Name;
+                m_player = battleUIData.carPlayer;
                 m_targetScore = battleUIData.targetScore;
                 Refresh(0,0);
                 targetScoreText.text = $"目标：{m_targetScore}分";
@@ -66,9 +68,9 @@ namespace Lachesis.GamePlay
             player2ScoreText.text = $"{m_p2Name}得分：{p2Score}";
         }
 
-        public override void OnReturnToPool()
+        public override void OnReturnToPool(bool isShutDown = false)
         {
-            base.OnReturnToPool();
+            base.OnReturnToPool(isShutDown);
             GameEntry.EventManager.Unsubscribe(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
         }
 

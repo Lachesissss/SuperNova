@@ -10,9 +10,9 @@ namespace Lachesis.GamePlay
     {
         public Text winnerText;
         public Button goBackToTittleBtn;
-        public override void OnInit(object userData = null)
+        public override void OnReCreateFromPool(object userData = null)
         {
-            base.OnInit(userData);
+            base.OnReCreateFromPool(userData);
             if(userData is SettlementData data)
             {
                 winnerText.text = $"胜利者：{data.winner}！！" ;
@@ -25,9 +25,9 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
         }
 
-        public override void OnReturnToPool()
+        public override void OnReturnToPool(bool isShutDown = false)
         {
-            base.OnReturnToPool();
+            base.OnReturnToPool(isShutDown);
             goBackToTittleBtn.onClick.RemoveAllListeners();
         }
     }

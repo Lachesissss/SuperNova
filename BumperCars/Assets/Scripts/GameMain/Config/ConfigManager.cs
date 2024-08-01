@@ -34,6 +34,11 @@ namespace Lachesis.Core
         {
         }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            
+        }
+
         internal override void Shutdown()
         {
         }

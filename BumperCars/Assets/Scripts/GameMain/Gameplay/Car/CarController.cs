@@ -39,7 +39,7 @@ namespace Lachesis.GamePlay
         public Transform rightFrontTrans;
         public Transform rightBackTrans;
         
-        [FormerlySerializedAs("SkillSlots")] public List<Skill> skillSlots = new List<Skill>();
+        public List<Skill> skillSlots = new List<Skill>();
         
         //既是名字，也是id
         public string carName;
@@ -69,8 +69,9 @@ namespace Lachesis.GamePlay
             return (rightBackCollider.rpm+rightFrontCollider.rpm+leftBackCollider.rpm+leftFrontCollider.rpm)/4f;
         }
 
-        private void Awake()
+        public override void OnEntityInit(object userData = null)
         {
+            base.OnEntityInit();
             if (centerOfGravity != null) bodyRb.centerOfMass = centerOfGravity.position;
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
             wheelColliders.Add(leftBackCollider);
@@ -104,14 +105,16 @@ namespace Lachesis.GamePlay
             }
         }
 
-        public override void OnEntityInit(object userData = null)
+        public override void OnEntityReCreateFromPool(object userData = null)
         {
+            base.OnEntityReCreateFromPool(userData);
             GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnGetSkill);
             Reset();
         }
 
-        public override void OnEntityReturnToPool()
+        public override void OnEntityReturnToPool(bool isShutDown = false)
         {
+            base.OnEntityReturnToPool(isShutDown);
             GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
         }
 
@@ -210,11 +213,6 @@ namespace Lachesis.GamePlay
             foreach (var wheel in wheelColliders) wheel.brakeTorque = 0;
         }
 
-        private void FixedUpdate()
-        {
-            WheelsUpdate();
-        }
-
         public void ChangeCarTurnState(float turnValue)
         {
             m_carTurnValue = turnValue;
@@ -233,6 +231,12 @@ namespace Lachesis.GamePlay
         public void ChangeCarHandBrakeState(bool isHandBrake)
         {
             m_isHandBrake = isHandBrake;
+        }
+
+        public override void OnEntityFixedUpdate(float fixedElapseSeconds)
+        {
+            base.OnEntityFixedUpdate(fixedElapseSeconds);
+            WheelsUpdate();
         }
 
         //控制移动 转向

@@ -36,6 +36,11 @@ namespace Lachesis.GamePlay
             
         }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            
+        }
+
         internal override void Shutdown()
         {
             

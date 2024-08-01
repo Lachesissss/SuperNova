@@ -38,6 +38,11 @@ namespace Lachesis.Core
             }
         }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            
+        }
+
         internal override void Shutdown()
         {
             foreach (var fsm in m_Fsms) fsm.Value.Shutdown();

@@ -50,9 +50,10 @@ namespace Lachesis.GamePlay
             Debug.Log("进入主战斗流程");
             //创建实体
             m_battleField = GameEntry.EntityManager.CreateEntity<BattleField>(EntityEnum.BattleField, Vector3.zero, Quaternion.identity);
-            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, targetScore = GameEntry.ConfigManager.GetConfig<GlobalConfig>().targetScore};
-            m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             var carPlayer = GameEntry.EntityManager.CreateEntity<Player>(EntityEnum.CarPlayer, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation, p1Name);
+            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
+                targetScore = GameEntry.ConfigManager.GetConfig<GlobalConfig>().targetScore, carPlayer = carPlayer};
+            m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             carPlayers.Add(carPlayer);
             var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarEnemy,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, $"人机{carAiIndex++}");
             carEnemies.Add(carAi);
@@ -116,16 +117,16 @@ namespace Lachesis.GamePlay
             base.OnLeave(procedureOwner, isShutdown);
             foreach (var ai in carEnemies)
             {
-                GameEntry.EntityManager.ReturnEntity<CarAI>(EntityEnum.CarEnemy, ai.gameObject);
+                GameEntry.EntityManager.ReturnEntity(EntityEnum.CarEnemy, ai);
             }
             foreach (var player in carPlayers)
             {
-                GameEntry.EntityManager.ReturnEntity<Player>(EntityEnum.CarPlayer, player.gameObject);
+                GameEntry.EntityManager.ReturnEntity(EntityEnum.CarPlayer, player);
             }
 
             GameEntry.instance.StopAllCoroutines();
-            GameEntry.EntityManager.ReturnEntity<BattleUI>(EntityEnum.BattleUI, m_battleUI.gameObject);
-            GameEntry.EntityManager.ReturnEntity<BattleField>(EntityEnum.BattleField, m_battleField.gameObject);
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleUI, m_battleUI);
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleField, m_battleField);
             m_battleField = null;
             m_battleUI = null;
             lastAttackInfoDict.Clear();
@@ -173,7 +174,7 @@ namespace Lachesis.GamePlay
                     {
                         Debug.Log($"{carName} Ta自杀了...");
                     }
-                    GameEntry.EntityManager.ReturnEntity<CarAI>(EntityEnum.CarEnemy, carEnemies[i].gameObject);
+                    GameEntry.EntityManager.ReturnEntity(EntityEnum.CarEnemy, carEnemies[i]);
                     carEnemies.RemoveAt(i);
                     i--;
                 }
@@ -213,7 +214,7 @@ namespace Lachesis.GamePlay
                     }
                     
                     
-                    GameEntry.EntityManager.ReturnEntity<Player>(EntityEnum.CarPlayer, carPlayers[i].gameObject);
+                    GameEntry.EntityManager.ReturnEntity(EntityEnum.CarPlayer, carPlayers[i]);
                     GameEntry.instance.GameStartCoroutine(DelayToRevive());
                     carPlayers.RemoveAt(i);
                     i--;

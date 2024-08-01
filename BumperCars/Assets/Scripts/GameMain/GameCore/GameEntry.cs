@@ -111,6 +111,11 @@ namespace Lachesis.GamePlay
         {
             foreach (var module in s_GameModules) module.Update(Time.deltaTime, Time.unscaledDeltaTime);
         }
+        
+        private void FixedUpdate()
+        {
+            foreach (var module in s_GameModules) module.FixedUpdate(Time.fixedDeltaTime);
+        }
 
         private void OnDestroy()
         {

@@ -27,8 +27,8 @@ namespace Lachesis.GamePlay
     
     public class EntityManager : GameModule
     {
-        private readonly Dictionary<EntityEnum, List<GameObject>> m_hideEntityPool = new();
-        private readonly Dictionary<EntityEnum, List<GameObject>> m_activeEntityDict = new();
+        private readonly Dictionary<EntityEnum, List<Entity>> m_hideEntityPool = new();
+        private readonly Dictionary<EntityEnum, List<Entity>> m_activeEntityDict = new();
         private readonly Dictionary<EntityEnum, GameObject> m_entityDict = new();
 
         private EntityConfig m_entityConfig;
@@ -38,8 +38,8 @@ namespace Lachesis.GamePlay
             m_entityConfig = config;
             foreach (var entityResource in m_entityConfig.entityResources)
             {
-                m_hideEntityPool.Add(entityResource.itemEnum, new List<GameObject>());
-                m_activeEntityDict.Add(entityResource.itemEnum, new List<GameObject>());
+                m_hideEntityPool.Add(entityResource.itemEnum, new List<Entity>());
+                m_activeEntityDict.Add(entityResource.itemEnum, new List<Entity>());
                 m_entityDict.Add(entityResource.itemEnum, entityResource.prefab);
             }
         }
@@ -47,83 +47,67 @@ namespace Lachesis.GamePlay
         public T CreateEntity<T>(EntityEnum entityEnum,Vector3 pos, Quaternion rot, object userData = null) where T : Entity
         {
             GameObject obj = null;
+            Entity entity = null;
             if (m_hideEntityPool[entityEnum].Count > 0)
             {
-                obj = m_hideEntityPool[entityEnum][0];
+                entity = m_hideEntityPool[entityEnum][0];
+                obj = entity.gameObject;
                 m_hideEntityPool[entityEnum].RemoveAt(0);
-                m_activeEntityDict[entityEnum].Add(obj);
+                m_activeEntityDict[entityEnum].Add(entity);
                 obj.SetActive(true);
             }
             else
             {
                 obj = Object.Instantiate(m_entityDict[entityEnum], Vector3.zero, Quaternion.identity);
-                m_activeEntityDict[entityEnum].Add(obj);
+                entity = obj.GetComponent<T>();
+                if(entity==null)
+                {
+                    Debug.LogError($"获取实体失败prefab上不存在预期的Component{typeof(T).Name}，请检查EntityConfig");
+                    return null;
+                }
+                m_activeEntityDict[entityEnum].Add(entity);
                 obj.SetActive(true);
+                obj.GetComponent<T>().OnInit(); //仅在第一次创建时调用的函数
             }
-            
-            var entityComponent = obj.GetComponent<T>();
-            if(entityComponent==null)
-            {
-                Debug.LogError($"获取实体失败prefab上不存在预期的Component{typeof(T).Name}，请检查EntityConfig");
-                return null;
-            }
-            else
-            {
-                entityComponent.OnInit(pos,rot, userData);
-            }
-            
-            return entityComponent;
+
+            entity.OnReCreateFromPool(pos,rot, userData);
+            return entity as T;
         }
 
         public T CreateEntity<T>(EntityEnum entityEnum, Transform parent, object userData = null) where T : Entity
         {
             GameObject obj = null;
-            if(!m_hideEntityPool.ContainsKey(entityEnum))
-            {
-                Debug.LogError($"未找到实体枚举{entityEnum.ToString()},请检查EntityConfig");
-                return null;
-            }
-            
+            Entity entity = null;
             if (m_hideEntityPool[entityEnum].Count > 0)
             {
-                obj = m_hideEntityPool[entityEnum][0];
+                entity = m_hideEntityPool[entityEnum][0];
+                obj = entity.gameObject;
                 m_hideEntityPool[entityEnum].RemoveAt(0);
-                m_activeEntityDict[entityEnum].Add(obj);
+                m_activeEntityDict[entityEnum].Add(entity);
                 obj.SetActive(true);
             }
             else
             {
-                obj = Object.Instantiate(m_entityDict[entityEnum],parent);
-                m_activeEntityDict[entityEnum].Add(obj);
+                obj = Object.Instantiate(m_entityDict[entityEnum], parent);
+                entity = obj.GetComponent<T>();
+                if(entity==null)
+                {
+                    Debug.LogError($"获取实体失败prefab上不存在预期的Component{typeof(T).Name}，请检查EntityConfig");
+                    return null;
+                }
+                m_activeEntityDict[entityEnum].Add(entity);
                 obj.SetActive(true);
+                obj.GetComponent<T>().OnInit(); //仅在第一次创建时调用的函数
             }
-            
-            var entityComponent = obj.GetComponent<T>();
-            if(entityComponent==null)
-            {
-                Debug.LogError($"获取实体失败prefab上不存在预期的Component:{typeof(T).Name}，请检查EntityConfig");
-                return null;
-            }
-            else
-            {
-                entityComponent.OnInit(userData);
-            }
-            
-            return entityComponent;
+            entity.OnReCreateFromPool(userData);
+            return entity as T;
         }
-        public void ReturnEntity<T>(EntityEnum entityEnum, GameObject obj) where T:Entity
+        public void ReturnEntity(EntityEnum entityEnum, Entity entity)
         {
-            var entityComponent = obj.GetComponent<T>();
-            if(entityComponent==null)
-            {
-                Debug.LogError($"返回实体失败prefab上不存在预期的Component:{typeof(T).Name}，请检查EntityConfig");
-                return;
-            }
-            
-            entityComponent.OnReturnToPool();
-            m_activeEntityDict[entityEnum].Remove(obj);
-            m_hideEntityPool[entityEnum].Add(obj);
-            obj.SetActive(false);
+            entity.OnReturnToPool();
+            m_activeEntityDict[entityEnum].Remove(entity);
+            m_hideEntityPool[entityEnum].Add(entity);
+            entity.gameObject.SetActive(false);
         }
         
         public List<Transform> GetEntityTransforms(EntityEnum entityEnum)
@@ -138,7 +122,24 @@ namespace Lachesis.GamePlay
 
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
+            foreach (var kv in m_activeEntityDict)
+            {
+                foreach (var entity in kv.Value)
+                {
+                    entity.OnUpdate(elapseSeconds,realElapseSeconds);
+                }
+            }
+        }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            foreach (var kv in m_activeEntityDict)
+            {
+                foreach (var entity in kv.Value)
+                {
+                    entity.OnFixedUpdate(fixedElapseSeconds);
+                }
+            }
         }
 
         //所有还处于激活状态的实体调用OnReturnToPool()并回池
@@ -146,11 +147,9 @@ namespace Lachesis.GamePlay
         {
             foreach (var kv in m_activeEntityDict)
                 if (kv.Value is { Count: > 0 })
-                    foreach (var gameObject in kv.Value)
+                    foreach (var entity in kv.Value)
                     {
-                        var entity = gameObject.GetComponent<Entity>();
-                        entity.OnReturnToPool();
-                        gameObject.SetActive(false);
+                        entity.OnReturnToPool(true);
                     }
 
             m_activeEntityDict.Clear();

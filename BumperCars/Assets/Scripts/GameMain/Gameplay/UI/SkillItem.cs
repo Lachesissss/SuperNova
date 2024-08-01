@@ -6,14 +6,14 @@ namespace Lachesis.GamePlay
 {
     public class SkillItem : Entity
     {
-        public override void OnInit(object userData = null)
+        public override void OnReCreateFromPool(object userData = null)
         {
-            base.OnInit(userData);
+            base.OnReCreateFromPool(userData);
         }
 
-        public override void OnReturnToPool()
+        public override void OnReturnToPool(bool isShutDown = false)
         {
-            base.OnReturnToPool();
+            base.OnReturnToPool(isShutDown);
         }
     }
 }

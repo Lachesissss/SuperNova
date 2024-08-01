@@ -6,8 +6,9 @@ namespace Lachesis.GamePlay
     {
         public CarController carController;
 
-        private void Update()
+        public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
             carController.ChangeCarTurnState(GameEntry.PlayerInputManager.steeringDeltaP1);
             carController.ChangeCarForwardState(GameEntry.PlayerInputManager.motorDeltaP1);
             if(GameEntry.PlayerInputManager.boostP1)
@@ -29,18 +30,18 @@ namespace Lachesis.GamePlay
             carController.ChangeCarHandBrakeState(GameEntry.PlayerInputManager.handbrakeP1);
         }
 
-        public override void OnInit(Vector3 pos, Quaternion rot, object userData = null)
+        public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
-            base.OnInit(pos, rot, userData);
+            base.OnReCreateFromPool(pos, rot, userData);
             if(userData is string str)
             {
                 carController.carName = str;
             }
         }
 
-        public override void OnReturnToPool()
+        public override void OnReturnToPool(bool isShowDown = false)
         {
-            base.OnReturnToPool();
+            base.OnReturnToPool(isShowDown);
         }
         
         private CarController GetSkillTarget()

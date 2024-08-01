@@ -53,6 +53,11 @@ namespace Lachesis.Core
         {
         }
 
+        internal override void FixedUpdate(float fixedElapseSeconds)
+        {
+            
+        }
+
         /// <summary>
         ///     关闭并清理流程管理器。
         /// </summary>

@@ -55,7 +55,7 @@ namespace Lachesis.GamePlay
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
             base.OnLeave(procedureOwner, isShutdown);
-            GameEntry.EntityManager.ReturnEntity<MenuUI>(EntityEnum.MenuUI, m_menuUI.gameObject);
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.MenuUI, m_menuUI);
             m_menuUI = null;
             // GameEntry.Sound.StopMusic();
             //

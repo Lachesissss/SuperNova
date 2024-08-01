@@ -53,10 +53,15 @@ namespace Lachesis.GamePlay
             postionToFollow = Vector3.zero;
             navMeshPath = new NavMeshPath();
         }
-        
-        public override void OnInit(Vector3 pos, Quaternion rot, object userData = null)
+
+        public override void OnInit(object userData = null)
         {
-            base.OnInit(pos, rot, userData);
+            base.OnInit(userData);
+        }
+
+        public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
+        {
+            base.OnReCreateFromPool(pos, rot, userData);
             m_FsmManager = GameEntry.FSMManager;
             CarAIState[] carAIStates = {new CarAIChaseState(), new CarAIPatrolState()};
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
@@ -69,9 +74,9 @@ namespace Lachesis.GamePlay
             }
         }
 
-        public override void OnReturnToPool()
+        public override void OnReturnToPool(bool isShowDown = false)
         {
-            base.OnReturnToPool();
+            base.OnReturnToPool(isShowDown);
             m_CarAIFsm.Clear();
             // Reset();
             // var rb = carController.bodyRb;
