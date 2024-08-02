@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -35,8 +34,19 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);
+            ResetCarCamera(userData);
+        }
+
+        public override void OnReCreateFromPool(object userData = null)
+        {
+            base.OnReCreateFromPool(userData);
+            ResetCarCamera(userData);
+        }
+
+        private void ResetCarCamera(object userData)
+        {
             StopAllCoroutines();
-            if(userData is CarComponent trackedCar)
+            if (userData is CarComponent trackedCar)
             {
                 car = trackedCar;
                 cameraBody = GetComponentInChildren<Rigidbody>();
@@ -44,7 +54,10 @@ namespace Lachesis.GamePlay
                 {
                     cameraBody = gameObject.AddComponent<Rigidbody>();
                     cameraBody.hideFlags = HideFlags.NotEditable;
+                    cameraBody.velocity = Vector3.zero;
+                    cameraBody.angularVelocity = Vector3.zero;
                 }
+
                 m_isFlip = false;
                 cameraBody.isKinematic = false;
                 cameraBody.useGravity = false;
@@ -52,7 +65,7 @@ namespace Lachesis.GamePlay
                 cameraBody.angularDrag = 0;
                 thirdPersonRotationSpeed = 50f;
                 thirdPersonPositionSpeed = 50f;
-
+                ResetCamera();
             }
             else
             {
@@ -70,7 +83,7 @@ namespace Lachesis.GamePlay
             Vector3 previousPosition = transform.position;
             Quaternion previousRotation = transform.rotation;
 
-            getTargetTransforms(out Vector3 targetPosition, out Quaternion targetRotation);
+            GetTargetTransforms(out var targetPosition, out var targetRotation);
 
             float lerpPositionSpeed = 0;
             float lerpRotationSpeed = 0;
@@ -78,8 +91,8 @@ namespace Lachesis.GamePlay
             lerpPositionSpeed = thirdPersonPositionSpeed;
             lerpRotationSpeed = thirdPersonRotationSpeed;
 
-            lerpPositionSpeed = Mathf.Clamp(lerpPositionSpeed, 0, 1f / Time.fixedDeltaTime);
-            lerpRotationSpeed = Mathf.Clamp(lerpRotationSpeed, 0, 1f / Time.fixedDeltaTime);
+            lerpPositionSpeed = Mathf.Clamp(lerpPositionSpeed, 0, 1f / fixedElapseSeconds);
+            lerpRotationSpeed = Mathf.Clamp(lerpRotationSpeed, 0, 1f / fixedElapseSeconds);
             Quaternion rotationDifference = getShortestRotation(targetRotation, previousRotation);
 
             float angleInDegrees;
@@ -92,7 +105,7 @@ namespace Lachesis.GamePlay
             cameraBody.angularVelocity = angularDisplacement * lerpRotationSpeed;
         }
 
-        private void getTargetTransforms(out Vector3 targetPosition, out Quaternion targetRotation, bool ignoreSpeed = false)
+        private void GetTargetTransforms(out Vector3 targetPosition, out Quaternion targetRotation, bool ignoreSpeed = false)
         {
             Vector3 followPosition = car.bodyRb.transform.position;
             Quaternion followRotation = car.bodyRb.transform.rotation;
@@ -167,11 +180,11 @@ namespace Lachesis.GamePlay
         {
             return new Quaternion(input.x * scalar, input.y * scalar, input.z * scalar, input.w * scalar);
         }
-        
-        public void resetCamera()
+
+        public void ResetCamera()
         {
             if (cameraBody == null) return;
-            getTargetTransforms(out Vector3 targetPosition, out Quaternion targetRotation, true);
+            GetTargetTransforms(out var targetPosition, out var targetRotation, true);
             cameraBody.position = targetPosition;
             cameraBody.rotation = targetRotation;
         }
@@ -206,11 +219,17 @@ namespace Lachesis.GamePlay
         
         private static IEnumerator DelayToRecoverCameraSpeed(CarCamera camera1, CarCamera camera2)
         {
+            
             yield return new WaitForSeconds(0.8f);
-            camera1.thirdPersonRotationSpeed = 50f;
-            camera1.thirdPersonPositionSpeed = 50f;
-            camera2.thirdPersonRotationSpeed = 50f;
-            camera2.thirdPersonPositionSpeed = 50f;
+            for (var i = 0; i < 42; i++)
+            {
+                camera1.thirdPersonRotationSpeed++;
+                camera1.thirdPersonPositionSpeed++;
+                camera2.thirdPersonRotationSpeed++;
+                camera2.thirdPersonPositionSpeed++;
+                yield return new WaitForSeconds(0.025f);
+            }
+            
         }
     }
 }

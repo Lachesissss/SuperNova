@@ -19,7 +19,7 @@ namespace Lachesis.GamePlay
         {
             base.OnEnter(carAI);
             Debug.Log($"{owner.name}进入巡逻状态");
-            owner.Reset();
+            owner.ResetCarAIState();
         }
 
         protected internal override void OnUpdate(FSM<CarAI> carAI, float elapseSeconds, float realElapseSeconds)

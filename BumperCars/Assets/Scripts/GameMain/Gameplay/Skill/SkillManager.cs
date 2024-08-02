@@ -11,7 +11,8 @@ namespace Lachesis.GamePlay
         Lighting,
         Swap,
         Summon,
-        Stronger
+        Stronger,
+        FlipVertical
     }
     
     //TODO:改成Skill的对象池实现
@@ -25,6 +26,7 @@ namespace Lachesis.GamePlay
             //这个type只能在代码里先这么配了
             skillTypeDict.Add(SkillEnum.Lighting, typeof(LightingSkill));
             skillTypeDict.Add(SkillEnum.Stronger, typeof(StrongerSkill));
+            skillTypeDict.Add(SkillEnum.FlipVertical, typeof(FlipVerticalSkill));
             foreach (var kv in skillTypeDict)
             {
                 if(!kv.Value.IsSubclassOf(typeof(Skill)))
@@ -64,7 +66,6 @@ namespace Lachesis.GamePlay
                 skill.Init();
                 skill.skillEnum = skillEnum;
                 skill.skillName = skillIconNameDict[skillEnum].skillName;
-                skill.isNeedTarget = skillIconNameDict[skillEnum].isNeedTarget;
                 //curSkills.Add(skill);
                 return skill;
             }

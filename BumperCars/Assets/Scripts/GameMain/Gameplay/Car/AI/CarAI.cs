@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -45,7 +44,7 @@ namespace Lachesis.GamePlay
             }
         }
 
-        public void Reset()
+        public void ResetCarAIState()
         {
             waypoints.Clear();
             currentWayPoint = 0;
@@ -62,34 +61,31 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);
+            ResetCarAI(userData);
+        }
+
+        public override void OnReCreateFromPool(object userData = null)
+        {
+            base.OnReCreateFromPool(userData);
+            ResetCarAI(userData);
+        }
+
+        private void ResetCarAI(object userData)
+        {
             m_FsmManager = GameEntry.FSMManager;
-            CarAIState[] carAIStates = {new CarAIChaseState(), new CarAIPatrolState()};
+            CarAIState[] carAIStates = { new CarAIChaseState(), new CarAIPatrolState() };
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
             m_CarAIFsm.Start<CarAIPatrolState>();
             NavMeshLayerBite = 0;
-            if(carComponent==null) //防止交换功能中回池导致状态不对
-            {
-                Debug.LogError("CarAI上未找到CarComponent");
-            }
             CalculateNavMashLayerBite();
-            if(userData is string str)
-            {
-                carComponent.carControllerName = str;
-            }
         }
-
+        
         public override void OnReturnToPool(bool isShowDown = false)
         {
             base.OnReturnToPool(isShowDown);
             m_CarAIFsm.Clear();
-            // Reset();
-            // var rb = carComponent.bodyRb;
-            // if(rb!=null)
-            // {
-            //     rb.velocity = Vector3.zero;
-            //     rb.angularVelocity = Vector3.zero;
-            // }
         }
+        
         private void CalculateNavMashLayerBite()
         {
             if (NavMeshLayers == null || NavMeshLayers[0] == "AllAreas")
@@ -257,6 +253,13 @@ namespace Lachesis.GamePlay
                     Gizmos.DrawLine(pointCurrent, pointNext);
                 }
             }
+        }
+
+        public override void OnSwitchCar()
+        {
+            base.OnSwitchCar();
+            ResetCarAIState(); //切换时暂时失去目标
+            destination = null;
         }
     }
 }

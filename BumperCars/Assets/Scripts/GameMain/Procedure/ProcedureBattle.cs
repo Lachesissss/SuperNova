@@ -24,8 +24,8 @@ namespace Lachesis.GamePlay
         private bool isGoMenu;
         private bool isGoSettlement;
         private SettlementData m_settlementData;
-        private CarCamera player1Camera;
-        private CarCamera player2Camera;
+        public static CarCamera player1Camera;
+        public static CarCamera player2Camera;
         private GlobalConfig m_globalConfig;
         
         protected internal override void OnInit(ProcedureOwner procedureOwner)
@@ -68,10 +68,12 @@ namespace Lachesis.GamePlay
                 targetScore = m_globalConfig.targetScore, carPlayer = carPlayer};
             m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             player1Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player1Camera, Vector3.zero, Quaternion.identity, carPlayer.carComponent);
-            player1Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carAi.carComponent);
+            player2Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carAi.carComponent);
             //测试,创建技能卡
             GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, Vector3.zero, Quaternion.identity, SkillEnum.Lighting);
             GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, new Vector3(-2, 0, 2), Quaternion.identity, SkillEnum.Stronger);
+            GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, new Vector3(2, 0, -2), Quaternion.identity,
+                SkillEnum.FlipVertical);
         }
         
         protected internal override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -271,7 +273,9 @@ namespace Lachesis.GamePlay
         {
             yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
             var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation);
-            carPlayer.carComponent = car;
+            player1Camera.car = car;
+            player1Camera.ResetCamera();
+            carPlayer.SetCar(car);
             carPlayer.ClearSkills();
             var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
                 targetScore = m_globalConfig.targetScore, carPlayer = carPlayer};
@@ -281,7 +285,9 @@ namespace Lachesis.GamePlay
         private void Revive(CarAI carAI)
         {
             var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, $"人机{carAiIndex++}");
-            carAI.carComponent = car;
+            carAI.SetCar(car);
+            player2Camera.car = car;
+            player2Camera.ResetCamera();
         }
         
         

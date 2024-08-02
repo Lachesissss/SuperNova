@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GlobalConfig", menuName = "ScriptableObject/GlobalConfig", order = 0)]
 public class GlobalConfig : ScriptableObject
@@ -20,4 +21,7 @@ public class GlobalConfig : ScriptableObject
     public bool isUnlimitedFire = true;//是否无限火力(技能卡不会被消耗)
     public int defaultCarMass = 1500;
     public int strongerCarMass = 2500;
+
+    [FormerlySerializedAs("flipRecoverSeconds")]
+    public float flipRecoverTime = 8f;
 }

@@ -16,12 +16,20 @@ namespace Lachesis.GamePlay
             
         }
 
-        public override void Activate(CarComponent source, CarComponent target, object userData = null)
+        public override bool TryGetSkillTarget(CarComponent source, out CarComponent target)
         {
+            target = source;
+            return true;
+        }
+
+        public override bool TryActivate(CarComponent source, object userData = null)
+        {
+            if (source == null) return false;
             var strongerEffect = GameEntry.EntityManager.CreateEntity<StrongerEffect>(EntityEnum.StrongerEffect, source.transform);
             source.AddEffectEntity(strongerEffect);
             source.bodyRb.mass = m_globalConfig.strongerCarMass;
             GameEntry.instance.StartCoroutine(DelayToRecoverBodyMass(source, strongerEffect));
+            return true;
         }
 
         private IEnumerator DelayToRecoverBodyMass(CarComponent source, StrongerEffect strongerEffect)

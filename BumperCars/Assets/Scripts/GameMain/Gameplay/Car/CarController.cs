@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
@@ -46,6 +45,41 @@ namespace Lachesis.GamePlay
             
         }
 
+        public override void OnReCreateFromPool(object userData = null)
+        {
+            base.OnReCreateFromPool(userData);
+            GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnGetSkill);
+            if (userData is CarControllerData data)
+            {
+                carComponent = data.carComponent;
+                controllerName = data.controllerName;
+                ClearSkills();
+                SetCarInfo();
+            }
+            else
+            {
+                Debug.LogError("初始化CarController需要传入CarControllerData！");
+            }
+        }
+
+        public void SetCar(CarComponent car)
+        {
+            if (carComponent != null)
+            {
+                ClearCar();
+                Debug.LogWarning("在Controller有控制对象的时候SetCar会将当前控制对象回收，请确认是否符合预期");
+            }
+
+            carComponent = car;
+            SetCarInfo();
+        }
+
+        private void SetCarInfo()
+        {
+            carComponent.carControllerName = controllerName;
+            carComponent.controller = this;
+        }
+        
         public void ClearSkills()
         {
             skillSlots.Clear();
@@ -79,29 +113,28 @@ namespace Lachesis.GamePlay
                 }
             }
         }
-        
-        //释放技能，可以没有目标,因为只能是实体车对实体车释放，所有参数类型是CarComponent
-        public void ActivateSkill(int index, CarComponent target = null)
+
+
+        public void ActivateSkill(int index)
         {
-            if(skillSlots[index]==null)
+            if (skillSlots[index] == null || carComponent == null) //释放技能必须要有一个控制对象
             {
                 return;
             }
             else
             {
-                if(skillSlots[index].isNeedTarget&&(target==null))
+                if (skillSlots[index].TryActivate(carComponent))
                 {
-                    Debug.Log($"{controllerName} 释放 {skillSlots[index].skillName}失败，需要目标");
-                    return;
+                    if (!m_globalConfig.isUnlimitedFire) //无限火力
+                        skillSlots[index] = null;
+                    GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
+                    var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
+                    Debug.Log($"{carComponent.carControllerName} 释放了技能[{skillSlots[index].skillName}],{config.activateText}!");
                 }
-                skillSlots[index].Activate(carComponent, target);
-                var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
-                Debug.Log($"{controllerName} 释放了技能[{skillSlots[index].skillName}],{config.activateText}!");
-                if(!m_globalConfig.isUnlimitedFire) //无限火力
+                else
                 {
-                    skillSlots[index] = null;
+                    Debug.Log($"{carComponent.carControllerName} 释放 {skillSlots[index]}失败，需要目标");
                 }
-                GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
             }
         }
         
@@ -119,6 +152,7 @@ namespace Lachesis.GamePlay
         {
             if(carComponent!=null)
             {
+                carComponent.controller = null;
                 GameEntry.EntityManager.ReturnEntity(EntityEnum.Car, carComponent);
                 carComponent = null;
             }
@@ -128,13 +162,15 @@ namespace Lachesis.GamePlay
         {
             var carComponent1 = carCtrl1.carComponent;
             var carComponent2 = carCtrl2.carComponent;
-            //交换技能
-            int skillCount = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
-
-            //交换名称(ID)
-            (carComponent1.carControllerName, carComponent2.carControllerName) = (carComponent2.carControllerName, carComponent1.carControllerName);
             carCtrl1.carComponent = carComponent2;
             carCtrl2.carComponent = carComponent1;
+            carCtrl1.OnSwitchCar();
+            carCtrl2.OnSwitchCar();
+        }
+
+        public virtual void OnSwitchCar()
+        {
+            SetCarInfo();
         }
     }
 }

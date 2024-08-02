@@ -21,28 +21,28 @@ namespace Lachesis.GamePlay
             
         }
 
-        public override void Activate(CarComponent source, CarComponent target, object userData = null)
+        public override bool TryActivate(CarComponent source, object userData = null)
         {
-            var lighting = GameEntry.EntityManager.CreateEntity<LightningEffect>(EntityEnum.LightningEffect, source.transform);
-            source.AddEffectEntity(lighting);
-            lighting.StartObject = source.gameObject;
-            lighting.EndObject = null;
-            lighting.StartPosition = effectDeltaPos;
-            lighting.EndPosition =  target.transform.position+effectDeltaPos;
-            target.transform.position+= deltaPos;
-            // 施加瞬间水平力
-            var forceDirection = target.transform.position - source.transform.position;
-            forceDirection.y = 0;
-            forceDirection = forceDirection.normalized;
-            target.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass/target.bodyRb.mass));
-                
-            // 暂时降低摩擦力
-            var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
-            GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
-            GameEntry.instance.StartCoroutine(DelayToDestoryLightingEffect(source, lighting));
-            
-            if(target!=null)
+            if (TryGetSkillTarget(source, out var target))
             {
+                var lighting = GameEntry.EntityManager.CreateEntity<LightningEffect>(EntityEnum.LightningEffect, source.transform);
+                source.AddEffectEntity(lighting);
+                lighting.StartObject = source.gameObject;
+                lighting.EndObject = null;
+                lighting.StartPosition = effectDeltaPos;
+                lighting.EndPosition = target.transform.position + effectDeltaPos;
+                target.transform.position += deltaPos;
+                // 施加瞬间水平力
+                var forceDirection = target.transform.position - source.transform.position;
+                forceDirection.y = 0;
+                forceDirection = forceDirection.normalized;
+                target.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass / target.bodyRb.mass));
+
+                // 暂时降低摩擦力
+                var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
+                GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
+                GameEntry.instance.StartCoroutine(DelayToDestoryLightingEffect(source, lighting));
+                
                 var attackInfo = new AttackInfo();
                 attackInfo.attacker = source.carControllerName;
                 attackInfo.underAttacker = target.carControllerName;
@@ -50,7 +50,28 @@ namespace Lachesis.GamePlay
                 attackInfo.attackType = AttackType.Skill;
                 attackInfo.userData = skillEnum;
                 GameEntry.EventManager.Fire(this, AttackEventArgs.Create(attackInfo));
+                return true;
             }
+
+            return false;
+        }
+
+        public override bool TryGetSkillTarget(CarComponent source, out CarComponent target)
+        {
+            var minDis = float.PositiveInfinity;
+            target = null;
+            foreach (var controller in ProcedureBattle.carControllers)
+                if (controller.IsHasCar && controller != source.controller)
+                {
+                    var dis = Vector3.Distance(controller.carComponent.transform.position, source.transform.position);
+                    if (minDis > dis)
+                    {
+                        minDis = dis;
+                        target = controller.carComponent;
+                    }
+                }
+
+            return target != null;
         }
 
         private IEnumerator DelayToDestoryLightingEffect(CarComponent source, LightningEffect lightning)

@@ -20,7 +20,7 @@ namespace Lachesis.GamePlay
         {
             base.OnEnter(carAI);
             Debug.Log($"{owner.name}进入追逐状态");
-            owner.Reset();
+            owner.ResetCarAIState();
             
             m_curlostTargetTime = 0;
         }

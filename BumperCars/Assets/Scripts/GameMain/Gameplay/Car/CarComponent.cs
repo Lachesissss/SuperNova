@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Lachesis.Core;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -100,7 +98,13 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
-            Reset();
+            ResetCar();
+        }
+
+        public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
+        {
+            base.OnReCreateFromPool(pos, rot, userData);
+            ResetCar();
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
@@ -169,7 +173,7 @@ namespace Lachesis.GamePlay
             }
         }
 
-        private void Reset()
+        private void ResetCar()
         {
             m_carForwardValue = 0;
             m_carTurnValue = 0;
@@ -313,8 +317,5 @@ namespace Lachesis.GamePlay
             if (groundedR)
                 bodyRb.AddForceAtPosition(wheelR.transform.up * -antiRollForce, wheelR.transform.position);
         }
-        
-        
-        
     }
 }

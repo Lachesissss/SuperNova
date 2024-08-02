@@ -94,6 +94,11 @@ namespace Lachesis.GamePlay
                 obj = entity.gameObject;
                 m_hideEntityPool[entityEnum].RemoveAt(0);
                 m_activeEntityDict[entityEnum].Add(entity);
+                var pos = obj.transform.localPosition;
+                var rot = obj.transform.localRotation;
+                obj.transform.parent = parent;
+                obj.transform.localPosition = pos;
+                obj.transform.localRotation = rot;
                 obj.SetActive(true);
             }
             else

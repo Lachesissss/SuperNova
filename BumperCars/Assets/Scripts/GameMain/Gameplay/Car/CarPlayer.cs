@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -23,15 +20,15 @@ namespace Lachesis.GamePlay
             }
             if(GameEntry.PlayerInputManager.skill1P1)
             {
-                ActivateSkill(0, GetSkillTarget());
+                ActivateSkill(0);
             }
             if(GameEntry.PlayerInputManager.skill2P1)
             {
-                ActivateSkill(1, GetSkillTarget());
+                ActivateSkill(1);
             }
             if(GameEntry.PlayerInputManager.skill3P1)
             {
-                ActivateSkill(2, GetSkillTarget());
+                ActivateSkill(2);
             }
             if(GameEntry.PlayerInputManager.switchP1)
             {
@@ -42,39 +39,27 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);
-            if(carComponent==null)//防止交换功能中回池导致状态不对
-            {
-                Debug.LogError("Player上未找到CarComponent");
-            }
-            if(userData is string str)
-            {
-                carComponent.carControllerName = str;
-            }
+            ResetCarPlayer(userData);
         }
 
+        public override void OnReCreateFromPool(object userData = null)
+        {
+            base.OnReCreateFromPool(userData);
+            ResetCarPlayer(userData);
+        }
+
+        private void ResetCarPlayer(object userData)
+        {
+        }
+        
         public override void OnReturnToPool(bool isShowDown = false)
         {
             base.OnReturnToPool(isShowDown);
         }
-        
-        private CarComponent GetSkillTarget()
-        {//先统一获取最近的实体
-            float minDis = Single.PositiveInfinity;
-            CarComponent closestCar = null;
-            foreach (var controller in ProcedureBattle.carControllers)
-            {
-                if(controller.IsHasCar&&controller!=this)
-                {
-                    var dis =Vector3.Distance(controller.carComponent.transform.position, carComponent.transform.position);
-                    if(minDis>dis)
-                    {
-                        minDis = dis;
-                        closestCar = controller.carComponent;
-                    }
-                }
-            }
-            return closestCar;
+
+        public override void OnSwitchCar()
+        {
+            base.OnSwitchCar();
         }
-        
     }
 }
