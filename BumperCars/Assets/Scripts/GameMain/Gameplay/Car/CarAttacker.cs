@@ -10,15 +10,15 @@ namespace Lachesis.GamePlay
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
         private Rigidbody m_carBody;
         private GlobalConfig m_globalConfig;
-        private CarController m_selfController;
+        private CarComponent m_SelfComponent;
         private void Awake()
         {
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
         }
 
-        public void Init(CarController ctrl, Rigidbody body)
+        public void Init(CarComponent ctrl, Rigidbody body)
         {
-            m_selfController = ctrl;
+            m_SelfComponent = ctrl;
             m_carBody = body;
         }
 
@@ -50,12 +50,12 @@ namespace Lachesis.GamePlay
                 // 重置碰撞标记
                 StartCoroutine(ResetCollisionFlag());
                 
-                var otherCar = otherRigidbody.GetComponent<CarController>();
+                var otherCar = otherRigidbody.GetComponent<CarComponent>();
                 if(otherCar!=null)
                 {
                     var attackInfo = new AttackInfo();
-                    attackInfo.attacker = m_selfController.carName;
-                    attackInfo.underAttacker = otherCar.carName;
+                    attackInfo.attacker = m_SelfComponent.carControllerName;
+                    attackInfo.underAttacker = otherCar.carControllerName;
                     attackInfo.attackTime = DateTime.Now;
                     attackInfo.attackType = AttackType.Collide;
                     GameEntry.EventManager.Fire(this, AttackEventArgs.Create(attackInfo));

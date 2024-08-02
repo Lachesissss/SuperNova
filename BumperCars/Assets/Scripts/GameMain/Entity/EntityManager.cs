@@ -8,8 +8,9 @@ namespace Lachesis.GamePlay
     public enum EntityEnum
     {
         //Car
+        Car,
         CarPlayer,
-        CarEnemy,
+        CarAI,
 
         //PickupItem
         Coin,
@@ -26,7 +27,12 @@ namespace Lachesis.GamePlay
         
         //Effect
         LightningEffect,
-        StrongerEffect
+        StrongerEffect,
+        
+        //Camera
+        SinglePlayerCamera,
+        Player1Camera,
+        Player2Camera,
     }
     
     public class EntityManager : GameModule

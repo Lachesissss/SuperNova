@@ -25,16 +25,16 @@ namespace Lachesis.GamePlay
         protected internal override void OnUpdate(FSM<CarAI> carAI, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(carAI, elapseSeconds, realElapseSeconds);
-            
+            if(!carAI.Owner.IsHasCar) return; //先这样处理，后面应该搞个单独的Idle状态
             if(carAI.Owner.destination!=null)
             {
                 ChangeState<CarAIChaseState>(carAI); //注意：changestate下一帧才生效，因此当前帧如果不想执行后续逻辑就必须return
                 return;
             }
-            owner.carController.ChangeCarTurnState(owner.steeringDelta);
-            owner.carController.ChangeCarForwardState(owner.motorDelta);
-            owner.carController.ChangeCarBoostState(owner.boost);
-            owner.carController.ChangeCarHandBrakeState(owner.handBrake);
+            owner.carComponent.ChangeCarTurnState(owner.steeringDelta);
+            owner.carComponent.ChangeCarForwardState(owner.motorDelta);
+            owner.carComponent.ChangeCarBoostState(owner.boost);
+            owner.carComponent.ChangeCarHandBrakeState(owner.handBrake);
             owner.SetSteeringMove();
             PathProgress();
             
@@ -58,7 +58,7 @@ namespace Lachesis.GamePlay
                 {
                     owner.postionToFollow = owner.waypoints[owner.currentWayPoint];
                     owner.allowMovement = true;
-                    if (Vector3.Distance(owner.transform.position, owner.postionToFollow) < 2)
+                    if (Vector3.Distance(owner.carComponent.transform.position, owner.postionToFollow) < 2)
                         owner.currentWayPoint++;
                 }
 
@@ -73,22 +73,27 @@ namespace Lachesis.GamePlay
             //检测范围内是否有玩家，有的话将玩家设为目标（只有在创建新Path时才检测一次，为的是不会每帧都大规模检测，但这样AI可能有点笨
             NavMeshPath path = owner.navMeshPath;
             float searchRange = GameEntry.ConfigManager.GetConfig<GlobalConfig>().carAISearchRange;
-            var playerTrans = GameEntry.EntityManager.GetEntityTransforms(EntityEnum.CarPlayer);
+            var cars = ProcedureBattle.carControllers;
             float minDis = Single.PositiveInfinity;
             Transform nearPlayerTrans = null;
-            foreach (var trans in playerTrans)
+            foreach (var carController in cars)
             {
-                if(NavMesh.SamplePosition(trans.position, out NavMeshHit hit, 1, owner.NavMeshLayerBite) &&
-                   NavMesh.CalculatePath(owner.transform.position, hit.position, owner.NavMeshLayerBite, path))
+                if(carController is CarPlayer player && player.IsHasCar)
                 {
-                    var dis = Vector3.Distance(owner.transform.position, trans.position);
-                    if(minDis>dis)
+                    if(NavMesh.SamplePosition(player.carComponent.transform.position, out NavMeshHit hit, 1, owner.NavMeshLayerBite) &&
+                       NavMesh.CalculatePath(owner.carComponent.transform.position, hit.position, owner.NavMeshLayerBite, path))
                     {
-                        minDis = dis;
-                        if(minDis<searchRange)
-                            nearPlayerTrans = trans;
+                        var dis = Vector3.Distance(owner.carComponent.transform.position, player.carComponent.transform.position);
+                        if(minDis>dis)
+                        {
+                            minDis = dis;
+                            if(minDis<searchRange)
+                                nearPlayerTrans = player.carComponent.transform;
+                        }
                     }
                 }
+                
+                
             }
             owner.destination = nearPlayerTrans;
             
@@ -100,9 +105,9 @@ namespace Lachesis.GamePlay
             {
                 Vector3 randomDirection = Random.insideUnitSphere * 10;
                 randomDirection.y = 0;
-                randomDirection += owner.transform.position;
-                sourcePostion = owner.transform.position;
-                Calculate(randomDirection, sourcePostion, owner.transform.forward, owner.NavMeshLayerBite);
+                randomDirection += owner.carComponent.transform.position;
+                sourcePostion = owner.carComponent.transform.position;
+                Calculate(randomDirection, sourcePostion, owner.carComponent.transform.forward, owner.NavMeshLayerBite);
             }
             else
             {

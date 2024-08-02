@@ -5,101 +5,66 @@ using UnityEngine;
 
 namespace Lachesis.GamePlay
 {
-    public class CarController : EntityComponent
+    
+    public class CarController : Entity
     {
-        public enum DriverMode
+        public class CarControllerData
         {
-            Front,
-            Back,
-            All
-        }
-
-        public DriverMode driverMode = DriverMode.Back;
-        public float idealRPM = 200;
-        public float maxRPM = 400;
-        public float moveTorque = 30000;
-        public float handBreakTorque = 60000;
-        public float autoBreakTorque = 10000;
-        public float antiRoll = 2000f;
-        public Transform centerOfGravity;
-        public CarAttacker carAttacker;
-        
-        public float maxAngle;
-        public float targetAngle;
-        public float returnAngleSpeed = 400;
-        
-        public Rigidbody bodyRb;
-        [Header("车轮碰撞体")] public WheelCollider leftFrontCollider;
-        public WheelCollider leftBackCollider;
-        public WheelCollider rightFrontCollider;
-        public WheelCollider rightBackCollider;
-
-        [Header("车轮模型")] public Transform leftFrontTrans;
-        public Transform leftBackTrans;
-        public Transform rightFrontTrans;
-        public Transform rightBackTrans;
-        
-        public List<Skill> skillSlots = new List<Skill>();
-
-        private List<Entity> m_effectEntities;
-        
-        //既是名字，也是id
-        public string carName;
-        
-        public readonly List<WheelCollider> wheelColliders = new();
-        
-        private float m_carTurnValue;
-
-        private float m_carForwardValue;
-
-        private bool m_canBoost;
-
-        private bool m_isHandBrake;
-
-        private GlobalConfig m_globalConfig;
-        
-        private Vector3 deltaPos = new Vector3(0,0.05f,0);
-
-        public void AddEffectEntity(Entity entity)
-        {
-            m_effectEntities.Add(entity);
-        }
-
-        public void RemoveEffectEntity(Entity entity)
-        {
-            m_effectEntities.Remove(entity);
+            public CarComponent carComponent;
+            public string controllerName;
         }
         
-        public float GetSpeed()
-        {
-            return rightBackCollider.radius * Mathf.PI * rightBackCollider.rpm * 60f / 1000f;
-        }
-        
-        public float GetRPM()
-        {
-            return (rightBackCollider.rpm+rightFrontCollider.rpm+leftBackCollider.rpm+leftFrontCollider.rpm)/4f;
-        }
+        public CarComponent carComponent;
+        public string controllerName;
+        public List<Skill> skillSlots;
+        protected GlobalConfig m_globalConfig;
+        public bool IsHasCar=>carComponent!=null;
 
-        public override void OnEntityInit(object userData = null)
+        public override void OnInit(object userData = null)
         {
-            base.OnEntityInit();
-            
-            if (centerOfGravity != null) bodyRb.centerOfMass = centerOfGravity.position;
+            base.OnInit(userData);
+            skillSlots = new();
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
-            wheelColliders.Add(leftBackCollider);
-            wheelColliders.Add(leftFrontCollider);
-            wheelColliders.Add(rightBackCollider);
-            wheelColliders.Add(rightFrontCollider);
-            carAttacker.Init(this, bodyRb);
-            m_effectEntities = new List<Entity>();
-            //Reset();
+        }
+
+        public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
+        {
+            base.OnReCreateFromPool(pos, rot, userData);
+            GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnGetSkill);
+            if(userData is CarControllerData data)
+            {
+                carComponent = data.carComponent;
+                ClearSkills();
+                controllerName = data.controllerName;
+                carComponent.carControllerName = controllerName;
+                carComponent.controller = this;
+            }
+            else
+            {
+                Debug.LogError("初始化CarController需要传入CarControllerData！");
+            }
+            
+        }
+
+        public void ClearSkills()
+        {
+            skillSlots.Clear();
+            for (var i = 0; i < m_globalConfig.maxSkillCount; i++)
+                skillSlots.Add(null);
+            GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
+        }
+        
+        public override void OnReturnToPool(bool isShutDown = false)
+        {
+            base.OnReturnToPool(isShutDown);
+            GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
         }
 
         private void OnGetSkill(object sender, GameEventArgs e)
         {
             if (e is GetSkillEventArgs args)
             {
-                if(args.userName==carName)
+                if(args.userName==controllerName)
                 {
                     for(var i=0;i<skillSlots.Count;i++)
                     {
@@ -107,7 +72,7 @@ namespace Lachesis.GamePlay
                         {
                             skillSlots[i] = GameEntry.SkillManager.CreateSkill(args.skillEnum);
                             GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
-                            Debug.Log($"{carName} 获得了技能卡 {skillSlots[i].skillName},并装配在了{i+1}号技能槽");
+                            Debug.Log($"{controllerName} 获得了技能卡 {skillSlots[i].skillName},并装配在了{i+1}号技能槽");
                             break;
                         }
                     }
@@ -115,8 +80,8 @@ namespace Lachesis.GamePlay
             }
         }
         
-        //释放技能，可以没有目标
-        public void ActivateSkill(int index, CarController target = null)
+        //释放技能，可以没有目标,因为只能是实体车对实体车释放，所有参数类型是CarComponent
+        public void ActivateSkill(int index, CarComponent target = null)
         {
             if(skillSlots[index]==null)
             {
@@ -124,14 +89,14 @@ namespace Lachesis.GamePlay
             }
             else
             {
-                if(skillSlots[index].isNeedTarget&&target==null)
+                if(skillSlots[index].isNeedTarget&&(target==null))
                 {
-                    Debug.Log($"{carName} 释放 {skillSlots[index].skillName}失败，需要目标");
+                    Debug.Log($"{controllerName} 释放 {skillSlots[index].skillName}失败，需要目标");
                     return;
                 }
-                skillSlots[index].Activate(this, target);
+                skillSlots[index].Activate(carComponent, target);
                 var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
-                Debug.Log($"{carName} 释放了技能[{skillSlots[index].skillName}],{config.activateText}!");
+                Debug.Log($"{controllerName} 释放了技能[{skillSlots[index].skillName}],{config.activateText}!");
                 if(!m_globalConfig.isUnlimitedFire) //无限火力
                 {
                     skillSlots[index] = null;
@@ -150,226 +115,27 @@ namespace Lachesis.GamePlay
             return true;
         }
         
-        public override void OnEntityReCreateFromPool(object userData = null)
+        public void ClearCar() 
         {
-            base.OnEntityReCreateFromPool(userData);
-            GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnGetSkill);
-            Reset();
-        }
-
-        public override void OnEntityReturnToPool(bool isShutDown = false)
-        {
-            base.OnEntityReturnToPool(isShutDown);
-            GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnGetSkill);
-            if(isShutDown) return;
-            StopAllCoroutines();
-            foreach (var effectEntity in m_effectEntities)
-                //这里可能有风险，一个特效去销毁另一个特效的话，不过一般不会这么写
-                GameEntry.EntityManager.ReturnEntity(effectEntity.entityEnum, effectEntity);
-            m_effectEntities.Clear();
-            carAttacker.StopAllCoroutines();
-            
-        }
-        
-        public void DoBoost()
-        {
-            if(!m_canBoost) return;
-            transform.position += deltaPos;
-            
-            var forceDirection = transform.forward;
-            forceDirection.y = 0;
-            forceDirection = forceDirection.normalized;
-            bodyRb.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + bodyRb.velocity;
-            
-            // 暂时降低摩擦力
-            StartCoroutine(TemporarilyReduceFriction(wheelColliders));
-            // 冷却时间
-            StartCoroutine(StartBoostCoolingTime());
-        }
-        
-        private IEnumerator StartBoostCoolingTime()
-        {
-            m_canBoost = false;
-            yield return new WaitForSeconds(m_globalConfig.carBoostCoolingTime);
-            m_canBoost = true;
-        }
-        
-        private IEnumerator TemporarilyReduceFriction(List<WheelCollider> wheelColliders)
-        {
-            for (var i = 0; i < wheelColliders.Count; i++)
+            if(carComponent!=null)
             {
-                
-                var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = m_globalConfig.underAttackCarForwardFrictionStiffness;
-                wheelColliders[i].forwardFriction = forwardFriction;
-
-                var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = m_globalConfig.underAttackSidewaysFrictionStiffness;
-                wheelColliders[i].sidewaysFriction = sidewaysFriction;
-            }
-
-            // 等待一段时间
-            yield return new WaitForSeconds(m_globalConfig.frictionRestoreDelay);
-
-            // 恢复原来的摩擦力设置
-            for (var i = 0; i < wheelColliders.Count; i++)
-            {
-                var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
-                wheelColliders[i].forwardFriction = forwardFriction;
-
-                var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
-                wheelColliders[i].sidewaysFriction = sidewaysFriction;
+                GameEntry.EntityManager.ReturnEntity(EntityEnum.Car, carComponent);
+                carComponent = null;
             }
         }
-
-        private void Reset()
-        {
-            m_carForwardValue = 0;
-            m_carTurnValue = 0;
-            m_isHandBrake = false;
-            m_canBoost = true;
-            bodyRb.velocity = Vector3.zero;
-            bodyRb.angularVelocity = Vector3.zero;
-            bodyRb.mass = m_globalConfig.defaultCarMass;
-            skillSlots = new List<Skill>();
-            carAttacker.Reset();
-            for (var i = 0; i < m_globalConfig.maxSkillCount; i++)
-                skillSlots.Add(null);
-            // 确保所有的 WheelColliders 初始状态下不施加动力或转矩
-            foreach (var wheel in wheelColliders)
-            {
-                wheel.motorTorque = 0;
-                wheel.brakeTorque = Mathf.Infinity; // 应用无穷大的刹车力，防止车移动
-                wheel.steerAngle = 0;
-            }
-            foreach (var collider in wheelColliders)
-            {
-                var forwardFriction = collider.forwardFriction;
-                forwardFriction.stiffness = m_globalConfig.defaultCarForwardFrictionStiffness;
-                collider.forwardFriction = forwardFriction;
-
-                var sidewaysFriction = collider.forwardFriction;
-                sidewaysFriction.stiffness = m_globalConfig.defaultCarSidewaysFrictionStiffness;
-                collider.sidewaysFriction = sidewaysFriction;
-            }
-            
-            // 等待一帧以确保所有物理计算完成
-            StartCoroutine(ResetBrakeTorque());
-        }
-
-        // 在一帧之后重置刹车力
-        private IEnumerator ResetBrakeTorque()
-        {
-            yield return null; // 等待一帧
-            foreach (var wheel in wheelColliders) wheel.brakeTorque = 0;
-        }
-
-        public void ChangeCarTurnState(float turnValue)
-        {
-            m_carTurnValue = turnValue;
-        }
-
-        public void ChangeCarForwardState(float forwardValue)
-        {
-            m_carForwardValue = forwardValue;
-        }
-
-        public void ChangeCarBoostState(bool isBoost)
-        {
-
-        }
-
-        public void ChangeCarHandBrakeState(bool isHandBrake)
-        {
-            m_isHandBrake = isHandBrake;
-        }
-
-        public override void OnEntityFixedUpdate(float fixedElapseSeconds)
-        {
-            base.OnEntityFixedUpdate(fixedElapseSeconds);
-            WheelsUpdate();
-        }
-
-        //控制移动 转向
-        private void WheelsUpdate()
-        {
-            var forwardValue = m_carForwardValue > 0.05 || m_carForwardValue < -0.05 ? m_carForwardValue : 0;
-            var scaledTorque = forwardValue * moveTorque;
-            var curRPM = leftBackCollider.rpm;
-            if (curRPM is float.NaN)
-                curRPM = 0;
-            if (curRPM < idealRPM)
-                scaledTorque = Mathf.Lerp(scaledTorque / 10f, scaledTorque, curRPM / idealRPM);
-            else
-                scaledTorque = Mathf.Lerp(scaledTorque, 0, (curRPM - idealRPM) / (maxRPM - idealRPM));
-
-            DoRollBar(leftFrontCollider, rightFrontCollider);
-            DoRollBar(leftBackCollider, rightBackCollider);
-
-            if (m_carTurnValue < -0.05f) //左转向
-                targetAngle = maxAngle*m_carTurnValue;
-
-            else if (m_carTurnValue > 0.05f) //右转向
-                targetAngle = maxAngle*m_carTurnValue;
-
-            else //松开转向后，方向打回
-                targetAngle = 0;
-            leftFrontCollider.steerAngle = Mathf.MoveTowards(leftFrontCollider.steerAngle, targetAngle, returnAngleSpeed * Time.fixedDeltaTime);
-            rightFrontCollider.steerAngle = Mathf.MoveTowards(leftFrontCollider.steerAngle, targetAngle, returnAngleSpeed * Time.fixedDeltaTime);
-
-            leftFrontCollider.motorTorque = driverMode == DriverMode.All || driverMode == DriverMode.Front ? scaledTorque : 0;
-            rightFrontCollider.motorTorque = driverMode == DriverMode.All || driverMode == DriverMode.Front ? scaledTorque : 0;
-            leftBackCollider.motorTorque = driverMode == DriverMode.All || driverMode == DriverMode.Back ? scaledTorque : 0;
-            rightBackCollider.motorTorque = driverMode == DriverMode.All || driverMode == DriverMode.Back ? scaledTorque : 0;
-
-            foreach (var wheelCollider in wheelColliders)
-            {
-                var targetBreakTorque = forwardValue == 0 ? autoBreakTorque : 0;
-                if (m_isHandBrake) targetBreakTorque += handBreakTorque;
-                wheelCollider.brakeTorque = targetBreakTorque;
-            }
-
-            //当车轮碰撞器位置角度改变，随之也变更车轮模型的位置角度
-            WheelsModel_Update(leftFrontTrans, leftFrontCollider);
-            WheelsModel_Update(leftBackTrans, leftBackCollider);
-            WheelsModel_Update(rightFrontTrans, rightFrontCollider);
-            WheelsModel_Update(rightBackTrans, rightBackCollider);
-        }
-
-        //控制车轮模型移动 转向
-        private void WheelsModel_Update(Transform t, WheelCollider wheel)
-        {
-            var pos = t.position;
-            var rot = t.rotation;
-
-            wheel.GetWorldPose(out pos, out rot);
-
-            t.position = pos;
-            t.rotation = rot;
-        }
-
-        //防侧翻
-        private void DoRollBar(WheelCollider wheelL, WheelCollider wheelR)
-        {
-            WheelHit hit;
-            var travelL = 1f;
-            var travelR = 1f;
-            var groundedL = wheelL.GetGroundHit(out hit);
-            if (groundedL) travelL = (-wheelL.transform.InverseTransformPoint(hit.point).y - wheelL.radius) / wheelL.suspensionDistance;
-            var groundedR = wheelR.GetGroundHit(out hit);
-            if (groundedR) travelR = (-wheelR.transform.InverseTransformPoint(hit.point).y - wheelR.radius) / wheelR.suspensionDistance;
-
-            var antiRollForce = (travelL - travelR) * antiRoll;
-
-            if (groundedL)
-                bodyRb.AddForceAtPosition(wheelL.transform.up * -antiRollForce, wheelL.transform.position);
-            if (groundedR)
-                bodyRb.AddForceAtPosition(wheelR.transform.up * -antiRollForce, wheelR.transform.position);
-        }
         
-        
-        
+        public static void SwitchCar(CarController carCtrl1, CarController carCtrl2)
+        {
+            var carComponent1 = carCtrl1.carComponent;
+            var carComponent2 = carCtrl2.carComponent;
+            //交换技能
+            int skillCount = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
+
+            //交换名称(ID)
+            (carComponent1.carControllerName, carComponent2.carControllerName) = (carComponent2.carControllerName, carComponent1.carControllerName);
+            carCtrl1.carComponent = carComponent2;
+            carCtrl2.carComponent = carComponent1;
+        }
     }
 }
+

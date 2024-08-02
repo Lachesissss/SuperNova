@@ -12,7 +12,7 @@ namespace Lachesis.GamePlay
         public SkillEnum skillEnum;
         public abstract void Init(object userData = null);
         public abstract void Update(float elapseSeconds, float realElapseSeconds);
-        public abstract void Activate(CarController source, CarController target, object userData = null);
+        public abstract void Activate(CarComponent source, CarComponent target, object userData = null);
     }
 }
 

@@ -21,7 +21,7 @@ namespace Lachesis.GamePlay
             
         }
 
-        public override void Activate(CarController source, CarController target, object userData = null)
+        public override void Activate(CarComponent source, CarComponent target, object userData = null)
         {
             var lighting = GameEntry.EntityManager.CreateEntity<LightningEffect>(EntityEnum.LightningEffect, source.transform);
             source.AddEffectEntity(lighting);
@@ -44,8 +44,8 @@ namespace Lachesis.GamePlay
             if(target!=null)
             {
                 var attackInfo = new AttackInfo();
-                attackInfo.attacker = source.carName;
-                attackInfo.underAttacker = target.carName;
+                attackInfo.attacker = source.carControllerName;
+                attackInfo.underAttacker = target.carControllerName;
                 attackInfo.attackTime = DateTime.Now;
                 attackInfo.attackType = AttackType.Skill;
                 attackInfo.userData = skillEnum;
@@ -53,7 +53,7 @@ namespace Lachesis.GamePlay
             }
         }
 
-        private IEnumerator DelayToDestoryLightingEffect(CarController source, LightningEffect lightning)
+        private IEnumerator DelayToDestoryLightingEffect(CarComponent source, LightningEffect lightning)
         {
             yield return new WaitForSeconds(1f);
             //删掉特效实体

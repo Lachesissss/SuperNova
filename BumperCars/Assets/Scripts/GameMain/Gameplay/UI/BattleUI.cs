@@ -20,14 +20,14 @@ namespace Lachesis.GamePlay
         private string m_p1Name;
         private string m_p2Name;
         private int m_targetScore;
-        private Player m_player;
+        private CarPlayer m_player;
         
         public struct BattleUIData
         {
             public string p1Name;
             public string p2Name;
             public int targetScore;
-            public Player carPlayer;
+            public CarPlayer carPlayer;
         }
 
         public override void OnInit(object userData = null)
@@ -115,7 +115,7 @@ namespace Lachesis.GamePlay
                 var len = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
                 for (int i=0;i<len;i++)
                 {
-                    var skill = m_player.carController.skillSlots[i];
+                    var skill = m_player.skillSlots[i];
                     if(skill!=null)
                     {
                         skillSlots[i].skillImage.sprite = GameEntry.AtlasManager.GetSprite(AtlasEnum.Skill, GameEntry.SkillManager.GetSkillIconName(skill.skillEnum));

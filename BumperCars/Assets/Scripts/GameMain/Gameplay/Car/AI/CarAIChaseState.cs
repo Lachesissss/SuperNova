@@ -28,16 +28,16 @@ namespace Lachesis.GamePlay
         protected internal override void OnUpdate(FSM<CarAI> carAI, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(carAI, elapseSeconds, realElapseSeconds);
-
+            if(!carAI.Owner.IsHasCar) return; 
             if(!Targeting(realElapseSeconds))
             {
                 ChangeState<CarAIPatrolState>(carAI);
                 return;
             }
-            owner.carController.ChangeCarTurnState(owner.steeringDelta);
-            owner.carController.ChangeCarForwardState(owner.motorDelta);
-            owner.carController.ChangeCarBoostState(owner.boost);
-            owner.carController.ChangeCarHandBrakeState(owner.handBrake);
+            owner.carComponent.ChangeCarTurnState(owner.steeringDelta);
+            owner.carComponent.ChangeCarForwardState(owner.motorDelta);
+            owner.carComponent.ChangeCarBoostState(owner.boost);
+            owner.carComponent.ChangeCarHandBrakeState(owner.handBrake);
             owner.SetSteeringMove();
             
             PathProgress();
@@ -51,7 +51,7 @@ namespace Lachesis.GamePlay
             if(owner.destination!=null)
             {
                 //有目标，离开范围，如果maxlostTargetTime内没有回到范围内，丢失目标
-                if(Vector3.Distance(owner.destination.position, owner.transform.position)>searchRange)
+                if(Vector3.Distance(owner.destination.position, owner.carComponent.transform.position)>searchRange)
                 {
                     m_curlostTargetTime+=realElapseSeconds;
                     if(m_curlostTargetTime>maxlostTargetTime)
@@ -70,24 +70,27 @@ namespace Lachesis.GamePlay
             //丢失目标，看能不能找新的目标，找个最近的    
             if(owner.destination==null)
             {
-                    var playerTrans = GameEntry.EntityManager.GetEntityTransforms(EntityEnum.CarPlayer);
-                    float minDis = Single.PositiveInfinity;
-                    Transform nearPlayerTrans = null;
-                    foreach (var trans in playerTrans)
+                var cars = ProcedureBattle.carControllers;
+                float minDis = Single.PositiveInfinity;
+                Transform nearPlayerTrans = null;
+                foreach (var carController in cars)
+                {
+                    if(carController is CarPlayer player && player.IsHasCar)
                     {
-                        if(NavMesh.SamplePosition(trans.position, out NavMeshHit hit, 1, owner.NavMeshLayerBite) &&
-                           NavMesh.CalculatePath(owner.transform.position, hit.position, owner.NavMeshLayerBite, path))
+                        if(NavMesh.SamplePosition(player.carComponent.transform.position, out NavMeshHit hit, 1, owner.NavMeshLayerBite) &&
+                           NavMesh.CalculatePath(owner.carComponent.transform.position, hit.position, owner.NavMeshLayerBite, path))
                         {
-                            var dis = Vector3.Distance(owner.transform.position, trans.position);
+                            var dis = Vector3.Distance(owner.carComponent.transform.position, player.carComponent.transform.position);
                             if(minDis>dis)
                             {
                                 minDis = dis;
                                 if(minDis<searchRange)
-                                    nearPlayerTrans = trans;
+                                    nearPlayerTrans = player.carComponent.transform;
                             }
                         }
                     }
-                    owner.destination = nearPlayerTrans;
+                }
+                owner.destination = nearPlayerTrans;
             }
             
             //若查找新目标失败，真正丢失目标
@@ -118,7 +121,7 @@ namespace Lachesis.GamePlay
                     {
                         owner.postionToFollow = owner.waypoints[owner.currentWayPoint];
                         owner.allowMovement = true;
-                        if (Vector3.Distance(owner.transform.position, owner.postionToFollow) < 2)
+                        if (Vector3.Distance(owner.carComponent.transform.position, owner.postionToFollow) < 2)
                             owner.currentWayPoint++;
                     }
                 }
@@ -135,8 +138,8 @@ namespace Lachesis.GamePlay
 
             if (owner.waypoints.Count < 2)
             {
-                sourcePostion = owner.transform.position;
-                Calculate(destination.position, sourcePostion, owner.transform.forward, owner.NavMeshLayerBite);
+                sourcePostion = owner.carComponent.transform.position;
+                Calculate(destination.position, sourcePostion, owner.carComponent.transform.forward, owner.NavMeshLayerBite);
             }
             else
             {

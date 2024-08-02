@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
-    public class CarAI : Entity
+    public sealed class CarAI : CarController
     {
-        public CarController carController;
         public Transform destination; 
         public float steeringDelta;
         public float motorDelta;
@@ -67,10 +67,14 @@ namespace Lachesis.GamePlay
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
             m_CarAIFsm.Start<CarAIPatrolState>();
             NavMeshLayerBite = 0;
+            if(carComponent==null) //防止交换功能中回池导致状态不对
+            {
+                Debug.LogError("CarAI上未找到CarComponent");
+            }
             CalculateNavMashLayerBite();
             if(userData is string str)
             {
-                carController.carName = str;
+                carComponent.carControllerName = str;
             }
         }
 
@@ -79,7 +83,7 @@ namespace Lachesis.GamePlay
             base.OnReturnToPool(isShowDown);
             m_CarAIFsm.Clear();
             // Reset();
-            // var rb = carController.bodyRb;
+            // var rb = carComponent.bodyRb;
             // if(rb!=null)
             // {
             //     rb.velocity = Vector3.zero;
@@ -129,10 +133,10 @@ namespace Lachesis.GamePlay
         {
             if(allowMovement)
             {
-                var speedOfWheels = carController.GetRPM();
-                if(speedOfWheels<carController.maxRPM)
+                var speedOfWheels = carComponent.GetRPM();
+                if(speedOfWheels<carComponent.maxRPM)
                 {
-                    if(Vector3.Dot(postionToFollow-transform.position, transform.forward)<0)
+                    if(Vector3.Dot(postionToFollow-carComponent.transform.position, carComponent.transform.forward)<0)
                     {
                         //方向不对减速掉头
                         motorDelta = 0.2f;
@@ -146,7 +150,7 @@ namespace Lachesis.GamePlay
                 {
                     motorDelta = 0;
                 }
-                if (Vector3.Distance(transform.position, postionToFollow) < 1)
+                if (Vector3.Distance(carComponent.transform.position, postionToFollow) < 1)
                 {
                     handBrake = true;
                 }
@@ -165,9 +169,9 @@ namespace Lachesis.GamePlay
         public void SetSteeringMove() // Applies steering to the Current waypoint
         {
             
-            Vector3 relativeVector =  transform.InverseTransformPoint(postionToFollow);
+            Vector3 relativeVector =  carComponent.transform.InverseTransformPoint(postionToFollow);
             steeringDelta = (relativeVector.x / relativeVector.magnitude);
-            if(Vector3.Dot(transform.forward, relativeVector.normalized)<0)
+            if(Vector3.Dot(carComponent.transform.forward, relativeVector.normalized)<0)
             {
                 if(steeringDelta>=0)
                 {
@@ -223,10 +227,10 @@ namespace Lachesis.GamePlay
                 float halfFOV = totalFOV / 2.0f;
                 Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
                 Quaternion rightRayRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
-                Vector3 leftRayDirection = leftRayRotation * transform.forward;
-                Vector3 rightRayDirection = rightRayRotation * transform.forward;
-                Gizmos.DrawRay(transform.position, leftRayDirection * rayRange);
-                Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
+                Vector3 leftRayDirection = leftRayRotation * carComponent.transform.forward;
+                Vector3 rightRayDirection = rightRayRotation * carComponent.transform.forward;
+                Gizmos.DrawRay(carComponent.transform.position, leftRayDirection * rayRange);
+                Gizmos.DrawRay(carComponent.transform.position, rightRayDirection * rayRange);
             }
             
             void DrawTargetArea()
@@ -241,14 +245,14 @@ namespace Lachesis.GamePlay
                 }
 
                 float angleStep = 360.0f / 100;
-                var radius = GameEntry.ConfigManager.GetConfig<GlobalConfig>().carAISearchRange;
+                var radius = m_globalConfig.carAISearchRange;
                 for (int i = 0; i < 100; i++)
                 {
                     float angleCurrent = i * angleStep * Mathf.Deg2Rad; 
                     float angleNext = (i + 1) * angleStep * Mathf.Deg2Rad; 
     
-                    Vector3 pointCurrent = transform.position + new Vector3(Mathf.Cos(angleCurrent), 1f/radius, Mathf.Sin(angleCurrent)) * radius;
-                    Vector3 pointNext = transform.position + new Vector3(Mathf.Cos(angleNext), 1f/radius, Mathf.Sin(angleNext)) * radius;
+                    Vector3 pointCurrent = carComponent.transform.position + new Vector3(Mathf.Cos(angleCurrent), 1f/radius, Mathf.Sin(angleCurrent)) * radius;
+                    Vector3 pointNext = carComponent.transform.position + new Vector3(Mathf.Cos(angleNext), 1f/radius, Mathf.Sin(angleNext)) * radius;
 
                     Gizmos.DrawLine(pointCurrent, pointNext);
                 }

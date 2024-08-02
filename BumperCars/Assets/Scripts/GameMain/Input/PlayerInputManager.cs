@@ -10,6 +10,8 @@ namespace Lachesis.GamePlay
         public float steeringDeltaP1 { get; private set; }
         public bool handbrakeP1 { get; private set; }
         public bool boostP1 { get; private set; }
+        
+        public bool switchP1 { get; private set; }
         public bool skill1P1 { get; private set; }
         public bool skill2P1 { get; private set; }
         public bool skill3P1 { get; private set; }
@@ -39,6 +41,7 @@ namespace Lachesis.GamePlay
         private static InputSetting fire3InputP1;
         private static InputSetting handbrakeInputP1;
         private static InputSetting boostInputP1;
+        private static InputSetting switchInputP1;
 
         //public InputSetting forwardInputP2 = new InputSetting() { inputType = InputType.Key, name = "Vertical_P2", invert = false };
 
@@ -60,6 +63,7 @@ namespace Lachesis.GamePlay
             fire3InputP1 = new InputSetting { Name = "Fire3_P1", Invert = false , inputType = InputType.GetButtonDown};
             handbrakeInputP1 = new InputSetting { Name = "Handbrake_P1", Invert = false , inputType = InputType.GetAxisRaw};
             boostInputP1 = new InputSetting { Name = "Boost_P1", Invert = false , inputType = InputType.GetButtonDown};
+            switchInputP1 = new InputSetting { Name = "Switch", Invert = false , inputType = InputType.GetButtonDown};
         }
 
         internal override void Update(float elapseSeconds, float realElapseSeconds)
@@ -70,6 +74,7 @@ namespace Lachesis.GamePlay
                 steeringDeltaP1 = GetInput(steerRightInputP1) - GetInput(steerLeftInputP1);
                 handbrakeP1 = GetInput(handbrakeInputP1) >= 0.5f;
                 boostP1 = GetInput(boostInputP1) >= 0.5f;
+                switchP1 = GetInput(switchInputP1)>=0.5f;
                 skill1P1 = GetInput(fire1InputP1) >= 0.5f;
                 skill2P1 = GetInput(fire2InputP1) >= 0.5f;
                 skill3P1 = GetInput(fire3InputP1) >= 0.5f;

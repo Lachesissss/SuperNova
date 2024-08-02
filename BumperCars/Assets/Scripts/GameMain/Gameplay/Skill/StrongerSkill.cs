@@ -16,7 +16,7 @@ namespace Lachesis.GamePlay
             
         }
 
-        public override void Activate(CarController source, CarController target, object userData = null)
+        public override void Activate(CarComponent source, CarComponent target, object userData = null)
         {
             var strongerEffect = GameEntry.EntityManager.CreateEntity<StrongerEffect>(EntityEnum.StrongerEffect, source.transform);
             source.AddEffectEntity(strongerEffect);
@@ -24,7 +24,7 @@ namespace Lachesis.GamePlay
             GameEntry.instance.StartCoroutine(DelayToRecoverBodyMass(source, strongerEffect));
         }
 
-        private IEnumerator DelayToRecoverBodyMass(CarController source, StrongerEffect strongerEffect)
+        private IEnumerator DelayToRecoverBodyMass(CarComponent source, StrongerEffect strongerEffect)
         {
             yield return new WaitForSeconds(15f);
             source.bodyRb.mass = m_globalConfig.defaultCarMass;
