@@ -10,14 +10,23 @@ namespace Lachesis.GamePlay
     {
         public Button singleModeBtn;
         public Button doubleModeBtn;
+        public Button quitGameBtn;
 
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
             singleModeBtn.onClick.AddListener(OnEnterSingleMode);
             doubleModeBtn.onClick.AddListener(OnEnterDoubleMode);
+            quitGameBtn.onClick.AddListener(OnQuitGame);
         }
 
+        public override void OnReturnToPool(bool isShutDown = false)
+        {
+            base.OnReturnToPool(isShutDown);
+            singleModeBtn.onClick.RemoveAllListeners();
+            doubleModeBtn.onClick.RemoveAllListeners();
+            quitGameBtn.onClick.RemoveAllListeners();
+        }
         
         private void OnEnterSingleMode()
         {
@@ -27,12 +36,19 @@ namespace Lachesis.GamePlay
         {
             GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Double));
         }
-        public override void OnReturnToPool(bool isShutDown = false)
+        
+        
+        private void OnQuitGame()
         {
-            base.OnReturnToPool(isShutDown);
-            singleModeBtn.onClick.RemoveAllListeners();
-            doubleModeBtn.onClick.RemoveAllListeners();
+#if UNITY_EDITOR
+            // 在编辑器中停止播放模式
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            // 在构建后的应用程序中退出
+            Application.Quit();
+#endif
         }
+
     }
     
     public enum DungeonMode
