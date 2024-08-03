@@ -130,11 +130,12 @@ namespace Lachesis.GamePlay
                 {
                     GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
                     var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
+                    
                     var showMsg = $"[{carComponent.carControllerName}]释放了[{skillSlots[index].skillName}],{config.activateText}!";
                     Debug.Log(showMsg);
                     if (!m_globalConfig.isUnlimitedFire) //无限火力
                         skillSlots[index] = null;
-                    //BattleUI.ShowPopupTips(showMsg);
+                    if (config.showTextOnRelease) BattleUI.ShowPopupTips(showMsg);
                 }
                 else
                 {

@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -47,10 +46,8 @@ namespace Lachesis.GamePlay
         public void StopToTracked()
         {
             car = null;
-            if(cameraBody!=null)
-            {
-                Destroy(cameraBody);
-            }
+            cameraBody.velocity = Vector3.zero;
+            cameraBody.angularVelocity = Vector3.zero;
         }
         
         public void ReSetTrackedTarget(CarComponent trackedCar)
@@ -101,7 +98,7 @@ namespace Lachesis.GamePlay
         {
             base.OnFixedUpdate(fixedElapseSeconds);
             if (car == null) return;
-
+            if (cameraBody == null) return;
             cameraBody.interpolation = car.bodyRb.interpolation;
 
             Vector3 previousPosition = transform.position;

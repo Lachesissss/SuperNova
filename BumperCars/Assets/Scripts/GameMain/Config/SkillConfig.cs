@@ -12,6 +12,7 @@ namespace Lachesis.GamePlay
         public string iconName;
         public string activateText;
         public string killText;
+        public bool showTextOnRelease;
     }
     [CreateAssetMenu(fileName = "SkillConfig", menuName = "ScriptableObject/SkillConfig", order = 3)]
     public class SkillConfig : ScriptableObject

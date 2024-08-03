@@ -95,8 +95,9 @@ namespace Lachesis.GamePlay
             carControllers.Add(carPlayer);
             carControllers.Add(carAi);
             
-            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
-                targetScore = m_globalConfig.targetScore, carPlayer = carPlayer};
+            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name,
+                targetScore = m_globalConfig.targetScore, carController1 = carPlayer, carController2 = carAi
+            };
             m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             player1Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player1Camera, Vector3.zero, Quaternion.identity, carPlayer.carComponent);
             player2Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carAi.carComponent);
@@ -120,8 +121,9 @@ namespace Lachesis.GamePlay
             carControllers.Add(carPlayer2);
             carControllers.Add(carAi);
             
-            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
-                targetScore = m_globalConfig.targetScore, carPlayer = carPlayer1};
+            var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name,
+                targetScore = m_globalConfig.targetScore, carController1 = carPlayer1, carController2 = carPlayer2
+            };
             m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             player1Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player1Camera, Vector3.zero, Quaternion.identity, carPlayer1.carComponent);
             player2Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carPlayer2.carComponent);
@@ -172,7 +174,7 @@ namespace Lachesis.GamePlay
         {
             if(m_skillPickUpItems.Count<maxSkillPickUpItemsCount)
             {
-                SkillEnum skillEnum = (SkillEnum)Random.Range(0, System.Enum.GetValues(typeof(SkillEnum)).Length);
+                SkillEnum skillEnum = (SkillEnum)Random.Range(0, Enum.GetValues(typeof(SkillEnum)).Length);
                 Vector3 spawnPosition = GetRandomPositionInBattleField();
                 m_skillPickUpItems.Add(GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, spawnPosition, Quaternion.identity, skillEnum));
             }
@@ -374,7 +376,7 @@ namespace Lachesis.GamePlay
                             
                     if (m_playerScoreDict.ContainsKey(killer))
                     {
-                        m_playerScoreDict[killer]+=5;
+                        m_playerScoreDict[killer] += 1;
                         GameEntry.EventManager.Fire(ScoreUpdateEventArgs.EventId,
                             ScoreUpdateEventArgs.Create(m_playerScoreDict[p1Name], m_playerScoreDict[p2Name]));
                     }

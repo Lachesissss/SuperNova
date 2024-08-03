@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
@@ -17,12 +14,14 @@ namespace Lachesis.GamePlay
         public Button continueBtn;
         public Button backToTittleBtn;
         public GameObject popupGo;
-        public List<SkillSlot> skillSlots;
+        public List<SkillSlot> player1SkillSlots;
+        public List<SkillSlot> player2SkillSlots;
         public Transform popupTipsRootTrans;
         private string m_p1Name;
         private string m_p2Name;
         private int m_targetScore;
-        private CarPlayer m_player;
+        private CarController m_controller1;
+        private CarController m_controller2;
         private static BattleUI m_instance;
         private Queue<string> popupTextQueue;
         private List<PopupTips> curShowTips;
@@ -32,7 +31,8 @@ namespace Lachesis.GamePlay
             public string p1Name;
             public string p2Name;
             public int targetScore;
-            public CarPlayer carPlayer;
+            public CarController carController1;
+            public CarController carController2;
         }
 
         public override void OnInit(object userData = null)
@@ -106,7 +106,8 @@ namespace Lachesis.GamePlay
         {
             m_p1Name = battleUIData.p1Name;
             m_p2Name = battleUIData.p2Name;
-            m_player = battleUIData.carPlayer;
+            m_controller1 = battleUIData.carController1;
+            m_controller2 = battleUIData.carController2;
             m_targetScore = battleUIData.targetScore;
             RefreshScore(0,0);
             RefreshPlayerBattleUI();
@@ -130,22 +131,42 @@ namespace Lachesis.GamePlay
         
         public void RefreshPlayerBattleUI()
         {
-            if(m_player!=null)
+            if (m_controller1 != null)
             {
                 var len = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
                 for (int i=0;i<len;i++)
                 {
-                    var skill = m_player.skillSlots[i];
+                    var skill = m_controller1.skillSlots[i];
                     if(skill!=null)
                     {
-                        skillSlots[i].skillImage.sprite = GameEntry.AtlasManager.GetSprite(AtlasEnum.Skill, GameEntry.SkillManager.GetSkillIconName(skill.skillEnum));
-                        skillSlots[i].skillGO.SetActive(true);
+                        player1SkillSlots[i].skillImage.sprite =
+                            GameEntry.AtlasManager.GetSprite(AtlasEnum.Skill, GameEntry.SkillManager.GetSkillIconName(skill.skillEnum));
+                        player1SkillSlots[i].skillGO.SetActive(true);
                     }
                     else
                     {
-                        skillSlots[i].skillGO.SetActive(false);
+                        player1SkillSlots[i].skillGO.SetActive(false);
                     }
                     
+                }
+            }
+
+            if (m_controller2 != null)
+            {
+                var len = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
+                for (var i = 0; i < len; i++)
+                {
+                    var skill = m_controller2.skillSlots[i];
+                    if (skill != null)
+                    {
+                        player2SkillSlots[i].skillImage.sprite =
+                            GameEntry.AtlasManager.GetSprite(AtlasEnum.Skill, GameEntry.SkillManager.GetSkillIconName(skill.skillEnum));
+                        player2SkillSlots[i].skillGO.SetActive(true);
+                    }
+                    else
+                    {
+                        player2SkillSlots[i].skillGO.SetActive(false);
+                    }
                 }
             }
         }
