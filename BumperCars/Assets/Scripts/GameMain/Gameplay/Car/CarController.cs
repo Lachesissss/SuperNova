@@ -10,7 +10,8 @@ namespace Lachesis.GamePlay
         public class CarControllerData
         {
             public CarComponent carComponent;
-            public string controllerName;
+            public string controllerName;//是名字也是Id
+            public object userData;
         }
         
         public CarComponent carComponent;
@@ -127,12 +128,12 @@ namespace Lachesis.GamePlay
             {
                 if (skillSlots[index].TryActivate(carComponent))
                 {
-                    if (!m_globalConfig.isUnlimitedFire) //无限火力
-                        skillSlots[index] = null;
                     GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
                     var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
                     var showMsg = $"[{carComponent.carControllerName}]释放了[{skillSlots[index].skillName}],{config.activateText}!";
                     Debug.Log(showMsg);
+                    if (!m_globalConfig.isUnlimitedFire) //无限火力
+                        skillSlots[index] = null;
                     //BattleUI.ShowPopupTips(showMsg);
                 }
                 else

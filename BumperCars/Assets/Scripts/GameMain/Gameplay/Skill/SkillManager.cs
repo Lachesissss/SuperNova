@@ -7,12 +7,12 @@ namespace Lachesis.GamePlay
 {
     public enum SkillEnum
     {
-        Slip,
         Lighting,
-        Swap,
-        Summon,
         Stronger,
-        FlipVertical
+        FlipVertical,
+        //Slip,
+        //Swap,
+        //Summon,
     }
     
     //TODO:改成Skill的对象池实现

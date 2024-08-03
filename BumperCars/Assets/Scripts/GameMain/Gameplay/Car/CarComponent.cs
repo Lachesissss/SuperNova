@@ -38,7 +38,7 @@ namespace Lachesis.GamePlay
         public Transform leftBackTrans;
         public Transform rightFrontTrans;
         public Transform rightBackTrans;
-
+        
         private List<Entity> m_effectEntities;
         
         //既是名字，也是id
@@ -57,6 +57,23 @@ namespace Lachesis.GamePlay
         private GlobalConfig m_globalConfig;
         
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
+        
+        public enum ClothColor
+        {
+            Yellow,
+            Green,
+            Red,
+            Black
+        }
+        
+        private static readonly string yellowColor = "FFFFFF";
+        private static readonly string blackColor = "0001FF";
+        private static readonly string greenColor = "00F3FF";
+        private static readonly string redcolor = "FF0000";
+        
+        [SerializeField]
+        private List<Renderer> bodyRenderers;
+        public ClothColor clothColor;
 
         public void AddEffectEntity(Entity entity)
         {
@@ -98,13 +115,13 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
-            ResetCar();
+            ResetCar(userData);
         }
 
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);
-            ResetCar();
+            ResetCar(userData);
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
@@ -173,7 +190,7 @@ namespace Lachesis.GamePlay
             }
         }
 
-        private void ResetCar()
+        private void ResetCar(object userData = null)
         {
             m_carForwardValue = 0;
             m_carTurnValue = 0;
@@ -206,6 +223,35 @@ namespace Lachesis.GamePlay
             
             // 等待一帧以确保所有物理计算完成
             StartCoroutine(ResetBrakeTorque());
+            
+            if(userData is ClothColor color)
+            {
+                clothColor = color;
+                Color setColor;
+                switch (color)
+                {
+                    case ClothColor.Black:
+                        setColor =  GetColorByHexString(blackColor);
+                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
+                        break;
+                    case ClothColor.Green:
+                        setColor =  GetColorByHexString(greenColor);
+                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
+                        break;
+                    case ClothColor.Red:
+                        setColor =  GetColorByHexString(redcolor);
+                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
+                        break;
+                    case ClothColor.Yellow:
+                        setColor =  GetColorByHexString(yellowColor);
+                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
+                        break;
+                    default:
+                        setColor =  GetColorByHexString(yellowColor);
+                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
+                        break;
+                }
+            }
         }
 
         // 在一帧之后重置刹车力
@@ -316,6 +362,19 @@ namespace Lachesis.GamePlay
                 bodyRb.AddForceAtPosition(wheelL.transform.up * -antiRollForce, wheelL.transform.position);
             if (groundedR)
                 bodyRb.AddForceAtPosition(wheelR.transform.up * -antiRollForce, wheelR.transform.position);
+        }
+        
+        private Color GetColorByHexString(string str)
+        {
+            if (ColorUtility.TryParseHtmlString("#" + str, out Color newColor))
+            {
+                // 修改材质的颜色
+                return newColor;
+            }
+            else
+            {
+                return Color.white;
+            }
         }
     }
 }

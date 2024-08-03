@@ -9,7 +9,7 @@ namespace Lachesis.GamePlay
     {
         private List<EntityComponent> entityComponents;
         public ProcedureBase BelongProcedure { get; private set; }
-
+        [HideInInspector]
         public EntityEnum entityEnum;
         public virtual void OnInit(object userData = null)
         {

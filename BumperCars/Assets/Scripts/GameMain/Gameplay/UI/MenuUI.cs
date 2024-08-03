@@ -21,11 +21,11 @@ namespace Lachesis.GamePlay
         
         private void OnEnterSingleMode()
         {
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), "Single"));
+            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Single));
         }
         private void OnEnterDoubleMode()
         {
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), "Double"));
+            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Double));
         }
         public override void OnReturnToPool(bool isShutDown = false)
         {
@@ -33,6 +33,12 @@ namespace Lachesis.GamePlay
             singleModeBtn.onClick.RemoveAllListeners();
             doubleModeBtn.onClick.RemoveAllListeners();
         }
+    }
+    
+    public enum DungeonMode
+    {
+        Single,
+        Double,
     }
 }
 

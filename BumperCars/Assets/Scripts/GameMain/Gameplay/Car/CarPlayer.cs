@@ -6,31 +6,55 @@ namespace Lachesis.GamePlay
     
     public sealed class CarPlayer : CarController
     {
+        private static bool isP1Exist = false;
+        private static bool isP2Exist = false;
+        public enum PlayerType
+        {
+            P1,
+            P2,
+        }
+        private PlayerInputManager input;
+        public PlayerType playerType;
+        private bool Boost => playerType == PlayerType.P1?input.boostP1:input.boostP2;
+        private bool Skill1 => playerType == PlayerType.P1?input.skill1P1:input.skill1P2;
+        private bool Skill2 => playerType == PlayerType.P1?input.skill2P1:input.skill2P2;
+        private bool Skill3 => playerType == PlayerType.P1?input.skill3P1:input.skill3P2;
+        private bool Switch => playerType == PlayerType.P1?input.switchP1:input.switchP2;
+        private float SteeringDelta => playerType == PlayerType.P1?input.steeringDeltaP1:input.steeringDeltaP2;
+        private float MotorDelta => playerType == PlayerType.P1?input.motorDeltaP1:input.motorDeltaP2;
+        private bool Handbrake => playerType == PlayerType.P1?input.handbrakeP1:input.handbrakeP2;
+
+        public override void OnInit(object userData = null)
+        {
+            base.OnInit(userData);
+            input = GameEntry.PlayerInputManager;
+        }
+
         public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
             if(!IsHasCar) return;
             
-            carComponent.ChangeCarTurnState(GameEntry.PlayerInputManager.steeringDeltaP1);
-            carComponent.ChangeCarForwardState(GameEntry.PlayerInputManager.motorDeltaP1);
-            carComponent.ChangeCarHandBrakeState(GameEntry.PlayerInputManager.handbrakeP1);
-            if(GameEntry.PlayerInputManager.boostP1)
+            carComponent.ChangeCarTurnState(SteeringDelta);
+            carComponent.ChangeCarForwardState(MotorDelta);
+            carComponent.ChangeCarHandBrakeState(Handbrake);
+            if(Boost)
             {
                 carComponent.DoBoost();
             }
-            if(GameEntry.PlayerInputManager.skill1P1)
+            if(Skill1)
             {
                 ActivateSkill(0);
             }
-            if(GameEntry.PlayerInputManager.skill2P1)
+            if(Skill2)
             {
                 ActivateSkill(1);
             }
-            if(GameEntry.PlayerInputManager.skill3P1)
+            if(Skill3)
             {
                 ActivateSkill(2);
             }
-            if(GameEntry.PlayerInputManager.switchP1)
+            if(Switch)
             {
                 GameEntry.EventManager.Fire(this, SwitchCarEventArgs.Create());
             }
@@ -50,11 +74,38 @@ namespace Lachesis.GamePlay
 
         private void ResetCarPlayer(object userData)
         {
+            if(userData is CarControllerData { userData: PlayerType type })
+            {
+                if(type==PlayerType.P1)
+                {
+                   if(isP1Exist)Debug.LogError("出错了，P1已存在");
+                   else
+                   {
+                       isP1Exist = true;
+                       playerType = PlayerType.P1;
+                   } 
+                }
+                else 
+                {
+                    if(isP2Exist)Debug.LogError("出错了，P2已存在");
+                    else
+                    {
+                        isP2Exist = true;
+                        playerType = PlayerType.P2;
+                    } 
+                }
+            }
+            else
+            {
+                Debug.LogError("没有指定该Player是几P");
+            }
         }
         
         public override void OnReturnToPool(bool isShowDown = false)
         {
             base.OnReturnToPool(isShowDown);
+            if(playerType==PlayerType.P1) isP1Exist = false;
+            else isP2Exist = false;
         }
 
         public override void OnSwitchCar()

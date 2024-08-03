@@ -8,7 +8,7 @@ namespace Lachesis.Core
 
         public override int Id => EventId;
 
-        public object UserData { get; private set; }
+        public object userData { get; private set; }
 
         public Type TargetProcedureType { get; private set; }
 
@@ -16,7 +16,7 @@ namespace Lachesis.Core
         {
             var buildTowerEventArgs = new ProcedureChangeEventArgs();
             buildTowerEventArgs.TargetProcedureType = target;
-            buildTowerEventArgs.UserData = userData;
+            buildTowerEventArgs.userData = userData;
             return buildTowerEventArgs;
         }
     }

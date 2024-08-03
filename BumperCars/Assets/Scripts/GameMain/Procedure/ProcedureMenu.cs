@@ -7,6 +7,7 @@ namespace Lachesis.GamePlay
     public class ProcedureMenu : ProcedureBase
     {
         private bool isGoBattle;
+        private object goBattleData;
         private ProcedureOwner procedureOwner;
         private MenuUI m_menuUI;
         protected internal override void OnInit(ProcedureOwner procedureOwner)
@@ -22,6 +23,7 @@ namespace Lachesis.GamePlay
             this.procedureOwner = procedureOwner;
             Debug.Log("进入主菜单流程");
             isGoBattle = false;
+            goBattleData = null;
             m_menuUI = GameEntry.EntityManager.CreateEntity<MenuUI>(EntityEnum.MenuUI, GameEntry.instance.canvasRoot.transform);
             // GameEntry.Event.Subscribe(ChangeSceneEventArgs.EventId, OnChangeScene);
             // GameEntry.Event.Subscribe(LoadLevelEventArgs.EventId, OnLoadLevel);
@@ -36,6 +38,7 @@ namespace Lachesis.GamePlay
             var ne = (ProcedureChangeEventArgs)e;
             if (e is ProcedureChangeEventArgs args)
             {
+                goBattleData = args.userData;
                 var targProcedure = GameEntry.ProcedureManager.GetProcedure(args.TargetProcedureType);
                 if (targProcedure is ProcedureBattle) isGoBattle = true;
             }
@@ -47,7 +50,7 @@ namespace Lachesis.GamePlay
 
             if (isGoBattle)
             {
-                ChangeState<ProcedureBattle>(procedureOwner);
+                ChangeState<ProcedureBattle>(procedureOwner, goBattleData);
                 return;
             } 
         }
@@ -73,7 +76,7 @@ namespace Lachesis.GamePlay
         // private void OnOpenUIFormSuccess(object sender, GameEventArgs e)
         // {
         //     OpenUIFormSuccessEventArgs ne = (OpenUIFormSuccessEventArgs)e;
-        //     if (ne.UserData != this)
+        //     if (ne.userData != this)
         //     {
         //         return;
         //     }

@@ -128,7 +128,7 @@ namespace Lachesis.GamePlay
             }
         }
         
-        private void RefreshPlayerBattleUI()
+        public void RefreshPlayerBattleUI()
         {
             if(m_player!=null)
             {

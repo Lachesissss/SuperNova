@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &472231069786510646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3838094110910065956}
+  m_Layer: 0
+  m_Name: Edge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3838094110910065956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472231069786510646}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 23.92}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8888882459848626534}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2132742610210415387
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,6 +299,7 @@ Transform:
   - {fileID: 4649050454407596050}
   - {fileID: 6296729784871921070}
   - {fileID: 5199254414511149133}
+  - {fileID: 3838094110910065956}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &413501671198460383
@@ -282,10 +314,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1a1a35ee8a3d84096d5a35e7e24a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entityEnum: 0
   spawnTrans1: {fileID: 4649050454407596050}
   spawnTrans2: {fileID: 6296729784871921070}
   dieOutTrans: {fileID: 7814907559247234033}
   fieldCenter: {fileID: 5199254414511149133}
+  edge: {fileID: 3838094110910065956}
 --- !u!1 &6975886778320579980
 GameObject:
   m_ObjectHideFlags: 0

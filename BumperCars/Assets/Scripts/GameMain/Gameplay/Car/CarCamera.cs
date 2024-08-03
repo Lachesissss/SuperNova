@@ -44,6 +44,37 @@ namespace Lachesis.GamePlay
             ResetCarCamera(userData);
         }
 
+        public void StopToTracked()
+        {
+            car = null;
+            if(cameraBody!=null)
+            {
+                Destroy(cameraBody);
+            }
+        }
+        
+        public void ReSetTrackedTarget(CarComponent trackedCar)
+        {
+            car = trackedCar;
+            cameraBody = GetComponentInChildren<Rigidbody>();
+            if (cameraBody == null)
+            {
+                cameraBody = gameObject.AddComponent<Rigidbody>();
+                cameraBody.hideFlags = HideFlags.NotEditable;
+                cameraBody.velocity = Vector3.zero;
+                cameraBody.angularVelocity = Vector3.zero;
+            }
+
+            m_isFlip = false;
+            cameraBody.isKinematic = false;
+            cameraBody.useGravity = false;
+            cameraBody.drag = 0;
+            cameraBody.angularDrag = 0;
+            thirdPersonRotationSpeed = 50f;
+            thirdPersonPositionSpeed = 50f;
+            ResetCamera();
+        }
+        
         public override void OnReturnToPool(bool isShutDown = false)
         {
             base.OnReturnToPool(isShutDown);
@@ -58,24 +89,7 @@ namespace Lachesis.GamePlay
             StopAllCoroutines();
             if (userData is CarComponent trackedCar)
             {
-                car = trackedCar;
-                cameraBody = GetComponentInChildren<Rigidbody>();
-                if (cameraBody == null)
-                {
-                    cameraBody = gameObject.AddComponent<Rigidbody>();
-                    cameraBody.hideFlags = HideFlags.NotEditable;
-                    cameraBody.velocity = Vector3.zero;
-                    cameraBody.angularVelocity = Vector3.zero;
-                }
-
-                m_isFlip = false;
-                cameraBody.isKinematic = false;
-                cameraBody.useGravity = false;
-                cameraBody.drag = 0;
-                cameraBody.angularDrag = 0;
-                thirdPersonRotationSpeed = 50f;
-                thirdPersonPositionSpeed = 50f;
-                ResetCamera();
+                ReSetTrackedTarget(trackedCar);
             }
             else
             {
@@ -191,7 +205,7 @@ namespace Lachesis.GamePlay
             return new Quaternion(input.x * scalar, input.y * scalar, input.z * scalar, input.w * scalar);
         }
 
-        public void ResetCamera()
+        private void ResetCamera()
         {
             if (cameraBody == null) return;
             GetTargetTransforms(out var targetPosition, out var targetRotation, true);

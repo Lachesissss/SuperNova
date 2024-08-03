@@ -70,7 +70,8 @@ namespace Lachesis.GamePlay
         
         public void RandomPath() // Creates a path to a random destination
         {
-            //检测范围内是否有玩家，有的话将玩家设为目标（只有在创建新Path时才检测一次，为的是不会每帧都大规模检测，但这样AI可能有点笨
+            //检测范围内是否有玩家，有的话将玩家设为目标（只有在创建新Path时才检测一次，为的是不会每帧都大规模检测和寻路，但这样AI可能有点笨
+            //就是目前玩家进入索敌范围后，ai还要到达下一个路径点才会触发检测，将玩家设定为目标
             NavMeshPath path = owner.navMeshPath;
             float searchRange = GameEntry.ConfigManager.GetConfig<GlobalConfig>().carAISearchRange;
             var cars = ProcedureBattle.carControllers;
@@ -78,7 +79,7 @@ namespace Lachesis.GamePlay
             Transform nearPlayerTrans = null;
             foreach (var carController in cars)
             {
-                if(carController is CarPlayer player && player.IsHasCar)
+                if(carController is CarPlayer player && player.IsHasCar) //目前只找玩家
                 {
                     if(NavMesh.SamplePosition(player.carComponent.transform.position, out NavMeshHit hit, 1, owner.NavMeshLayerBite) &&
                        NavMesh.CalculatePath(owner.carComponent.transform.position, hit.position, owner.NavMeshLayerBite, path))

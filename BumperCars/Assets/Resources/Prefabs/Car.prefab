@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9532f42fd4b8d246a3e1f61252b7484, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entityEnum: 0
   driverMode: 2
   idealRPM: 200
   maxRPM: 400
@@ -60,6 +61,7 @@ MonoBehaviour:
   antiRoll: 2000
   centerOfGravity: {fileID: 3033877018140610854}
   carAttacker: {fileID: 3604133481630467618}
+  controller: {fileID: 0}
   maxAngle: 45
   targetAngle: 0
   returnAngleSpeed: 400
@@ -73,6 +75,12 @@ MonoBehaviour:
   rightFrontTrans: {fileID: 6922057182505409440}
   rightBackTrans: {fileID: 477835939059542409}
   carControllerName: 
+  bodyRenderers:
+  - {fileID: 3530526674143773791}
+  - {fileID: 5368481376422751244}
+  - {fileID: 3190999578865897066}
+  - {fileID: 8183244954347225726}
+  clothColor: 0
 --- !u!54 &5660093502109558111
 Rigidbody:
   m_ObjectHideFlags: 0
