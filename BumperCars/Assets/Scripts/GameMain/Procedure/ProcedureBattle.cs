@@ -31,6 +31,14 @@ namespace Lachesis.GamePlay
         protected internal override void OnInit(ProcedureOwner procedureOwner)
         {
             base.OnInit(procedureOwner);
+        }
+
+
+        protected internal override void OnEnter(ProcedureOwner procedureOwner)
+        {
+            base.OnEnter(procedureOwner);
+            this.procedureOwner = procedureOwner;
+            
             lastAttackInfoDict = new Dictionary<string, AttackInfo>();
             carControllers = new List<CarController>();
             m_playerScoreDict = new Dictionary<string, int>();
@@ -42,13 +50,6 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Subscribe(AttackEventArgs.EventId, OnAttackHappened);
             GameEntry.EventManager.Subscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             GameEntry.EventManager.Subscribe(SwitchCarEventArgs.EventId, OnSwitchCar);
-        }
-
-
-        protected internal override void OnEnter(ProcedureOwner procedureOwner)
-        {
-            base.OnEnter(procedureOwner);
-            this.procedureOwner = procedureOwner;
             isGoMenu = false;
             isGoSettlement = false;
             m_settlementData = null;
@@ -162,20 +163,16 @@ namespace Lachesis.GamePlay
                 }
                 
             }
-            // foreach (var player in carPlayers)
-            // {
-            //     GameEntry.EntityManager.ReturnEntity(EntityEnum.CarPlayer, player);
-            // }
-            //
-            // GameEntry.instance.StopAllCoroutines();
-            // GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleUI, m_battleUI);
-            // GameEntry.EntityManager.ReturnEntity(EntityEnum.BattleField, m_battleField);
+            
             m_battleField = null;
             m_battleUI = null;
             lastAttackInfoDict.Clear();
             carControllers.Clear();
             m_playerScoreDict[p1Name] = 0;
             m_playerScoreDict[p2Name] = 0;
+            GameEntry.EventManager.Unsubscribe(AttackEventArgs.EventId, OnAttackHappened);
+            GameEntry.EventManager.Unsubscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
+            GameEntry.EventManager.Unsubscribe(SwitchCarEventArgs.EventId, OnSwitchCar);
         }
 
         protected internal override void OnDestroy(ProcedureOwner procedureOwner)
@@ -226,13 +223,15 @@ namespace Lachesis.GamePlay
                     if(attackInfo.attackType==AttackType.Collide)
                     {
                         Debug.Log($"{carComponent.carControllerName} 在与{killer}的激烈碰撞中牺牲了！");
+                        BattleUI.ShowPopupTips($"{carComponent.carControllerName} 在与{killer}的激烈碰撞中牺牲了！");
                     }
                     else if(attackInfo.attackType==AttackType.Skill)
                     {
                         if(attackInfo.userData is SkillEnum skillEnum)
                         {
                             var skillCfg = GameEntry.SkillManager.GetSkillConfigItem(skillEnum);
-                            Debug.Log($"{carName} 被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}！");
+                            Debug.Log($"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}！");
+                            BattleUI.ShowPopupTips($"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}!");
                         }
                     }
                             
@@ -245,12 +244,14 @@ namespace Lachesis.GamePlay
                 }
                 else
                 {
-                    Debug.Log($"{carName} Ta自杀了...");
+                    Debug.Log($"[{carName}]Ta自杀了...");
+                    BattleUI.ShowPopupTips($"[{carName}]Ta自杀了...");
                 }
             }
             else
             {
-                Debug.Log($"{carName} Ta自杀了...");
+                Debug.Log($"[{carName}]Ta自杀了...");
+                BattleUI.ShowPopupTips($"[{carName}]Ta自杀了...");
             }
         }
         

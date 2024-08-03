@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -41,6 +42,15 @@ namespace Lachesis.GamePlay
         {
             base.OnReCreateFromPool(userData);
             ResetCarCamera(userData);
+        }
+
+        public override void OnReturnToPool(bool isShutDown = false)
+        {
+            base.OnReturnToPool(isShutDown);
+            if(cameraBody!=null)
+            {
+                Destroy(cameraBody);
+            }
         }
 
         private void ResetCarCamera(object userData)

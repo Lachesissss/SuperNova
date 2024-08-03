@@ -106,7 +106,9 @@ namespace Lachesis.GamePlay
                         {
                             skillSlots[i] = GameEntry.SkillManager.CreateSkill(args.skillEnum);
                             GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
-                            Debug.Log($"{controllerName} 获得了技能卡 {skillSlots[i].skillName},并装配在了{i+1}号技能槽");
+                            var showMsg = $"[{controllerName}]获得了[{skillSlots[i].skillName}],并装配在了{i+1}号技能槽";
+                            Debug.Log(showMsg);
+                            //BattleUI.ShowPopupTips(showMsg);
                             break;
                         }
                     }
@@ -129,11 +131,15 @@ namespace Lachesis.GamePlay
                         skillSlots[index] = null;
                     GameEntry.EventManager.Fire(this, PlayerBattleUIUpdateEventArgs.Create());
                     var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
-                    Debug.Log($"{carComponent.carControllerName} 释放了技能[{skillSlots[index].skillName}],{config.activateText}!");
+                    var showMsg = $"[{carComponent.carControllerName}]释放了[{skillSlots[index].skillName}],{config.activateText}!";
+                    Debug.Log(showMsg);
+                    //BattleUI.ShowPopupTips(showMsg);
                 }
                 else
                 {
-                    Debug.Log($"{carComponent.carControllerName} 释放 {skillSlots[index]}失败，需要目标");
+                    var showMsg = $"[{carComponent.carControllerName}]释放[{skillSlots[index]}]失败，需要目标";
+                    Debug.Log(showMsg);
+                    //BattleUI.ShowPopupTips(showMsg);
                 }
             }
         }
