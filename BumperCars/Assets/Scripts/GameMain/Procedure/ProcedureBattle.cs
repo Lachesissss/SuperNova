@@ -89,7 +89,8 @@ namespace Lachesis.GamePlay
             var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation,CarComponent.ClothColor.Yellow);
             var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, CarComponent.ClothColor.Black);
             var controllerData1 = new CarController.CarControllerData(){carComponent = car1, controllerName = p1Name, userData = CarPlayer.PlayerType.P1};
-            var controllerData2 = new CarController.CarControllerData(){carComponent = car2, controllerName = $"人机{carAiIndex++}"};
+            var aiName = $"人机{carAiIndex++}";
+            var controllerData2 = new CarController.CarControllerData { carComponent = car2, controllerName = aiName };
             var carPlayer = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, controllerData1);
             var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarAI,Vector3.zero, Quaternion.identity,controllerData2);
             carControllers.Add(carPlayer);
@@ -129,6 +130,7 @@ namespace Lachesis.GamePlay
             player2Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carPlayer2.carComponent);
             m_ControllerCameraDict.Add(carPlayer1,player1Camera);
             m_ControllerCameraDict.Add(carPlayer2,player2Camera);
+            
         }
         
         protected internal override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -451,6 +453,7 @@ namespace Lachesis.GamePlay
         {
             var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, lastColor);
             carAI.SetCar(car);
+            carAI.ClearSkills();
             player2Camera.ReSetTrackedTarget(car);
         }
         
@@ -458,6 +461,7 @@ namespace Lachesis.GamePlay
         {
             var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, lastColor);
             carAI.SetCar(car);
+            carAI.ClearSkills();
         }
         
         private bool TryGetSwitchControllers(out CarController car1, out CarController car2)
