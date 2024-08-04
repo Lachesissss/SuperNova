@@ -25,7 +25,7 @@ namespace Lachesis.GamePlay
                 if(!controller.controller.IsSkillSlotFull())
                 {
                     //发出获取技能卡的事件
-                    GameEntry.EventManager.Fire(this, GetSkillEventArgs.Create(skillEnum, controller.carControllerName));
+                    GameEntry.EventManager.Invoke(this, GetSkillEventArgs.Create(skillEnum, controller.carControllerName));
                     GameEntry.EntityManager.ReturnEntity(EntityEnum.SkillPickUpItem, this);
                 }
                 else

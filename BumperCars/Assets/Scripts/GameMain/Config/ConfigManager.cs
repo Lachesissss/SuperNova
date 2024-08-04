@@ -13,9 +13,9 @@ namespace Lachesis.Core
             LoadConfigs();
         }
 
+        // 从 Resources/Config 加载所有配置文件
         private void LoadConfigs()
         {
-            // 从 Resources/Config 加载所有配置文件
             var configs = Resources.LoadAll<ScriptableObject>("Config");
 
             foreach (var config in configs) configDictionary[config.GetType()] = config;

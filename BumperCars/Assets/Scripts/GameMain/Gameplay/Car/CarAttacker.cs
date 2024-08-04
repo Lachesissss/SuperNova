@@ -58,7 +58,7 @@ namespace Lachesis.GamePlay
                     attackInfo.underAttacker = otherCar.carControllerName;
                     attackInfo.attackTime = DateTime.Now;
                     attackInfo.attackType = AttackType.Collide;
-                    GameEntry.EventManager.Fire(this, AttackEventArgs.Create(attackInfo));
+                    GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo));
                 }
             }
         }

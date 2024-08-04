@@ -56,7 +56,7 @@ namespace Lachesis.GamePlay
             }
             if(Switch)
             {
-                GameEntry.EventManager.Fire(this, SwitchCarEventArgs.Create());
+                GameEntry.EventManager.Invoke(this, SwitchCarEventArgs.Create());
             }
         }
 

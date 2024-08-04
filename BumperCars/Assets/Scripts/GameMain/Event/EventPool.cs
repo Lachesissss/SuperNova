@@ -117,7 +117,7 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要订阅的事件处理函数。</param>
-        public void Subscribe(int id, EventHandler<T> handler)
+        public void AddListener(int id, EventHandler<T> handler)
         {
             if (handler == null) Debug.LogError("Event handler is invalid.");
 
@@ -131,7 +131,7 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理函数。</param>
-        public void Unsubscribe(int id, EventHandler<T> handler)
+        public void RemoveListener(int id, EventHandler<T> handler)
         {
             if (handler == null) Debug.LogError("Event handler is invalid.");
 
@@ -176,7 +176,7 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>
-        public void Fire(object sender, T e)
+        public void Invoke(object sender, T e)
         {
             if (e == null)
             {
@@ -196,7 +196,7 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>
-        public void FireNow(object sender, T e)
+        public void InvokeNow(object sender, T e)
         {
             if (e == null) Debug.LogError("Event is invalid.");
 

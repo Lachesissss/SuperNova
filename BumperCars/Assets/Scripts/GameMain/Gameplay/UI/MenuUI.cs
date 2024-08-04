@@ -30,11 +30,11 @@ namespace Lachesis.GamePlay
         
         private void OnEnterSingleMode()
         {
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Single));
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Single));
         }
         private void OnEnterDoubleMode()
         {
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Double));
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Double));
         }
         
         

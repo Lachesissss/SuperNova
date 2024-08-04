@@ -13,7 +13,7 @@ namespace Lachesis.GamePlay
         protected internal override void OnInit(ProcedureOwner procedureOwner)
         {
             base.OnInit(procedureOwner);
-            GameEntry.EventManager.Subscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
+            GameEntry.EventManager.AddListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
         }
 
         protected internal override void OnEnter(ProcedureOwner procedureOwner)
@@ -70,7 +70,7 @@ namespace Lachesis.GamePlay
         protected internal override void OnDestroy(ProcedureOwner procedureOwner)
         {
             base.OnDestroy(procedureOwner);
-            GameEntry.EventManager.Unsubscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
+            GameEntry.EventManager.RemoveListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
         }
 
         // private void OnOpenUIFormSuccess(object sender, GameEventArgs e)

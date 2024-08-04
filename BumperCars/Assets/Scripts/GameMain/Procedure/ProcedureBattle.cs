@@ -56,10 +56,10 @@ namespace Lachesis.GamePlay
             m_skillPickUpItems = new List<SkillPickUpItem>();
             
             //注册事件
-            GameEntry.EventManager.Subscribe(AttackEventArgs.EventId, OnAttackHappened);
-            GameEntry.EventManager.Subscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
-            GameEntry.EventManager.Subscribe(SwitchCarEventArgs.EventId, OnSwitchCar);
-            GameEntry.EventManager.Subscribe(GetSkillEventArgs.EventId, OnSkillItemPicked);
+            GameEntry.EventManager.AddListener(AttackEventArgs.EventId, OnAttackHappened);
+            GameEntry.EventManager.AddListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
+            GameEntry.EventManager.AddListener(SwitchCarEventArgs.EventId, OnSwitchCar);
+            GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
             isGoMenu = false;
             isGoSettlement = false;
             m_settlementData = null;
@@ -291,10 +291,10 @@ namespace Lachesis.GamePlay
             m_ControllerCameraDict.Clear();
             m_playerScoreDict[p1Name] = 0;
             m_playerScoreDict[p2Name] = 0;
-            GameEntry.EventManager.Unsubscribe(AttackEventArgs.EventId, OnAttackHappened);
-            GameEntry.EventManager.Unsubscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
-            GameEntry.EventManager.Unsubscribe(SwitchCarEventArgs.EventId, OnSwitchCar);
-            GameEntry.EventManager.Unsubscribe(GetSkillEventArgs.EventId, OnSkillItemPicked);
+            GameEntry.EventManager.RemoveListener(AttackEventArgs.EventId, OnAttackHappened);
+            GameEntry.EventManager.RemoveListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
+            GameEntry.EventManager.RemoveListener(SwitchCarEventArgs.EventId, OnSwitchCar);
+            GameEntry.EventManager.RemoveListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
         }
 
         protected internal override void OnDestroy(ProcedureOwner procedureOwner)
@@ -379,7 +379,7 @@ namespace Lachesis.GamePlay
                     if (m_playerScoreDict.ContainsKey(killer))
                     {
                         m_playerScoreDict[killer] += 1;
-                        GameEntry.EventManager.Fire(ScoreUpdateEventArgs.EventId,
+                        GameEntry.EventManager.Invoke(ScoreUpdateEventArgs.EventId,
                             ScoreUpdateEventArgs.Create(m_playerScoreDict[p1Name], m_playerScoreDict[p2Name]));
                     }
                 }

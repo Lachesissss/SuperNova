@@ -29,7 +29,7 @@ namespace Lachesis.GamePlay
             }
             this.procedureOwner = procedureOwner;
             isGoMenu = false;
-            GameEntry.EventManager.Subscribe(ProcedureChangeEventArgs.EventId, OnProcedureChange);
+            GameEntry.EventManager.AddListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             m_settlementUI = GameEntry.EntityManager.CreateEntity<WinSettlementUI>(EntityEnum.WinSettlementUI, GameEntry.instance.canvasRoot.transform, m_settlementData);
         }
         

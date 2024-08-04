@@ -22,7 +22,7 @@ namespace Lachesis.GamePlay
 
         private void OnGoBackToTitleBtnClicked()
         {
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
             goBackToTittleBtn.onClick.RemoveAllListeners();
         }
 

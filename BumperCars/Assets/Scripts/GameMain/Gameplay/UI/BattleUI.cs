@@ -46,8 +46,8 @@ namespace Lachesis.GamePlay
         {
             base.OnReCreateFromPool(userData);
             m_instance = this;
-            GameEntry.EventManager.Subscribe(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
-            GameEntry.EventManager.Subscribe(PlayerBattleUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
+            GameEntry.EventManager.AddListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.AddListener(PlayerBattleUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             if(userData is BattleUIData battleUIData)
             {
                 RefreshAll(battleUIData);
@@ -68,7 +68,7 @@ namespace Lachesis.GamePlay
         {
             base.OnReturnToPool(isShutDown);
             m_instance = null;
-            GameEntry.EventManager.Unsubscribe(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.RemoveListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
             settingBtn.onClick.RemoveAllListeners();
             continueBtn.onClick.RemoveAllListeners();
             backToTittleBtn.onClick.RemoveAllListeners();
@@ -92,7 +92,7 @@ namespace Lachesis.GamePlay
 
         private void OnBackToTittleBtnClicked()
         {
-            GameEntry.EventManager.Fire(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
         }
         
         private void RefreshScore(int p1Score, int p2Score)

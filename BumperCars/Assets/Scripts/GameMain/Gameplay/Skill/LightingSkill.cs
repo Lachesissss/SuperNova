@@ -49,7 +49,7 @@ namespace Lachesis.GamePlay
                 attackInfo.attackTime = DateTime.Now;
                 attackInfo.attackType = AttackType.Skill;
                 attackInfo.userData = skillEnum;
-                GameEntry.EventManager.Fire(this, AttackEventArgs.Create(attackInfo));
+                GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo));
                 return true;
             }
 

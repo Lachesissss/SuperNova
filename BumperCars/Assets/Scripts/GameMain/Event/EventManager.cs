@@ -76,9 +76,9 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要订阅的事件处理函数。</param>
-        public void Subscribe(int id, EventHandler<GameEventArgs> handler)
+        public void AddListener(int id, EventHandler<GameEventArgs> handler)
         {
-            m_EventPool.Subscribe(id, handler);
+            m_EventPool.AddListener(id, handler);
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理函数。</param>
-        public void Unsubscribe(int id, EventHandler<GameEventArgs> handler)
+        public void RemoveListener(int id, EventHandler<GameEventArgs> handler)
         {
-            m_EventPool.Unsubscribe(id, handler);
+            m_EventPool.RemoveListener(id, handler);
         }
 
         /// <summary>
@@ -105,9 +105,9 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>
-        public void Fire(object sender, GameEventArgs e)
+        public void Invoke(object sender, GameEventArgs e)
         {
-            m_EventPool.Fire(sender, e);
+            m_EventPool.Invoke(sender, e);
         }
 
         /// <summary>
@@ -115,9 +115,9 @@ namespace Lachesis.Core
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>
-        public void FireNow(object sender, GameEventArgs e)
+        public void InvokeNow(object sender, GameEventArgs e)
         {
-            m_EventPool.FireNow(sender, e);
+            m_EventPool.InvokeNow(sender, e);
         }
     }
 }
