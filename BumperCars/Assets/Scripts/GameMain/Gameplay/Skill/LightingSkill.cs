@@ -25,31 +25,7 @@ namespace Lachesis.GamePlay
         {
             if (TryGetSkillTarget(source, out var target))
             {
-                var lighting = GameEntry.EntityManager.CreateEntity<LightningEffect>(EntityEnum.LightningEffect, source.transform);
-                source.AddEffectEntity(lighting);
-                lighting.StartObject = source.gameObject;
-                lighting.EndObject = null;
-                lighting.StartPosition = effectDeltaPos;
-                lighting.EndPosition = target.transform.position + effectDeltaPos;
-                target.transform.position += deltaPos;
-                // 施加瞬间水平力
-                var forceDirection = target.transform.position - source.transform.position;
-                forceDirection.y = 0;
-                forceDirection = forceDirection.normalized;
-                target.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass / target.bodyRb.mass));
-
-                // 暂时降低摩擦力
-                var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
-                GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
-                GameEntry.instance.StartCoroutine(DelayToDestoryLightingEffect(source, lighting));
-                
-                var attackInfo = new AttackInfo();
-                attackInfo.attacker = source.carControllerName;
-                attackInfo.underAttacker = target.carControllerName;
-                attackInfo.attackTime = DateTime.Now;
-                attackInfo.attackType = AttackType.Skill;
-                attackInfo.userData = skillEnum;
-                GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo));
+                GameEntry.instance.StartCoroutine(DelayToAttack(source, target)); 
                 return true;
             }
 
@@ -72,6 +48,45 @@ namespace Lachesis.GamePlay
                 }
 
             return target != null;
+        }
+        
+        private IEnumerator DelayToAttack(CarComponent source, CarComponent target)
+        {
+            var lightingPrepare = GameEntry.EntityManager.CreateEntity<LightingPrepareEffect>(EntityEnum.LightingPrepareEffect, source.transform, effectDeltaPos);
+            source.AddEffectEntity(lightingPrepare);
+            yield return new WaitForSeconds(1f);
+            source.RemoveEffectEntity(lightingPrepare);
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.LightingPrepareEffect, lightingPrepare);
+            if(!target.IsValid) yield break ; //如果此时target已经没了，就不发闪电了
+            
+            var lighting = GameEntry.EntityManager.CreateEntity<LightningEffect>(EntityEnum.LightningEffect, source.transform);
+            source.AddEffectEntity(lighting);
+            lighting.StartObject = source.gameObject;
+            lighting.EndObject = null;
+            lighting.StartPosition = effectDeltaPos;
+            lighting.EndPosition = target.transform.position + effectDeltaPos;
+            target.transform.position += deltaPos;
+            GameEntry.instance.StartCoroutine(DelayToDestoryLightingEffect(source, lighting));
+            void OnHit()
+            {
+                // 施加瞬间水平力
+                var forceDirection = target.transform.position - source.transform.position;
+                forceDirection.y = 0;
+                forceDirection = forceDirection.normalized;
+                target.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass / target.bodyRb.mass));
+                // 暂时降低摩擦力
+                var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
+                GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
+                
+            }
+            
+            var attackInfo = new AttackInfo();
+            attackInfo.attacker = source.carControllerName;
+            attackInfo.underAttacker = target.carControllerName;
+            attackInfo.attackTime = DateTime.Now;
+            attackInfo.attackType = AttackType.Skill;
+            attackInfo.userData = skillEnum;
+            GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo,OnHit));
         }
 
         private IEnumerator DelayToDestoryLightingEffect(CarComponent source, LightningEffect lightning)

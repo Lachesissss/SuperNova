@@ -14,7 +14,7 @@ namespace Lachesis.GamePlay
         [Serializable]
         public struct EntityResource
         {
-            public EntityEnum itemEnum;
+            public EntityEnum entityEnum;
             public GameObject prefab;
         }
 

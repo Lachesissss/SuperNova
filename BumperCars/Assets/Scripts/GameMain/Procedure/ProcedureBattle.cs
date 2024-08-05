@@ -56,7 +56,7 @@ namespace Lachesis.GamePlay
             m_skillPickUpItems = new List<SkillPickUpItem>();
             
             //注册事件
-            GameEntry.EventManager.AddListener(AttackEventArgs.EventId, OnAttackHappened);
+            GameEntry.EventManager.AddListener(AttackHitArgs.EventId, OnAttackHappened);
             GameEntry.EventManager.AddListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             GameEntry.EventManager.AddListener(SwitchCarEventArgs.EventId, OnSwitchCar);
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
@@ -226,8 +226,13 @@ namespace Lachesis.GamePlay
 
         private void OnAttackHappened(object sender, GameEventArgs e)
         {
-            if (e is AttackEventArgs args) lastAttackInfoDict[args.attackInfo.underAttacker] = args.attackInfo;
+            if (e is AttackHitArgs args)
+            {
+                lastAttackInfoDict[args.attackInfo.underAttacker] = args.attackInfo;
+            } 
         }
+        
+        
         
         private void OnProcedureChange(object sender, GameEventArgs e)
         {
@@ -291,7 +296,7 @@ namespace Lachesis.GamePlay
             m_ControllerCameraDict.Clear();
             m_playerScoreDict[p1Name] = 0;
             m_playerScoreDict[p2Name] = 0;
-            GameEntry.EventManager.RemoveListener(AttackEventArgs.EventId, OnAttackHappened);
+            GameEntry.EventManager.RemoveListener(AttackHitArgs.EventId, OnAttackHappened);
             GameEntry.EventManager.RemoveListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             GameEntry.EventManager.RemoveListener(SwitchCarEventArgs.EventId, OnSwitchCar);
             GameEntry.EventManager.RemoveListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
@@ -421,7 +426,7 @@ namespace Lachesis.GamePlay
             // var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
             //     targetScore = m_globalConfig.targetScore, carPlayer = carPlayer};
             // m_battleUI.RefreshAll(battleUIData);
-            m_battleUI.RefreshPlayerBattleUI();
+            m_battleUI.RefreshSkillSlotsUI();
         }
         
         private IEnumerator DelayToRevivePlayerDoubleMode(CarPlayer carPlayer,CarComponent.ClothColor lastColor)
@@ -438,7 +443,7 @@ namespace Lachesis.GamePlay
                 // var battleUIData =new BattleUI.BattleUIData(){p1Name = this.p1Name,p2Name = this.p2Name, 
                 //     targetScore = m_globalConfig.targetScore, carPlayer = carPlayer};
                 // m_battleUI.RefreshAll(battleUIData);
-                m_battleUI.RefreshPlayerBattleUI();
+                m_battleUI.RefreshSkillSlotsUI();
             }
             else
             {
@@ -459,7 +464,7 @@ namespace Lachesis.GamePlay
         
         private void ReviveAIDoubleMode(CarAI carAI, CarComponent.ClothColor lastColor)
         {
-            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, lastColor);
+            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity, lastColor);
             carAI.SetCar(car);
             carAI.ClearSkills();
         }

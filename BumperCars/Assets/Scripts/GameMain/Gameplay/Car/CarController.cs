@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -17,6 +18,8 @@ namespace Lachesis.GamePlay
         public CarComponent carComponent;
         public string controllerName;
         public List<Skill> skillSlots;
+        public bool canBoost;
+        public bool canSwitch;
         protected GlobalConfig m_globalConfig;
         public bool IsHasCar=>carComponent!=null;
 
@@ -30,6 +33,8 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);
+            canBoost = true;
+            canSwitch = true;
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnGetSkill);
             if(userData is CarControllerData data)
             {
@@ -49,6 +54,8 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
+            canBoost = true;
+            canSwitch = true;
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnGetSkill);
             if (userData is CarControllerData data)
             {
@@ -86,12 +93,16 @@ namespace Lachesis.GamePlay
             skillSlots.Clear();
             for (var i = 0; i < m_globalConfig.maxSkillCount; i++)
                 skillSlots.Add(null);
-            GameEntry.EventManager.Invoke(this, PlayerBattleUIUpdateEventArgs.Create());
+            GameEntry.EventManager.Invoke(this, PlayerSkillSlotsUIUpdateEventArgs.Create());
         }
         
         public override void OnReturnToPool(bool isShutDown = false)
         {
             base.OnReturnToPool(isShutDown);
+            if(!isShutDown)
+            {
+                StopAllCoroutines();
+            }
             GameEntry.EventManager.RemoveListener(GetSkillEventArgs.EventId, OnGetSkill);
         }
 
@@ -106,7 +117,7 @@ namespace Lachesis.GamePlay
                         if(skillSlots[i]==null)
                         {
                             skillSlots[i] = GameEntry.SkillManager.CreateSkill(args.skillEnum);
-                            GameEntry.EventManager.Invoke(this, PlayerBattleUIUpdateEventArgs.Create());
+                            GameEntry.EventManager.Invoke(this, PlayerSkillSlotsUIUpdateEventArgs.Create());
                             var showMsg = $"[{controllerName}]获得了[{skillSlots[i].skillName}],并装配在了{i+1}号技能槽";
                             Debug.Log(showMsg);
                             //BattleUI.ShowPopupTips(showMsg);
@@ -128,7 +139,7 @@ namespace Lachesis.GamePlay
             {
                 if (skillSlots[index].TryActivate(carComponent))
                 {
-                    GameEntry.EventManager.Invoke(this, PlayerBattleUIUpdateEventArgs.Create());
+                    GameEntry.EventManager.Invoke(this, PlayerSkillSlotsUIUpdateEventArgs.Create());
                     var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
                     
                     var showMsg = $"[{carComponent.carControllerName}]释放了[{skillSlots[index].skillName}],{config.activateText}!";

@@ -28,6 +28,8 @@ namespace Lachesis.GamePlay
         
         //Effect
         LightningEffect,
+        LightingPrepareEffect,
+        ExtremeDodgeEffect,
         StrongerEffect,
         
         //Camera
@@ -49,9 +51,9 @@ namespace Lachesis.GamePlay
             m_entityConfig = config;
             foreach (var entityResource in m_entityConfig.entityResources)
             {
-                m_hideEntityPool.Add(entityResource.itemEnum, new List<Entity>());
-                m_activeEntityDict.Add(entityResource.itemEnum, new List<Entity>());
-                m_entityDict.Add(entityResource.itemEnum, entityResource.prefab);
+                m_hideEntityPool.Add(entityResource.entityEnum, new List<Entity>());
+                m_activeEntityDict.Add(entityResource.entityEnum, new List<Entity>());
+                m_entityDict.Add(entityResource.entityEnum, entityResource.prefab);
             }
         }
 

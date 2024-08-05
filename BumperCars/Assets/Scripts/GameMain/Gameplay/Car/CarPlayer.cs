@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -40,7 +41,11 @@ namespace Lachesis.GamePlay
             carComponent.ChangeCarHandBrakeState(Handbrake);
             if(Boost)
             {
-                carComponent.DoBoost();
+                TryBoost();
+            }
+            if(Switch)
+            {
+                TrySwitch();
             }
             if(Skill1)
             {
@@ -54,12 +59,48 @@ namespace Lachesis.GamePlay
             {
                 ActivateSkill(2);
             }
-            if(Switch)
-            {
-                GameEntry.EventManager.Invoke(this, SwitchCarEventArgs.Create());
-            }
+        }
+        
+        private void TryBoost()
+        {
+            if(!canBoost) return;
+            carComponent.DoBoost();
+            var coolingInfo = new BattleUI.CoolingInfo();
+            coolingInfo.playerName = controllerName;
+            coolingInfo.isBoostCoolingInfoChanged = true;
+            coolingInfo.BoostCoolingTime = m_globalConfig.carBoostCoolingTime;
+            GameEntry.EventManager.Invoke(this, PlayerCoolingUIUpdateEventArgs.Create(coolingInfo));
+            // 冷却时间
+            StartCoroutine(StartBoostCoolingTime());
         }
 
+        private void TrySwitch()
+        {
+            if(!canSwitch) return;
+            carComponent.DoSwitch();
+            float randomCooling = Random.Range(m_globalConfig.carSwitchCoolingTimeMin, m_globalConfig.carSwitchCoolingTimeMax);
+            var coolingInfo = new BattleUI.CoolingInfo();
+            coolingInfo.playerName = controllerName;
+            coolingInfo.isSwitchCoolingInfoChanged = true;
+            coolingInfo.SwitchCoolingTime = randomCooling;
+            GameEntry.EventManager.Invoke(this, PlayerCoolingUIUpdateEventArgs.Create(coolingInfo));
+            StartCoroutine(StartSwitchCoolingTime(randomCooling));
+        }
+        
+        private IEnumerator StartBoostCoolingTime()
+        {
+            canBoost = false;
+            yield return new WaitForSeconds(m_globalConfig.carBoostCoolingTime);
+            canBoost = true;
+        }
+        
+        private IEnumerator StartSwitchCoolingTime(float randomCooling)
+        {
+            canSwitch = false;
+            yield return new WaitForSeconds(randomCooling);
+            canSwitch = true;
+        }
+        
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);

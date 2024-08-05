@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Lachesis.GamePlay
 {
-    public class StrongerEffect : Entity
+    public class StrongerEffect : ParticleSystemEffect
     {
         
     }

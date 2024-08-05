@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
@@ -13,6 +14,10 @@ namespace Lachesis.GamePlay
         public Button settingBtn;
         public Button continueBtn;
         public Button backToTittleBtn;
+        public Image p1BoostCoolingImg;
+        public Image p2BoostCoolingImg;
+        public Image p1SwitchCoolingImg;
+        public Image p2SwitchCoolingImg;
         public GameObject popupGo;
         public List<SkillSlot> player1SkillSlots;
         public List<SkillSlot> player2SkillSlots;
@@ -35,26 +40,58 @@ namespace Lachesis.GamePlay
             public CarController carController2;
         }
 
+        public class CoolingInfo
+        {
+            public string playerName;
+            public bool isBoostCoolingInfoChanged = false;
+            public bool isSwitchCoolingInfoChanged = false;
+            public float BoostCoolingTime;
+            public float SwitchCoolingTime;
+        }
+        
         public override void OnInit(object userData = null)
         {
             base.OnInit(userData);
             popupTextQueue = new();
             curShowTips = new();
+            
         }
-
+        
+        private void InitCoolingImg(Image img)
+        {
+            img.type = Image.Type.Filled;
+            img.fillMethod = Image.FillMethod.Radial360;
+            img.fillAmount = 0;
+        }
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
+            ResetBattleUI(userData);
+        }
+
+        public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
+        {
+            base.OnReCreateFromPool(pos, rot, userData);
+            ResetBattleUI(userData);
+        }
+
+        private void ResetBattleUI(object userData)
+        {
             m_instance = this;
+            InitCoolingImg(p1BoostCoolingImg);
+            InitCoolingImg(p2BoostCoolingImg);
+            InitCoolingImg(p1SwitchCoolingImg);
+            InitCoolingImg(p2SwitchCoolingImg);
             GameEntry.EventManager.AddListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
-            GameEntry.EventManager.AddListener(PlayerBattleUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
+            GameEntry.EventManager.AddListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
+            GameEntry.EventManager.AddListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
+            settingBtn.onClick.AddListener(OnSettingBtnClicked);
+            continueBtn.onClick.AddListener(OnContinueBtnClicked);
+            backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
             if(userData is BattleUIData battleUIData)
             {
                 RefreshAll(battleUIData);
             }
-            settingBtn.onClick.AddListener(OnSettingBtnClicked);
-            continueBtn.onClick.AddListener(OnContinueBtnClicked);
-            backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
             popupGo.SetActive(false);
             foreach (var tip in curShowTips)
             {
@@ -69,6 +106,8 @@ namespace Lachesis.GamePlay
             base.OnReturnToPool(isShutDown);
             m_instance = null;
             GameEntry.EventManager.RemoveListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.RemoveListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
+            GameEntry.EventManager.RemoveListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             settingBtn.onClick.RemoveAllListeners();
             continueBtn.onClick.RemoveAllListeners();
             backToTittleBtn.onClick.RemoveAllListeners();
@@ -106,11 +145,12 @@ namespace Lachesis.GamePlay
         {
             m_p1Name = battleUIData.p1Name;
             m_p2Name = battleUIData.p2Name;
+            
             m_controller1 = battleUIData.carController1;
             m_controller2 = battleUIData.carController2;
             m_targetScore = battleUIData.targetScore;
             RefreshScore(0,0);
-            RefreshPlayerBattleUI();
+            RefreshSkillSlotsUI();
         }
 
         private void OnScoreUpdate(object sender, GameEventArgs e)
@@ -123,13 +163,21 @@ namespace Lachesis.GamePlay
         
         private void OnPlayerBattleUIUpdate(object sender, GameEventArgs e)
         {
-            if(e is PlayerBattleUIUpdateEventArgs args)
+            if(e is PlayerSkillSlotsUIUpdateEventArgs args)
             {
-                RefreshPlayerBattleUI();
+                RefreshSkillSlotsUI();
             }
         }
         
-        public void RefreshPlayerBattleUI()
+        private void OnPlayerCoolingUIUpdate(object sender, GameEventArgs e)
+        {
+            if(e is PlayerCoolingUIUpdateEventArgs args)
+            {
+                RefreshCooling(args.coolingInfo);
+            }
+        }
+        
+        public void RefreshSkillSlotsUI()
         {
             if (m_controller1 != null)
             {
@@ -169,6 +217,38 @@ namespace Lachesis.GamePlay
                     }
                 }
             }
+            
+        }
+        
+        private void RefreshCooling(CoolingInfo info)
+        {
+            if(info.playerName == m_p1Name)
+            {
+                if(info.isSwitchCoolingInfoChanged)
+                {
+                    if(p1SwitchCoroutine!=null) StopCoroutine(p1SwitchCoroutine);
+                    p1SwitchCoroutine = StartCoroutine(StartCooling(p1SwitchCoolingImg, info.SwitchCoolingTime));
+                }
+                if(info.isBoostCoolingInfoChanged)
+                {
+                    if(p1BoostCoroutine!=null) StopCoroutine(p1BoostCoroutine);
+                    p1BoostCoroutine = StartCoroutine(StartCooling(p1BoostCoolingImg, info.BoostCoolingTime));
+                }
+            }
+            else if(info.playerName == m_p2Name)
+            {
+                if(info.isSwitchCoolingInfoChanged)
+                {
+                    if(p2SwitchCoroutine!=null) StopCoroutine(p2SwitchCoroutine);
+                    p2SwitchCoroutine = StartCoroutine(StartCooling(p2SwitchCoolingImg, info.SwitchCoolingTime));
+                }
+                if(info.isBoostCoolingInfoChanged)
+                {
+                    if(p2BoostCoroutine!=null) StopCoroutine(p2BoostCoroutine);
+                    p2BoostCoroutine = StartCoroutine(StartCooling(p2BoostCoolingImg, info.BoostCoolingTime));
+                }
+            }
+            
         }
         
         public static void ShowPopupTips(string content)
@@ -256,6 +336,28 @@ namespace Lachesis.GamePlay
         private void RemoveItem(PopupTips item)
         {
             curShowTips.Remove(item);
+        }
+        
+        private Coroutine p1BoostCoroutine;
+        private Coroutine p2BoostCoroutine;
+        private Coroutine p1SwitchCoroutine;
+        private Coroutine p2SwitchCoroutine;
+        
+        private IEnumerator StartCooling(Image img, float coolingTime)
+        {
+            var curTime = coolingTime;
+            float startTime = Time.time;
+            float endTime = Time.time;
+            img.fillAmount = 1;
+            while (curTime>0)
+            {
+                curTime-=(endTime - startTime);
+                startTime = Time.time;
+                yield return new WaitForEndOfFrame();
+                endTime = Time.time;
+                img.fillAmount = curTime/coolingTime;
+            }
+            img.fillAmount = 0;
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Lachesis.GamePlay
         public ProcedureBase BelongProcedure { get; private set; }
         [HideInInspector]
         public EntityEnum entityEnum;
+        private bool m_isValid;
+        public bool IsValid =>m_isValid;
         public virtual void OnInit(object userData = null)
         {
             GetEntityComponents();
@@ -54,11 +56,13 @@ namespace Lachesis.GamePlay
             gameObject.transform.position = pos;
             gameObject.transform.rotation = rot;
             BelongProcedure = GameEntry.ProcedureManager.CurrentProcedure;
+            m_isValid = true;
             foreach (var component in entityComponents) component.OnEntityReCreateFromPool(userData);
         }
         
         public virtual void OnReCreateFromPool(object userData = null)
         {
+            m_isValid = true;
             BelongProcedure = GameEntry.ProcedureManager.CurrentProcedure;
             foreach (var component in entityComponents) component.OnEntityReCreateFromPool(userData);
         }
@@ -66,6 +70,7 @@ namespace Lachesis.GamePlay
         //如果是ShutDown时触发的回收，应避免gameobject相关操作，gameobject可能在实体被回收前被Destory
        public virtual void OnReturnToPool(bool isShutDown = false)
        {
+           m_isValid = false;
            foreach (var component in entityComponents) component.OnEntityReturnToPool(isShutDown);
        }
     }

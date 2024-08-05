@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Lachesis.Core;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -50,13 +51,14 @@ namespace Lachesis.GamePlay
 
         private float m_carForwardValue;
 
-        private bool m_canBoost;
-
         private bool m_isHandBrake;
 
         private GlobalConfig m_globalConfig;
         
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
+        
+        private bool m_isInWitchTime = false;
+        public bool IsInWitchTime =>m_isInWitchTime;
         
         public enum ClothColor
         {
@@ -129,6 +131,7 @@ namespace Lachesis.GamePlay
             base.OnReturnToPool(isShutDown);
             if(isShutDown) return;
             StopAllCoroutines();
+            GameEntry.EventManager.RemoveListener(AttackEventArgs.EventId, OnAttackArrived);
             foreach (var effectEntity in m_effectEntities)
                 //这里可能有风险，一个特效去销毁另一个特效的话，不过一般不会这么写
                 GameEntry.EntityManager.ReturnEntity(effectEntity.entityEnum, effectEntity);
@@ -139,7 +142,6 @@ namespace Lachesis.GamePlay
         
         public void DoBoost()
         {
-            if(!m_canBoost) return;
             transform.position += deltaPos;
             
             var forceDirection = transform.forward;
@@ -149,16 +151,15 @@ namespace Lachesis.GamePlay
             
             // 暂时降低摩擦力
             StartCoroutine(TemporarilyReduceFriction(wheelColliders));
-            // 冷却时间
-            StartCoroutine(StartBoostCoolingTime());
+            
         }
         
-        private IEnumerator StartBoostCoolingTime()
+        public void DoSwitch()
         {
-            m_canBoost = false;
-            yield return new WaitForSeconds(m_globalConfig.carBoostCoolingTime);
-            m_canBoost = true;
+            GameEntry.EventManager.Invoke(this, SwitchCarEventArgs.Create());
         }
+        
+        
         
         private IEnumerator TemporarilyReduceFriction(List<WheelCollider> wheelColliders)
         {
@@ -173,9 +174,11 @@ namespace Lachesis.GamePlay
                 sidewaysFriction.stiffness = m_globalConfig.underAttackSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
-
+            m_isInWitchTime = true;
+            yield return new WaitForSeconds(m_globalConfig.extremeDodgeTime); // 魔女时间
+            m_isInWitchTime = false;
             // 等待一段时间
-            yield return new WaitForSeconds(m_globalConfig.frictionRestoreDelay);
+            yield return new WaitForSeconds(m_globalConfig.frictionRestoreDelay-m_globalConfig.extremeDodgeTime);
 
             // 恢复原来的摩擦力设置
             for (var i = 0; i < wheelColliders.Count; i++)
@@ -189,19 +192,20 @@ namespace Lachesis.GamePlay
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
         }
-
+        
         private void ResetCar(object userData = null)
         {
             m_carForwardValue = 0;
             m_carTurnValue = 0;
             m_isHandBrake = false;
-            m_canBoost = true;
+            m_isInWitchTime = false;
             bodyRb.velocity = Vector3.zero;
             bodyRb.angularVelocity = Vector3.zero;
             bodyRb.mass = m_globalConfig.defaultCarMass;
             controller =null;
             carControllerName = "未定义";
             carAttacker.Reset();
+            GameEntry.EventManager.AddListener(AttackEventArgs.EventId, OnAttackArrived);
             
             // 确保所有的 WheelColliders 初始状态下不施加动力或转矩
             foreach (var wheel in wheelColliders)
@@ -254,6 +258,58 @@ namespace Lachesis.GamePlay
             }
         }
 
+        private void OnAttackArrived(object sender, GameEventArgs e)
+        {
+            if(e is AttackEventArgs args)
+            {
+                if(args.attackInfo.underAttacker == carControllerName)
+                {
+                    if(m_isInWitchTime)
+                    {
+                        GameEntry.instance.StartCoroutine(ShowWitchTimeEffect(controller.carComponent.transform));
+                    }
+                    else
+                    {
+                        GameEntry.EventManager.Invoke(this, AttackHitArgs.Create(args.attackInfo));
+                        args.OnHit.Invoke();
+                    }
+                }
+            }
+        }
+
+        private IEnumerator ShowWitchTimeEffect(Transform source)
+        {
+            int randomValue = Random.Range(0, 2) == 0 ? -1 : 1;
+            bodyRb.mass*=2;
+            RotateRigidbody(bodyRb, randomValue*270, 0.5f);
+            RotateRigidbody(bodyRb, randomValue*270, 0.5f);
+            Time.timeScale = 0.5f;
+            var effect = GameEntry.EntityManager.CreateEntity<ExtremeDodgeEffect>(EntityEnum.ExtremeDodgeEffect, source, new Vector3(0,0.3f,0f));
+            yield return new WaitForSecondsRealtime(m_globalConfig.extremeDodgeTime);
+            Time.timeScale = 1f;
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.ExtremeDodgeEffect, effect);
+            bodyRb.mass/=2;
+            controller.canBoost = true;
+            controller.canSwitch = true;
+            var coolingInfo = new BattleUI.CoolingInfo();
+            coolingInfo.playerName = carControllerName;
+            coolingInfo.isBoostCoolingInfoChanged = true;
+            coolingInfo.isSwitchCoolingInfoChanged = true;
+            coolingInfo.BoostCoolingTime = 0;
+            coolingInfo.SwitchCoolingTime = 0;
+            GameEntry.EventManager.Invoke(this, PlayerCoolingUIUpdateEventArgs.Create(coolingInfo));
+        }
+        
+        void RotateRigidbody(Rigidbody rb, float angle, float duration)
+        {
+            // 将角度转换为弧度
+            float angleInRadians = angle * Mathf.Deg2Rad;
+            // 计算所需的角速度
+            float angularVelocity = angleInRadians / duration;
+            // 设置 Rigidbody 的角速度
+            rb.angularVelocity = new Vector3(0, angularVelocity, 0); // 你可以根据需要调整旋转轴
+        }
+        
         // 在一帧之后重置刹车力
         private IEnumerator ResetBrakeTorque()
         {

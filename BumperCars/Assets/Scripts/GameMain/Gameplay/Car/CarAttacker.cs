@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -34,21 +35,25 @@ namespace Lachesis.GamePlay
             var otherRigidbody = other.attachedRigidbody;
             if (otherRigidbody != null && otherRigidbody != GetComponent<Rigidbody>())
             {
-                var otherWheelColliders = otherRigidbody.GetComponentsInChildren<WheelCollider>();
-                otherRigidbody.transform.position += deltaPos;
-                hasCollided = true;
-                // 施加瞬间水平力
-                var forceDirection = (otherRigidbody.transform.position - transform.position).normalized;
-                var rate =  Vector3.Dot(forceDirection,m_carBody.velocity.normalized) ;
-                forceDirection.y = 0;
-                forceDirection = forceDirection.normalized;
-                otherRigidbody.velocity += (forceDirection.normalized * m_globalConfig.impactSpeed + rate * m_carBody.velocity)*(m_carBody.mass/otherRigidbody.mass);
+                void OnHit()
+                {
+                    var otherWheelColliders = otherRigidbody.GetComponentsInChildren<WheelCollider>();
+                    otherRigidbody.transform.position += deltaPos;
+                    hasCollided = true;
+                    // 施加瞬间水平力
+                    var forceDirection = (otherRigidbody.transform.position - transform.position).normalized;
+                    var rate =  Vector3.Dot(forceDirection,m_carBody.velocity.normalized) ;
+                    forceDirection.y = 0;
+                    forceDirection = forceDirection.normalized;
+                    otherRigidbody.velocity += (forceDirection.normalized * m_globalConfig.impactSpeed + rate * m_carBody.velocity)*(m_carBody.mass/otherRigidbody.mass);
 
-                // 暂时降低摩擦力
-                StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
+                    // 暂时降低摩擦力
+                    StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
 
-                // 重置碰撞标记
-                StartCoroutine(ResetCollisionFlag());
+                    // 重置碰撞标记
+                    StartCoroutine(ResetCollisionFlag());
+                }
+                
                 
                 var otherCar = otherRigidbody.GetComponent<CarComponent>();
                 if(otherCar!=null)
@@ -58,7 +63,7 @@ namespace Lachesis.GamePlay
                     attackInfo.underAttacker = otherCar.carControllerName;
                     attackInfo.attackTime = DateTime.Now;
                     attackInfo.attackType = AttackType.Collide;
-                    GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo));
+                    GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo, OnHit));
                 }
             }
         }

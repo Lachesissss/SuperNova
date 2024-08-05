@@ -16,18 +16,27 @@ MonoBehaviour:
   - skillEnum: 0
     skillName: "\u6768\u6559\u6388\u4E4B\u543B"
     iconName: lighting
-    activateText: "\u96F7\u9706\u4E07\u94A7"
+    activateText: 
     killText: "\u7535\u6210\u50BB\u74DC"
     showTextOnRelease: 0
+    skillType:
+      typeName: Lachesis.GamePlay.LightingSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
   - skillEnum: 1
     skillName: "\u786C\u5316\u76AE\u80A4"
     iconName: stronger
     activateText: "15\u79D2\u5185\u53D8\u5F97\u575A\u5982\u78D0\u77F3"
     killText: 
     showTextOnRelease: 1
+    skillType:
+      typeName: Lachesis.GamePlay.StrongerSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
   - skillEnum: 2
     skillName: "\u98A0\u5012\u4E16\u754C"
     iconName: flipvertical
     activateText: "\u6548\u679C\u62D4\u7FA4"
     killText: 
     showTextOnRelease: 1
+    skillType:
+      typeName: Lachesis.GamePlay.FlipVerticalSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null

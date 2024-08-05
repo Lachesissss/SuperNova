@@ -7,7 +7,7 @@ using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.U2D;
 
-namespace Lachesis.GamePlay
+namespace Lachesis.Editor
 {
     public class CreateAtlasFromFolderEditor
     {

@@ -14,10 +14,10 @@ namespace Lachesis.Core
 
         public static ProcedureChangeEventArgs Create(Type target, object userData = null)
         {
-            var buildTowerEventArgs = new ProcedureChangeEventArgs();
-            buildTowerEventArgs.TargetProcedureType = target;
-            buildTowerEventArgs.userData = userData;
-            return buildTowerEventArgs;
+            var args = new ProcedureChangeEventArgs();
+            args.TargetProcedureType = target;
+            args.userData = userData;
+            return args;
         }
     }
 }

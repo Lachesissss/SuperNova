@@ -18,26 +18,13 @@ namespace Lachesis.GamePlay
     //TODO:改成Skill的对象池实现
     public class SkillManager : GameModule
     {
-        Dictionary<SkillEnum, Type> skillTypeDict = new();
-        Dictionary<SkillEnum, SkillConfigItem> skillIconNameDict = new();
+        Dictionary<SkillEnum, SkillConfigItem> m_skillConfigItemDict = new();
         //List<Skill> curSkills = new();
         public void Initialize(SkillConfig skillConfig)
         {
-            //这个type只能在代码里先这么配了
-            skillTypeDict.Add(SkillEnum.Lighting, typeof(LightingSkill));
-            skillTypeDict.Add(SkillEnum.Stronger, typeof(StrongerSkill));
-            skillTypeDict.Add(SkillEnum.FlipVertical, typeof(FlipVerticalSkill));
-            foreach (var kv in skillTypeDict)
-            {
-                if(!kv.Value.IsSubclassOf(typeof(Skill)))
-                {
-                    Debug.LogError($"配置有误，{kv.Value.Name}没有继承自Skill");
-                }
-            }
-
             foreach (var config in skillConfig.skillResources)
             {
-               skillIconNameDict.Add(config.skillEnum, config); 
+               m_skillConfigItemDict.Add(config.skillEnum, config); 
             }
         }
         internal override void Update(float elapseSeconds, float realElapseSeconds)
@@ -60,12 +47,12 @@ namespace Lachesis.GamePlay
         
         public Skill CreateSkill(SkillEnum skillEnum)
         {
-            if(skillTypeDict.TryGetValue(skillEnum, out var type))
+            if(m_skillConfigItemDict.TryGetValue(skillEnum, out var cfg))
             {
-                var skill = (Skill)Activator.CreateInstance(type);
+                var skill = (Skill)Activator.CreateInstance(cfg.skillType.GetSkillType());
                 skill.Init();
                 skill.skillEnum = skillEnum;
-                skill.skillName = skillIconNameDict[skillEnum].skillName;
+                skill.skillName = m_skillConfigItemDict[skillEnum].skillName;
                 //curSkills.Add(skill);
                 return skill;
             }
@@ -81,7 +68,7 @@ namespace Lachesis.GamePlay
         
         public string GetSkillIconName(SkillEnum skillEnum)
         {
-           if(skillIconNameDict.TryGetValue(skillEnum, out var configItem))
+           if(m_skillConfigItemDict.TryGetValue(skillEnum, out var configItem))
            {
                return configItem.iconName;
            } 
@@ -91,7 +78,7 @@ namespace Lachesis.GamePlay
         
         public SkillConfigItem GetSkillConfigItem(SkillEnum skillEnum)
         {
-            if(skillIconNameDict.TryGetValue(skillEnum, out var configItem))
+            if(m_skillConfigItemDict.TryGetValue(skillEnum, out var configItem))
             {
                 return configItem;
             } 

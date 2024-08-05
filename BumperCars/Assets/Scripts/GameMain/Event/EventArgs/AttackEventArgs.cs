@@ -1,4 +1,6 @@
+using System;
 using Lachesis.Core;
+using Unity.VisualScripting;
 
 namespace Lachesis.GamePlay
 {
@@ -11,11 +13,14 @@ namespace Lachesis.GamePlay
         public object UserData { get; private set; }
 
         public AttackInfo attackInfo { get; private set; }
+        
+        public Action OnHit;
 
-        public static AttackEventArgs Create(AttackInfo info, object userData = null)
+        public static AttackEventArgs Create(AttackInfo info,Action onHit, object userData = null)
         {
             var args = new AttackEventArgs();
             args.attackInfo = info;
+            args.OnHit = onHit;
             args.UserData = userData;
             return args;
         }
