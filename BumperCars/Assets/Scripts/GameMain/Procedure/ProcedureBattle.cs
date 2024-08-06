@@ -10,15 +10,8 @@ namespace Lachesis.GamePlay
 {
     public class ProcedureBattle : ProcedureBase
     {
-        //private bool changeScene;
         private ProcedureOwner procedureOwner;
         private BattleField m_battleField = null;
-        // private static Dictionary<string, AttackInfo> lastAttackInfoDict; //key：被攻击的carName，value：最近一次攻击信息
-        // private static Dictionary< CarController,CarCamera> m_ControllerCameraDict;
-        // public static List<CarController> carControllers;
-        // public static List<SkillPickUpItem> m_skillPickUpItems;
-        // public static CarCamera player1Camera;
-        // public static CarCamera player2Camera;
         
         private BattleModel battleModel;
         private int carAiIndex = 0;
@@ -69,10 +62,14 @@ namespace Lachesis.GamePlay
                 {
                     SingleModeEnter();
                 }
-                else if(dungeonMode == DungeonMode.Double)
+                else
                 {
                     DoubleModeEnter();
                 }
+            }
+            else
+            {
+                SingleModeEnter();
             }
             //测试,创建技能卡
             // GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, Vector3.zero, Quaternion.identity, SkillEnum.Lighting);
@@ -147,7 +144,7 @@ namespace Lachesis.GamePlay
             {
                 SingleModeUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
             }
-            else if(dungeonMode == DungeonMode.Double)
+            else
             {
                 DoubleModeUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
             }
@@ -374,16 +371,18 @@ namespace Lachesis.GamePlay
 
                     if(attackInfo.attackType==AttackType.Collide)
                     {
-                        Debug.Log($"{carComponent.carControllerName} 在与{killer}的激烈碰撞中牺牲了！");
-                        BattleUI.ShowPopupTips($"{carComponent.carControllerName} 在与{killer}的激烈碰撞中牺牲了！");
+                        var showMsg = $"{carComponent.carControllerName} 在与{killer}的激烈碰撞中牺牲了！";
+                        Debug.Log(showMsg);
+                        GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                     }
                     else if(attackInfo.attackType==AttackType.Skill)
                     {
                         if(attackInfo.userData is SkillEnum skillEnum)
                         {
                             var skillCfg = GameEntry.SkillManager.GetSkillConfigItem(skillEnum);
-                            Debug.Log($"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}！");
-                            BattleUI.ShowPopupTips($"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}!");
+                            var showMsg = $"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}！";
+                            Debug.Log(showMsg);
+                            GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                         }
                     }
                             
@@ -396,14 +395,16 @@ namespace Lachesis.GamePlay
                 }
                 else
                 {
-                    Debug.Log($"[{carName}]Ta自杀了...");
-                    BattleUI.ShowPopupTips($"[{carName}]Ta自杀了...");
+                    var showMsg = $"[{carName}]Ta自杀了...";
+                    Debug.Log(showMsg);
+                    GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                 }
             }
             else
             {
-                Debug.Log($"[{carName}]Ta自杀了...");
-                BattleUI.ShowPopupTips($"[{carName}]Ta自杀了...");
+                var showMsg = $"[{carName}]Ta自杀了...";
+                Debug.Log(showMsg);
+                GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
             }
         }
         

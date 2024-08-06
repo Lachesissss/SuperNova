@@ -6,6 +6,14 @@ using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
 {
+    public class CoolingInfo
+    {
+        public string playerName;
+        public bool isBoostCoolingInfoChanged = false;
+        public bool isSwitchCoolingInfoChanged = false;
+        public float BoostCoolingTime;
+        public float SwitchCoolingTime;
+    }
     public class BattleUI : Entity
     {
         public Text player1ScoreText;
@@ -40,14 +48,7 @@ namespace Lachesis.GamePlay
             public CarController carController2;
         }
 
-        public class CoolingInfo
-        {
-            public string playerName;
-            public bool isBoostCoolingInfoChanged = false;
-            public bool isSwitchCoolingInfoChanged = false;
-            public float BoostCoolingTime;
-            public float SwitchCoolingTime;
-        }
+        
         
         public override void OnInit(object userData = null)
         {
@@ -85,6 +86,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
             GameEntry.EventManager.AddListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.AddListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
+            GameEntry.EventManager.AddListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
             settingBtn.onClick.AddListener(OnSettingBtnClicked);
             continueBtn.onClick.AddListener(OnContinueBtnClicked);
             backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
@@ -108,6 +110,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.RemoveListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
             GameEntry.EventManager.RemoveListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.RemoveListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
+            GameEntry.EventManager.RemoveListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
             settingBtn.onClick.RemoveAllListeners();
             continueBtn.onClick.RemoveAllListeners();
             backToTittleBtn.onClick.RemoveAllListeners();
@@ -174,6 +177,14 @@ namespace Lachesis.GamePlay
             if(e is PlayerCoolingUIUpdateEventArgs args)
             {
                 RefreshCooling(args.coolingInfo);
+            }
+        }
+        
+        private void OnUITipsShow(object sender, GameEventArgs e)
+        {
+            if(e is ShowUITipsEventArgs args)
+            {
+                ShowPopupTips(args.content);
             }
         }
         
@@ -251,7 +262,7 @@ namespace Lachesis.GamePlay
             
         }
         
-        public static void ShowPopupTips(string content)
+        private static void ShowPopupTips(string content)
         {
             if(m_instance==null)
             {

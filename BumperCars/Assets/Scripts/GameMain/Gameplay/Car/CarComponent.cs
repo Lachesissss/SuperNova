@@ -291,7 +291,7 @@ namespace Lachesis.GamePlay
             bodyRb.mass/=2;
             controller.canBoost = true;
             controller.canSwitch = true;
-            var coolingInfo = new BattleUI.CoolingInfo();
+            var coolingInfo = new CoolingInfo();
             coolingInfo.playerName = carControllerName;
             coolingInfo.isBoostCoolingInfoChanged = true;
             coolingInfo.isSwitchCoolingInfoChanged = true;

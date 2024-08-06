@@ -14,9 +14,9 @@ namespace Lachesis.GamePlay
 
         public object userData { get; private set; }
 
-        public BattleUI.CoolingInfo coolingInfo { get; private set; }
+        public CoolingInfo coolingInfo { get; private set; }
 
-        public static PlayerCoolingUIUpdateEventArgs Create(BattleUI.CoolingInfo info, object userData = null)
+        public static PlayerCoolingUIUpdateEventArgs Create(CoolingInfo info, object userData = null)
         {
             var args = new PlayerCoolingUIUpdateEventArgs();
             args.coolingInfo = info;

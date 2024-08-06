@@ -17,15 +17,15 @@ namespace Lachesis.GamePlay
         public CarComponent car;
         public CameraType type;
         [Header("一些控制参数")]
-        [Tooltip("Position of the target relative to the car.")]
+        [Tooltip("目标相对于汽车的位置。")]
         public Vector3 thirdPersonOffsetStart = new Vector3(0, 0.5f, 0);
-        [Tooltip("Position of the camera relative to the car.")]
+        [Tooltip("摄像机相对于汽车的位置。")]
         public Vector3 thirdPersonOffsetEnd = new Vector3(0, 1, -3);
-        [Tooltip("Rotation of the camera relative to the target.")]
+        [Tooltip("摄影机相对于目标的旋转。")]
         public Vector3 thirdPersonAngle = new Vector3(10, 0, 0);
-        [Tooltip("The minimum distance to keep when an obstacle is in the way of the camera.")]
+        [Tooltip("当障碍物挡住相机时应保持的最小距离。")]
         public float thirdPersonSkinWidth = 0.1f;
-        [Tooltip("Lowers the camera's rotation if the velocity of the rigidbody is below this value. Set to 0 to disable.")]
+        [Tooltip("如果刚体的速度低于此值，则降低相机的旋转。设置为 0 以禁用。")]
         public float interpolationUpToSpeed = 50;
         [Tooltip("旋转到目标的position速度")]
         public float thirdPersonPositionSpeed = 50;
@@ -36,7 +36,7 @@ namespace Lachesis.GamePlay
         private Camera m_camera;
         public Material flipMaterial;
         public bool m_isFlip;
-        private static bool isCompressing;
+        public static bool isCompressing;
 
         public override void OnInit(object userData = null)
         {
@@ -75,7 +75,7 @@ namespace Lachesis.GamePlay
                 cameraBody.angularVelocity = Vector3.zero;
             }
 
-            m_isFlip = false;
+            
             cameraBody.isKinematic = false;
             cameraBody.useGravity = false;
             cameraBody.drag = 0;
@@ -97,6 +97,15 @@ namespace Lachesis.GamePlay
         private void ResetCarCamera(object userData)
         {
             StopAllCoroutines();
+            if(type == CameraType.leftCamera)
+            {
+                m_camera.rect = new Rect(0,0,0.5f,1);
+            }
+            else
+            {
+                m_camera.rect = new Rect(0.5f,0,0.5f,1);
+            }
+            m_isFlip = false;
             isCompressing = false;
             if (userData is CarComponent trackedCar)
             {
@@ -220,14 +229,6 @@ namespace Lachesis.GamePlay
         {
             if (cameraBody == null) return;
             GetTargetTransforms(out var targetPosition, out var targetRotation, true);
-            if(type == CameraType.leftCamera)
-            {
-                m_camera.rect = new Rect(0,0,0.5f,1);
-            }
-            else
-            {
-                m_camera.rect = new Rect(0.5f,0,0.5f,1);
-            }
             cameraBody.position = targetPosition;
             cameraBody.rotation = targetRotation;
         }
@@ -283,7 +284,7 @@ namespace Lachesis.GamePlay
             }
             else if(strongCamera.type==CameraType.rightCamera&&weekCamera.type==CameraType.leftCamera)
             {
-                GameEntry.instance.StartCoroutine(DelayToCompressRightStrong(strongCamera, weekCamera));
+                GameEntry.instance.StartCoroutine(DelayToCompressRightStrong(weekCamera,strongCamera));
             }
             else
             {

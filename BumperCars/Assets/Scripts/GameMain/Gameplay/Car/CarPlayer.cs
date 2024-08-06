@@ -65,7 +65,7 @@ namespace Lachesis.GamePlay
         {
             if(!canBoost) return;
             carComponent.DoBoost();
-            var coolingInfo = new BattleUI.CoolingInfo();
+            var coolingInfo = new CoolingInfo();
             coolingInfo.playerName = controllerName;
             coolingInfo.isBoostCoolingInfoChanged = true;
             coolingInfo.BoostCoolingTime = m_globalConfig.carBoostCoolingTime;
@@ -79,7 +79,7 @@ namespace Lachesis.GamePlay
             if(!canSwitch) return;
             carComponent.DoSwitch();
             float randomCooling = Random.Range(m_globalConfig.carSwitchCoolingTimeMin, m_globalConfig.carSwitchCoolingTimeMax);
-            var coolingInfo = new BattleUI.CoolingInfo();
+            var coolingInfo = new CoolingInfo();
             coolingInfo.playerName = controllerName;
             coolingInfo.isSwitchCoolingInfoChanged = true;
             coolingInfo.SwitchCoolingTime = randomCooling;

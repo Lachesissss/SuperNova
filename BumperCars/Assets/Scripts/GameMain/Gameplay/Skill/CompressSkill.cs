@@ -42,7 +42,11 @@ namespace Lachesis.GamePlay
         //找拥有摄像机且离自己最近的实体
         public override bool TryGetSkillTarget(CarComponent source, out CarComponent target)
         {
-            //if(source.carControllerName == ProcedureBattle.player1Camera.)
+            if(CarCamera.isCompressing)
+            {
+                target = null;
+                return false;
+            } 
             var minDis = float.PositiveInfinity;
             target = null;
             foreach (var controller in m_battleModel.carControllers)

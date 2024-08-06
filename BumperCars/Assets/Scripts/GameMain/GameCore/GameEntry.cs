@@ -13,8 +13,8 @@ namespace Lachesis.GamePlay
         public static GameEntry instance;
 
         private static readonly List<GameModule> s_GameModules = new();
-
-        public string entranceProcedureTypeName; //初始流程
+        
+        public ProcedureType entranceProcedure; //初始流程
         
         public GameObject canvasRoot;
         
@@ -79,20 +79,9 @@ namespace Lachesis.GamePlay
                 var instance = (ProcedureBase)Activator.CreateInstance(type);
                 procedureBases.Add(instance);
             }
-
-            var isEntranceProcedureValid = false;
-            foreach (var procedureBase in procedureBases)
-            {
-                var type = procedureBase.GetType();
-                var fullName = $"{type.Namespace}.{type.Name}";
-                if (entranceProcedureTypeName == fullName)
-                {
-                    m_EntranceProcedure = procedureBase;
-                    isEntranceProcedureValid = true;
-                }
-            }
-
-            if (!isEntranceProcedureValid)
+            
+            m_EntranceProcedure = (ProcedureBase)Activator.CreateInstance(entranceProcedure.GetPrecedureType());
+            if (m_EntranceProcedure==null)
             {
                 Debug.LogError("Entrance procedure is invalid.");
                 yield break;

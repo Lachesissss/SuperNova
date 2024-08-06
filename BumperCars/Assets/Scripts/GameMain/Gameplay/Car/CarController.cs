@@ -146,7 +146,7 @@ namespace Lachesis.GamePlay
                     Debug.Log(showMsg);
                     if (!m_globalConfig.isUnlimitedFire) //无限火力
                         skillSlots[index] = null;
-                    if (config.showTextOnRelease) BattleUI.ShowPopupTips(showMsg);
+                    if (config.showTextOnRelease) GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                 }
                 else
                 {
