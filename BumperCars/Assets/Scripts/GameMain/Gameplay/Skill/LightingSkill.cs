@@ -10,7 +10,7 @@ namespace Lachesis.GamePlay
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
         private Vector3 effectDeltaPos = new Vector3(0,0.5f,0);
         private GlobalConfig m_globalConfig;
-
+        
         public override void Init(object userData = null)
         {
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
@@ -36,7 +36,7 @@ namespace Lachesis.GamePlay
         {
             var minDis = float.PositiveInfinity;
             target = null;
-            foreach (var controller in ProcedureBattle.carControllers)
+            foreach (var controller in BattleModel.Instance.carControllers)
                 if (controller.IsHasCar && controller != source.controller)
                 {
                     var dis = Vector3.Distance(controller.carComponent.transform.position, source.transform.position);

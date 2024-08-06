@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleModel.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\TypeNamePair.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\MenuUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\SkillType.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\AtlasManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerSkillSlotsUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementUI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\CompressSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PlayerSkillSlot.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameEntry.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarBody.cs" />
@@ -760,14 +762,14 @@
     <Reference Include="Unity.EditorCoroutines.Editor">
       <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.AI.Navigation">
-      <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.AI.Navigation.dll</HintPath>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
       <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Postprocessing.Runtime">
-      <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.Postprocessing.Runtime.dll</HintPath>
+    <Reference Include="Unity.AI.Navigation">
+      <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.AI.Navigation.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
@@ -820,11 +822,11 @@
     <Reference Include="Unity.AI.Navigation.Updater">
       <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.AI.Navigation.Updater.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.State.Editor">
-      <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Postprocessing.Editor">
       <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.Postprocessing.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.State.Editor">
+      <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:\Project\SuperNova\BumperCars\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>

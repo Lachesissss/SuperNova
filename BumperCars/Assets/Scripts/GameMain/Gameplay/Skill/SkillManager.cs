@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lachesis.Core;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Lachesis.GamePlay
 {
@@ -10,6 +12,7 @@ namespace Lachesis.GamePlay
         Lighting,
         Stronger,
         FlipVertical,
+        Compress,
         //Slip,
         //Swap,
         //Summon,
@@ -19,13 +22,16 @@ namespace Lachesis.GamePlay
     public class SkillManager : GameModule
     {
         Dictionary<SkillEnum, SkillConfigItem> m_skillConfigItemDict = new();
+        private float totalWeight;
         //List<Skill> curSkills = new();
         public void Initialize(SkillConfig skillConfig)
         {
             foreach (var config in skillConfig.skillResources)
             {
                m_skillConfigItemDict.Add(config.skillEnum, config); 
+               if(config.spawnProb<0) config.spawnProb = 0;
             }
+            totalWeight = m_skillConfigItemDict.Values.Sum(config => config.spawnProb);
         }
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
@@ -84,6 +90,27 @@ namespace Lachesis.GamePlay
             } 
             Debug.LogError($"查找技能[{skillEnum}]的技能配置");
             return null;
+        }
+        
+        public SkillEnum GetRandomSkillEnum()
+        {
+            float randomValue = Random.Range(0f, totalWeight);
+            SkillEnum randomSkill = SkillEnum.Lighting;
+            float cumulativeWeight = 0f;
+
+            foreach (var kvp in m_skillConfigItemDict)
+            {
+                if (kvp.Value.spawnProb > 0)
+                {
+                    cumulativeWeight += kvp.Value.spawnProb;
+                    if (randomValue <= cumulativeWeight)
+                    {
+                        randomSkill = kvp.Key;
+                        break;
+                    }
+                }
+            }
+            return randomSkill;
         }
     }
 }

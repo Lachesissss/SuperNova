@@ -40,7 +40,7 @@ namespace Lachesis.GamePlay
         public override void OnReturnToPool(bool isShutDown = false)
         {
             base.OnReturnToPool(isShutDown);
-            m_particleSys.Stop();
+            if(!isShutDown) m_particleSys.Stop();
         }
     }
 }

@@ -22,6 +22,7 @@ MonoBehaviour:
     skillType:
       typeName: Lachesis.GamePlay.LightingSkill, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+    spawnProb: 0
   - skillEnum: 1
     skillName: "\u786C\u5316\u76AE\u80A4"
     iconName: stronger
@@ -31,6 +32,7 @@ MonoBehaviour:
     skillType:
       typeName: Lachesis.GamePlay.StrongerSkill, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+    spawnProb: 0
   - skillEnum: 2
     skillName: "\u98A0\u5012\u4E16\u754C"
     iconName: flipvertical
@@ -40,3 +42,14 @@ MonoBehaviour:
     skillType:
       typeName: Lachesis.GamePlay.FlipVerticalSkill, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+    spawnProb: 0
+  - skillEnum: 3
+    skillName: "\u7EF4\u5EA6\u538B\u7F29"
+    iconName: compress
+    activateText: "\u6548\u679C\u62D4\u7FA4"
+    killText: 
+    showTextOnRelease: 1
+    skillType:
+      typeName: Lachesis.GamePlay.CompressSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    spawnProb: 1

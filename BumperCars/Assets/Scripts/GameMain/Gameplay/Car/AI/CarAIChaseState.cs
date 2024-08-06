@@ -70,7 +70,7 @@ namespace Lachesis.GamePlay
             //丢失目标，看能不能找新的目标，找个最近的    
             if(owner.destination==null)
             {
-                var cars = ProcedureBattle.carControllers;
+                var cars = BattleModel.Instance.carControllers;
                 float minDis = Single.PositiveInfinity;
                 Transform nearPlayerTrans = null;
                 foreach (var carController in cars)

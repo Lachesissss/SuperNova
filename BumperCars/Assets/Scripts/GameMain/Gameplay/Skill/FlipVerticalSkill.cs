@@ -6,9 +6,10 @@ namespace Lachesis.GamePlay
     public class FlipVerticalSkill : Skill
     {
         private GlobalConfig m_globalConfig;
-
+        private BattleModel m_battleModel;
         public override void Init(object userData = null)
         {
+            m_battleModel = BattleModel.Instance;
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
         }
 
@@ -21,17 +22,17 @@ namespace Lachesis.GamePlay
         {
             if (TryGetSkillTarget(source, out var target))
             {
-                if (target == ProcedureBattle.player1Camera.car)
+                if (target == m_battleModel.player1Camera.car)
                 {
-                    ProcedureBattle.player1Camera.SetFlipVertical(true);
-                    GameEntry.instance.StartCoroutine(DelayToRecoverFlip(ProcedureBattle.player1Camera));
+                    m_battleModel.player1Camera.SetFlipVertical(true);
+                    GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player1Camera));
                     return true;
                 }
 
-                if (target == ProcedureBattle.player2Camera.car)
+                if (target == m_battleModel.player2Camera.car)
                 {
-                    ProcedureBattle.player2Camera.SetFlipVertical(true);
-                    GameEntry.instance.StartCoroutine(DelayToRecoverFlip(ProcedureBattle.player2Camera));
+                    m_battleModel.player2Camera.SetFlipVertical(true);
+                    GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player2Camera));
                     return true;
                 }
             }
@@ -45,7 +46,7 @@ namespace Lachesis.GamePlay
             //if(source.carControllerName == ProcedureBattle.player1Camera.)
             var minDis = float.PositiveInfinity;
             target = null;
-            foreach (var controller in ProcedureBattle.carControllers)
+            foreach (var controller in m_battleModel.carControllers)
                 if (controller.IsHasCar && controller != source.controller && HasCamera(controller))
                 {
                     var dis = Vector3.Distance(controller.carComponent.transform.position, source.transform.position);
@@ -61,7 +62,7 @@ namespace Lachesis.GamePlay
 
         private bool HasCamera(CarController car)
         {
-            return car.carComponent == ProcedureBattle.player1Camera.car || car.carComponent == ProcedureBattle.player2Camera.car;
+            return car.carComponent == m_battleModel.player1Camera.car || car.carComponent == m_battleModel.player2Camera.car;
         }
 
         private IEnumerator DelayToRecoverFlip(CarCamera camera)

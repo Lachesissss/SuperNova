@@ -74,7 +74,7 @@ namespace Lachesis.GamePlay
             //就是目前玩家进入索敌范围后，ai还要到达下一个路径点才会触发检测，将玩家设定为目标
             NavMeshPath path = owner.navMeshPath;
             float searchRange = GameEntry.ConfigManager.GetConfig<GlobalConfig>().carAISearchRange;
-            var cars = ProcedureBattle.carControllers;
+            var cars = BattleModel.Instance.carControllers;
             float minDis = Single.PositiveInfinity;
             Transform nearPlayerTrans = null;
             foreach (var carController in cars)
