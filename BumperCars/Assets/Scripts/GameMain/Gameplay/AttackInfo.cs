@@ -14,6 +14,7 @@ namespace Lachesis.GamePlay
         public DateTime attackTime;
         public AttackType attackType;
         public object userData;
+        public int attackDamge;
     }
 
     public enum AttackType

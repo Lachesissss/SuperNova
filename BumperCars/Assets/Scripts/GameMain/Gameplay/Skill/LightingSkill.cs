@@ -80,7 +80,7 @@ namespace Lachesis.GamePlay
                 target.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass / target.bodyRb.mass));
                 // 暂时降低摩擦力
                 var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
-                GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
+                GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, target.entityEnum == EntityEnum.BossCar));
                 
             }
             
@@ -90,6 +90,7 @@ namespace Lachesis.GamePlay
             attackInfo.attackTime = DateTime.Now;
             attackInfo.attackType = AttackType.Skill;
             attackInfo.userData = skillEnum;
+            attackInfo.attackDamge = (int) Mathf.Ceil(source.bodyRb.mass*3/ target.bodyRb.mass);
             GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo,OnHit));
         }
 
@@ -101,17 +102,17 @@ namespace Lachesis.GamePlay
             GameEntry.EntityManager.ReturnEntity(EntityEnum.LightningEffect, lightning);
         }
         
-        private IEnumerator TemporarilyReduceFriction(WheelCollider[] wheelColliders)
+        private IEnumerator TemporarilyReduceFriction(WheelCollider[] wheelColliders, bool isBoss)
         {
             for (var i = 0; i < wheelColliders.Length; i++)
             {
                 
                 var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = m_globalConfig.underAttackCarForwardFrictionStiffness;
+                forwardFriction.stiffness =isBoss?m_globalConfig.bossUnderAttackCarForwardFrictionStiffness:m_globalConfig.underAttackCarForwardFrictionStiffness;
                 wheelColliders[i].forwardFriction = forwardFriction;
 
                 var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = m_globalConfig.underAttackSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness =isBoss?m_globalConfig.bossUnderAttackSidewaysFrictionStiffness: m_globalConfig.underAttackSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
 

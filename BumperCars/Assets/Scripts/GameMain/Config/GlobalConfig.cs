@@ -7,7 +7,9 @@ public class GlobalConfig : ScriptableObject
     public float defaultCarForwardFrictionStiffness = 1;
     public float defaultCarSidewaysFrictionStiffness = 2;
     public float underAttackCarForwardFrictionStiffness = 0.1f;
+    public float bossUnderAttackCarForwardFrictionStiffness = 0.5f;
     public float underAttackSidewaysFrictionStiffness = 0.1f;
+    public float bossUnderAttackSidewaysFrictionStiffness = 1f;
     public float impactSpeed = 5f;//撞击时给对方的初速度
     public float frictionRestoreDelay = 1f;//打滑效果恢复的事件
     public float carAISearchRange = 12f;//AI索敌范围
@@ -24,6 +26,6 @@ public class GlobalConfig : ScriptableObject
     public int strongerCarMass = 2500;
     public float flipRecoverTime = 8f;
     public float extremeDodgeTime = 0.5f;
-    public string pveBossName = "霸天虎";
+    public string pveBossName = "Boss";
     public int pveBossMaxHealth = 100;
 }

@@ -172,7 +172,7 @@ namespace Lachesis.GamePlay
             if(carComponent!=null)
             {
                 carComponent.controller = null;
-                GameEntry.EntityManager.ReturnEntity(EntityEnum.Car, carComponent);
+                GameEntry.EntityManager.ReturnEntity(carComponent.entityEnum, carComponent);
                 carComponent = null;
             }
         }

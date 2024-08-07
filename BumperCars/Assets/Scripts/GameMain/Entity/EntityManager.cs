@@ -38,6 +38,9 @@ namespace Lachesis.GamePlay
         SinglePlayerCamera,
         Player1Camera,
         Player2Camera,
+        
+        //Pve
+        BossCar,
     }
     
     public class EntityManager : GameModule
@@ -85,6 +88,7 @@ namespace Lachesis.GamePlay
                 obj.GetComponent<T>().OnInit(); //仅在第一次创建时调用的函数
             }
 
+            entity.entityEnum = entityEnum;
             entity.OnReCreateFromPool(pos,rot, userData);
             return entity as T;
         }

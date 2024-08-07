@@ -33,8 +33,10 @@ namespace Lachesis.GamePlay
             if (hasCollided) return;
             // 检查碰撞对象是否是另一辆碰碰车
             var otherRigidbody = other.attachedRigidbody;
+            
             if (otherRigidbody != null && otherRigidbody != GetComponent<Rigidbody>())
             {
+                var otherCar = otherRigidbody.GetComponent<CarComponent>();
                 void OnHit()
                 {
                     var otherWheelColliders = otherRigidbody.GetComponentsInChildren<WheelCollider>();
@@ -48,14 +50,14 @@ namespace Lachesis.GamePlay
                     otherRigidbody.velocity += (forceDirection.normalized * m_globalConfig.impactSpeed + rate * m_carBody.velocity)*(m_carBody.mass/otherRigidbody.mass);
 
                     // 暂时降低摩擦力
-                    StartCoroutine(TemporarilyReduceFriction(otherWheelColliders));
+                    StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, otherCar.entityEnum==EntityEnum.BossCar));
 
                     // 重置碰撞标记
                     StartCoroutine(ResetCollisionFlag());
                 }
                 
                 
-                var otherCar = otherRigidbody.GetComponent<CarComponent>();
+                
                 if(otherCar!=null)
                 {
                     var attackInfo = new AttackInfo();
@@ -63,6 +65,7 @@ namespace Lachesis.GamePlay
                     attackInfo.underAttacker = otherCar.carControllerName;
                     attackInfo.attackTime = DateTime.Now;
                     attackInfo.attackType = AttackType.Collide;
+                    attackInfo.attackDamge = (int) Mathf.Ceil(m_carBody.mass*3/ otherRigidbody.mass);//boss重量暂定3倍，后续这块可以配置化
                     GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo, OnHit));
                 }
             }
@@ -75,17 +78,17 @@ namespace Lachesis.GamePlay
         }
 
 
-        private IEnumerator TemporarilyReduceFriction(WheelCollider[] wheelColliders)
+        private IEnumerator TemporarilyReduceFriction(WheelCollider[] wheelColliders, bool isBoss)
         {
             for (var i = 0; i < wheelColliders.Length; i++)
             {
                 
                 var forwardFriction = wheelColliders[i].forwardFriction;
-                forwardFriction.stiffness = m_globalConfig.underAttackCarForwardFrictionStiffness;
+                forwardFriction.stiffness =isBoss?m_globalConfig.bossUnderAttackCarForwardFrictionStiffness:m_globalConfig.underAttackCarForwardFrictionStiffness;
                 wheelColliders[i].forwardFriction = forwardFriction;
 
                 var sidewaysFriction = wheelColliders[i].forwardFriction;
-                sidewaysFriction.stiffness = m_globalConfig.underAttackSidewaysFrictionStiffness;
+                sidewaysFriction.stiffness =isBoss?m_globalConfig.bossUnderAttackSidewaysFrictionStiffness: m_globalConfig.underAttackSidewaysFrictionStiffness;
                 wheelColliders[i].sidewaysFriction = sidewaysFriction;
             }
 

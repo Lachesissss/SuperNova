@@ -14,7 +14,6 @@ namespace Lachesis.GamePlay
         private BattleField m_battleField = null;
         
         private BattleModel battleModel;
-        private int carAiIndex = 0;
         private int maxSkillPickUpItemsCount = 8;
         
         
@@ -59,10 +58,10 @@ namespace Lachesis.GamePlay
             m_battleField = GameEntry.EntityManager.CreateEntity<BattleField>(EntityEnum.BattleField, Vector3.zero, Quaternion.identity);
             var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation, CarComponent.ClothColor.Yellow);
             var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, CarComponent.ClothColor.Black);
-            var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity,CarComponent.ClothColor.Red);
+            var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.BossCar,Vector3.zero,Quaternion.identity);
             var carPlayerData1 = new CarController.CarControllerData(){carComponent = car1, controllerName = m_globalConfig.p1Name, userData = CarPlayer.PlayerType.P1};
             var carPlayerData2 = new CarController.CarControllerData(){carComponent = car2, controllerName = m_globalConfig.p2Name, userData = CarPlayer.PlayerType.P2};
-            var carAiData = new CarController.CarControllerData(){carComponent = car3, controllerName = $"人机{carAiIndex++}"};
+            var carAiData = new CarController.CarControllerData(){carComponent = car3, controllerName = m_globalConfig.pveBossName};
             
             var carPlayer1 = battleModel.AddPlayer(carPlayerData1);
             var carPlayer2 = battleModel.AddPlayer(carPlayerData2);
@@ -139,6 +138,11 @@ namespace Lachesis.GamePlay
             if (e is AttackHitArgs args)
             {
                 battleModel.lastAttackInfoDict[args.attackInfo.underAttacker] = args.attackInfo;
+                if(args.attackInfo.underAttacker == m_globalConfig.pveBossName)
+                {
+                    bossCurHealth-=args.attackInfo.attackDamge;
+                    GameEntry.EventManager.Invoke(this, BossInfoUpdateEventArgs.Create(bossCurHealth, m_globalConfig.pveBossName));
+                }
             } 
         }
         
@@ -240,7 +244,7 @@ namespace Lachesis.GamePlay
                         else if(battleModel.carControllers[i] is CarAI carAI)
                         {   
                             //TODO:Boss立即复活，血量掉很大一段
-                            ReviveAIPve(carAI,lastColor);
+                            ReviveBossAI(carAI,lastColor);
                         }
                     }
                 }
@@ -276,6 +280,7 @@ namespace Lachesis.GamePlay
                             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                         }
                     }
+                    battleModel.lastAttackInfoDict.Remove(carName);
                 }
                 else
                 {
@@ -294,7 +299,7 @@ namespace Lachesis.GamePlay
         
         private void WinSettlement()
         {
-            if(bossCurHealth<0)
+            if(bossCurHealth<=0)
             {
                 var data =  new SettlementPveData();
                 data.isWin = true;
@@ -325,9 +330,9 @@ namespace Lachesis.GamePlay
             }
         }
         
-        private void ReviveAIPve(CarAI carAI, CarComponent.ClothColor lastColor)
+        private void ReviveBossAI(CarAI carAI, CarComponent.ClothColor lastColor)
         {
-            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity, lastColor);
+            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.BossCar,Vector3.zero,Quaternion.identity);
             carAI.SetCar(car);
             carAI.ClearSkills();
         }
