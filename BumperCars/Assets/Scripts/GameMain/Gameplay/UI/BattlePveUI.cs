@@ -9,7 +9,7 @@ namespace Lachesis.GamePlay
     public class BattlePveUI : Entity
     {
         public Text bossHealthText;
-        public Image bossHealthImg;
+        public Slider bossHealthSlider;
         
         public Button settingBtn;
         public Button continueBtn;
@@ -25,7 +25,7 @@ namespace Lachesis.GamePlay
         private string m_p1Name;
         private string m_p2Name;
         private string m_bossName;
-        private int bossHealth;
+        private int m_maxBossHealth;
         private CarController m_controller1;
         private CarController m_controller2;
         private static BattlePveUI m_instance;
@@ -37,7 +37,7 @@ namespace Lachesis.GamePlay
             public string p1Name;
             public string p2Name;
             public string bossName;
-            public int bossHealth;
+            public int maxBossHealth;
             public CarController carController1;
             public CarController carController2;
         }
@@ -75,7 +75,7 @@ namespace Lachesis.GamePlay
             InitCoolingImg(p2BoostCoolingImg);
             InitCoolingImg(p1SwitchCoolingImg);
             InitCoolingImg(p2SwitchCoolingImg);
-            GameEntry.EventManager.AddListener(ScoreUpdateEventArgs.EventId, OnBossHealthUpdate);
+            GameEntry.EventManager.AddListener(BossInfoUpdateEventArgs.EventId, OnBossInfoUpdate);
             GameEntry.EventManager.AddListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.AddListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.AddListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
@@ -84,6 +84,8 @@ namespace Lachesis.GamePlay
             backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
             if(userData is BattlePveUIData battleUIData)
             {
+                m_bossName = battleUIData.bossName;
+                m_maxBossHealth = battleUIData.maxBossHealth;
                 RefreshAll(battleUIData);
             }
             popupGo.SetActive(false);
@@ -99,7 +101,7 @@ namespace Lachesis.GamePlay
         {
             base.OnReturnToPool(isShutDown);
             m_instance = null;
-            GameEntry.EventManager.RemoveListener(ScoreUpdateEventArgs.EventId, OnBossHealthUpdate);
+            GameEntry.EventManager.RemoveListener(BossInfoUpdateEventArgs.EventId, OnBossInfoUpdate);
             GameEntry.EventManager.RemoveListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.RemoveListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.RemoveListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
@@ -129,9 +131,10 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
         }
         
-        private void RefreshBossHealth(int healthPoint)
+        private void RefreshBossInfo(string name, int healthPoint)
         {
-            bossHealthText.text = $"{m_bossName}剩余血量：{healthPoint}";
+            bossHealthText.text = $"{name}剩余血量：{healthPoint}";
+            bossHealthSlider.value = (float)healthPoint/(float)m_maxBossHealth;
         }
 
         public void RefreshAll(BattlePveUIData battleUIData)
@@ -142,16 +145,16 @@ namespace Lachesis.GamePlay
             m_controller1 = battleUIData.carController1;
             m_controller2 = battleUIData.carController2;
 
-            RefreshBossHealth(100);
+            RefreshBossInfo(battleUIData.bossName, battleUIData.maxBossHealth);
             RefreshSkillSlotsUI();
         }
 
-        private void OnBossHealthUpdate(object sender, GameEventArgs e)
+        private void OnBossInfoUpdate(object sender, GameEventArgs e)
         {
-            // if(e is ScoreUpdateEventArgs scoreUpdateEventArgs)
-            // {
-            //     RefreshBossHealth(scoreUpdateEventArgs.p1NewScore, scoreUpdateEventArgs.p2NewScore);
-            // }
+            if(e is BossInfoUpdateEventArgs args)
+            {
+                RefreshBossInfo(args.bossName, args.bossHealth);
+            }
         }
         
         private void OnPlayerBattleUIUpdate(object sender, GameEventArgs e)

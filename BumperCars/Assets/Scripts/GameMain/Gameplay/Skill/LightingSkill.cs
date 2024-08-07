@@ -37,6 +37,8 @@ namespace Lachesis.GamePlay
             var minDis = float.PositiveInfinity;
             target = null;
             foreach (var controller in BattleModel.Instance.carControllers)
+            {
+                if(GameEntry.ProcedureManager.CurrentProcedure is ProcedureBattlePve&& controller is CarPlayer) continue;//这里先这样处理，Pve下不索队友
                 if (controller.IsHasCar && controller != source.controller)
                 {
                     var dis = Vector3.Distance(controller.carComponent.transform.position, source.transform.position);
@@ -46,6 +48,8 @@ namespace Lachesis.GamePlay
                         target = controller.carComponent;
                     }
                 }
+            }
+                
 
             return target != null;
         }

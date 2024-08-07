@@ -24,4 +24,6 @@ public class GlobalConfig : ScriptableObject
     public int strongerCarMass = 2500;
     public float flipRecoverTime = 8f;
     public float extremeDodgeTime = 0.5f;
+    public string pveBossName = "霸天虎";
+    public int pveBossMaxHealth = 100;
 }

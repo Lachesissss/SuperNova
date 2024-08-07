@@ -15,6 +15,7 @@ namespace Lachesis.GamePlay
         public bool showTextOnRelease;
         public SkillType skillType;
         public float spawnProb;
+        public bool openInPve;
     }
     [CreateAssetMenu(fileName = "SkillConfig", menuName = "ScriptableObject/SkillConfig", order = 3)]
     public class SkillConfig : ScriptableObject

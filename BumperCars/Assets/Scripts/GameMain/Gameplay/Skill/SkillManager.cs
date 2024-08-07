@@ -112,6 +112,27 @@ namespace Lachesis.GamePlay
             }
             return randomSkill;
         }
+        
+        public SkillEnum GetRandomSkillEnumPve()
+        {
+            float randomValue = Random.Range(0f, totalWeight);
+            SkillEnum randomSkill = SkillEnum.Lighting;
+            float cumulativeWeight = 0f;
+
+            foreach (var kvp in m_skillConfigItemDict)
+            {
+                if (kvp.Value.spawnProb > 0&&kvp.Value.openInPve)
+                {
+                    cumulativeWeight += kvp.Value.spawnProb;
+                    if (randomValue <= cumulativeWeight)
+                    {
+                        randomSkill = kvp.Key;
+                        break;
+                    }
+                }
+            }
+            return randomSkill;
+        }
     }
 }
 

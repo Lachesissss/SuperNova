@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace Lachesis.GamePlay
 {
-    public class ProcedurePVEBattle : ProcedureBase
+    public class ProcedureBattlePve : ProcedureBase
     {
         private ProcedureOwner procedureOwner;
         private BattleField m_battleField = null;
@@ -18,20 +18,17 @@ namespace Lachesis.GamePlay
         private int maxSkillPickUpItemsCount = 8;
         
         
-        private static Dictionary<string, int> m_playerScoreDict;
-        private BattleUI m_battleUI;
+        private BattlePveUI m_battlePveUI;
         private bool isGoMenu;
         private bool isGoSettlement;
-        private SettlementData m_settlementData;
+        private SettlementPveData m_settlementPveData;
         private GlobalConfig m_globalConfig;
+        private int bossCurHealth;
         protected internal override void OnInit(ProcedureOwner procedureOwner)
         {
             base.OnInit(procedureOwner);
             battleModel = BattleModel.Instance;
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
-            m_playerScoreDict = new Dictionary<string, int>();
-            m_playerScoreDict.Add(m_globalConfig.p1Name, 0);
-            m_playerScoreDict.Add(m_globalConfig.p2Name, 0);
         }
 
 
@@ -50,7 +47,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
             isGoMenu = false;
             isGoSettlement = false;
-            m_settlementData = null;
+            m_settlementPveData = null;
             
             
             PveEnter();
@@ -72,12 +69,12 @@ namespace Lachesis.GamePlay
             var carAi = battleModel.AddAI(carAiData);
             
             
-            var battleUIData =new BattleUI.BattleUIData(){p1Name = m_globalConfig.p1Name,p2Name = m_globalConfig.p2Name,
-                targetScore = m_globalConfig.targetScore, carController1 = carPlayer1, carController2 = carPlayer2
+            var battleUIPveData =new BattlePveUI.BattlePveUIData(){p1Name = m_globalConfig.p1Name,p2Name = m_globalConfig.p2Name,
+                bossName = m_globalConfig.pveBossName, maxBossHealth = m_globalConfig.pveBossMaxHealth, carController1 = carPlayer1, carController2 = carPlayer2
             };
-            m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
+            m_battlePveUI = GameEntry.EntityManager.CreateEntity<BattlePveUI>(EntityEnum.BattlePveUI, GameEntry.instance.canvasRoot.transform, battleUIPveData);
             battleModel.SetBattleCamera(carPlayer1, carPlayer2);
-            
+            bossCurHealth = m_globalConfig.pveBossMaxHealth;
         }
         
         protected internal override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -104,7 +101,7 @@ namespace Lachesis.GamePlay
         {
             if(battleModel.skillPickUpItems.Count<maxSkillPickUpItemsCount)
             {
-                SkillEnum skillEnum = GameEntry.SkillManager.GetRandomSkillEnum();
+                SkillEnum skillEnum = GameEntry.SkillManager.GetRandomSkillEnumPve();
                 Vector3 spawnPosition = GetRandomPositionInBattleField();
                 battleModel.skillPickUpItems.Add(GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, spawnPosition, Quaternion.identity, skillEnum));
             }
@@ -131,7 +128,7 @@ namespace Lachesis.GamePlay
             }
             if(isGoSettlement)
             {
-                ChangeState<ProcedureWinSettlement>(procedureOwner, m_settlementData);
+                ChangeState<ProcedureWinSettlementPve>(procedureOwner, m_settlementPveData);
                 return true;
             }
             return false;
@@ -202,12 +199,10 @@ namespace Lachesis.GamePlay
             }
             
             m_battleField = null;
-            m_battleUI = null;
+            m_battlePveUI = null;
             //清理容器
             battleModel.ClearModel();
             
-            m_playerScoreDict[m_globalConfig.p1Name] = 0;
-            m_playerScoreDict[m_globalConfig.p2Name] = 0;
             GameEntry.EventManager.RemoveListener(AttackHitArgs.EventId, OnAttackHappened);
             GameEntry.EventManager.RemoveListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             GameEntry.EventManager.RemoveListener(SwitchCarEventArgs.EventId, OnSwitchCar);
@@ -281,13 +276,6 @@ namespace Lachesis.GamePlay
                             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                         }
                     }
-                            
-                    if (m_playerScoreDict.ContainsKey(killer))
-                    {
-                        m_playerScoreDict[killer] += 1;
-                        GameEntry.EventManager.Invoke(ScoreUpdateEventArgs.EventId,
-                            ScoreUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
-                    }
                 }
                 else
                 {
@@ -306,17 +294,15 @@ namespace Lachesis.GamePlay
         
         private void WinSettlement()
         {
-            foreach (var kv in m_playerScoreDict)
+            if(bossCurHealth<0)
             {
-                if(kv.Value >= m_globalConfig.targetScore)
-                {
-                    var data =  new SettlementData();
-                    data.winner = kv.Key;
-                    isGoSettlement = true;
-                    m_settlementData = data;
-                    return;
-                }
+                var data =  new SettlementPveData();
+                data.isWin = true;
+                isGoSettlement = true;
+                m_settlementPveData = data;
+                return;
             }
+            
         }
         
         private IEnumerator DelayToRevivePlayerPve(CarPlayer carPlayer,CarComponent.ClothColor lastColor)
@@ -328,7 +314,7 @@ namespace Lachesis.GamePlay
                 battleModel.player1Camera.ReSetTrackedTarget(car);
                 carPlayer.SetCar(car);
                 carPlayer.ClearSkills();
-                m_battleUI.RefreshSkillSlotsUI();
+                m_battlePveUI.RefreshSkillSlotsUI();
             }
             else
             {

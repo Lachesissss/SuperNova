@@ -22,8 +22,10 @@ namespace Lachesis.GamePlay
         
         //UI
         BattleUI,
+        BattlePveUI,
         MenuUI,
         WinSettlementUI,
+        WinSettlementPveUI,
         PopupTips,
         
         //Effect
