@@ -20,6 +20,8 @@ namespace Mirror.Examples.RigidbodyPhysics
             if (!rigidbody3d.isKinematic)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
+                    rigidbody3d.AddForce(Vector3.right * force);
+                if (Input.GetKeyDown(KeyCode.C))
                     rigidbody3d.AddForce(Vector3.up * force);
             }
         }
