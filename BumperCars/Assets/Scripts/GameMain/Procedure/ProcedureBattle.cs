@@ -399,6 +399,7 @@ namespace Lachesis.GamePlay
                     Debug.Log(showMsg);
                     GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                 }
+                battleModel.lastAttackInfoDict.Remove(carName);
             }
             else
             {

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarPlayer.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\BossInfoUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventManager.cs" />
@@ -53,7 +54,6 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarCamera.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarController.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedurePVEBattle.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIChaseState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerCoolingUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\ConfigManager.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ProcedureChangeEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightningEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattlePve.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleModel.cs" />
@@ -104,9 +105,11 @@
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ShowUITipsEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerSkillSlotsUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementUI.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlementPve.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\CompressSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PlayerSkillSlot.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameEntry.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementPveUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarBody.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlement.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\Skill.cs" />

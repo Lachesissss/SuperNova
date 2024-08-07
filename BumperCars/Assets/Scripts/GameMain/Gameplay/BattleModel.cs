@@ -11,6 +11,7 @@ namespace Lachesis.GamePlay
         public Dictionary< CarController,CarCamera> controllerCameraDict;
         public List<CarController> carControllers;
         public List<SkillPickUpItem> skillPickUpItems;
+        private Dictionary<string,CarController> carDict;
         
         public CarCamera player1Camera;
         public CarCamera player2Camera;
@@ -21,6 +22,7 @@ namespace Lachesis.GamePlay
             controllerCameraDict = new();
             carControllers = new();
             skillPickUpItems = new();
+            carDict = new();
         }
 
         public static BattleModel Instance { get; } = new BattleModel();
@@ -45,6 +47,10 @@ namespace Lachesis.GamePlay
         {
             var carPlayer1 = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, playerData);
             carControllers.Add(carPlayer1);
+            if(!carDict.ContainsKey(carPlayer1.controllerName))
+            {
+                carDict.Add(carPlayer1.controllerName, carPlayer1);
+            }
             return carPlayer1;
         }
         
@@ -52,7 +58,20 @@ namespace Lachesis.GamePlay
         {
             var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarAI, Vector3.zero, Quaternion.identity, aiData);
             carControllers.Add(carAi);
+            if(!carDict.ContainsKey(carAi.controllerName))
+            {
+                carDict.Add(carAi.controllerName, carAi);
+            }
             return carAi;
+        }
+        
+        public CarController GetControllerByName(string name)
+        {
+            if(carDict.TryGetValue(name, out var controller))
+            {
+                return controller;
+            }
+            return null;
         }
     }
 }

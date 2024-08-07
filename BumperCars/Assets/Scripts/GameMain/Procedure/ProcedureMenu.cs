@@ -7,6 +7,7 @@ namespace Lachesis.GamePlay
     public class ProcedureMenu : ProcedureBase
     {
         private bool isGoBattle;
+        private bool isGoPveBattle;
         private object goBattleData;
         private ProcedureOwner procedureOwner;
         private MenuUI m_menuUI;
@@ -23,6 +24,7 @@ namespace Lachesis.GamePlay
             this.procedureOwner = procedureOwner;
             Debug.Log("进入主菜单流程");
             isGoBattle = false;
+            isGoPveBattle = false;
             goBattleData = null;
             m_menuUI = GameEntry.EntityManager.CreateEntity<MenuUI>(EntityEnum.MenuUI, GameEntry.instance.canvasRoot.transform);
             // GameEntry.Event.Subscribe(ChangeSceneEventArgs.EventId, OnChangeScene);
@@ -41,6 +43,8 @@ namespace Lachesis.GamePlay
                 goBattleData = args.userData;
                 var targProcedure = GameEntry.ProcedureManager.GetProcedure(args.TargetProcedureType);
                 if (targProcedure is ProcedureBattle) isGoBattle = true;
+                else if(targProcedure is ProcedureBattlePve)isGoPveBattle = true;
+               
             }
         }
 
@@ -51,6 +55,11 @@ namespace Lachesis.GamePlay
             if (isGoBattle)
             {
                 ChangeState<ProcedureBattle>(procedureOwner, goBattleData);
+                return;
+            } 
+            if (isGoPveBattle)
+            {
+                ChangeState<ProcedureBattlePve>(procedureOwner, goBattleData);
                 return;
             } 
         }

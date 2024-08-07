@@ -41,7 +41,7 @@ namespace Lachesis.GamePlay
         public Transform rightBackTrans;
         
         private List<Entity> m_effectEntities;
-        
+        private float m_startMass;
         //既是名字，也是id
         public string carControllerName;
         
@@ -109,6 +109,7 @@ namespace Lachesis.GamePlay
             wheelColliders.Add(rightFrontCollider);
             carAttacker.Init(this, bodyRb);
             m_effectEntities = new List<Entity>();
+            m_startMass = bodyRb.mass;
             //Reset();
         }
 
@@ -201,7 +202,7 @@ namespace Lachesis.GamePlay
             m_isInWitchTime = false;
             bodyRb.velocity = Vector3.zero;
             bodyRb.angularVelocity = Vector3.zero;
-            bodyRb.mass = m_globalConfig.defaultCarMass;
+            bodyRb.mass = m_startMass;
             controller =null;
             carControllerName = "未定义";
             carAttacker.Reset();

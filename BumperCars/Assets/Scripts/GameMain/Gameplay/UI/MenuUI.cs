@@ -10,6 +10,7 @@ namespace Lachesis.GamePlay
     {
         public Button singleModeBtn;
         public Button doubleModeBtn;
+        public Button pveModeBtn;
         public Button quitGameBtn;
 
         public override void OnReCreateFromPool(object userData = null)
@@ -17,7 +18,9 @@ namespace Lachesis.GamePlay
             base.OnReCreateFromPool(userData);
             singleModeBtn.onClick.AddListener(OnEnterSingleMode);
             doubleModeBtn.onClick.AddListener(OnEnterDoubleMode);
+            pveModeBtn.onClick.AddListener(OnEnterPveMode);
             quitGameBtn.onClick.AddListener(OnQuitGame);
+            
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
@@ -25,6 +28,7 @@ namespace Lachesis.GamePlay
             base.OnReturnToPool(isShutDown);
             singleModeBtn.onClick.RemoveAllListeners();
             doubleModeBtn.onClick.RemoveAllListeners();
+            pveModeBtn.onClick.RemoveAllListeners();
             quitGameBtn.onClick.RemoveAllListeners();
         }
         
@@ -37,7 +41,10 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Double));
         }
         
-        
+        private void OnEnterPveMode()
+        {
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattlePve)));
+        }
         private void OnQuitGame()
         {
 #if UNITY_EDITOR

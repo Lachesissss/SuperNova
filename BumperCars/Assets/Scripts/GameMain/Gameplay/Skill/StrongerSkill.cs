@@ -27,7 +27,7 @@ namespace Lachesis.GamePlay
             if (source == null) return false;
             var strongerEffect = GameEntry.EntityManager.CreateEntity<StrongerEffect>(EntityEnum.StrongerEffect, source.transform);
             source.AddEffectEntity(strongerEffect);
-            source.bodyRb.mass = m_globalConfig.strongerCarMass;
+            source.bodyRb.mass*=1.7f;
             GameEntry.instance.StartCoroutine(DelayToRecoverBodyMass(source, strongerEffect));
             return true;
         }
