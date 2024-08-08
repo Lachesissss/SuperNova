@@ -19,17 +19,5 @@ namespace Lachesis.GamePlay
 
         public List<EntityResource> entityResources;
     }
-
-    [CreateAssetMenu(fileName = "NetworkEntityConfig", menuName = "ScriptableObject/NetworkEntityConfig", order = 1)]
-    public class NetworkEntityConfig : ScriptableObject
-    {
-        [Serializable]
-        public struct NetworkEntityResource
-        {
-            public NetworkEntityEnum entityEnum;
-            public GameObject prefab;
-        }
-
-        public List<NetworkEntityResource> entityResources;
-    }
+    
 }

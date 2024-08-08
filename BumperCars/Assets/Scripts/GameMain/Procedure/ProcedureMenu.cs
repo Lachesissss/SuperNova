@@ -45,7 +45,6 @@ namespace Lachesis.GamePlay
                 var targProcedure = GameEntry.ProcedureManager.GetProcedure(args.TargetProcedureType);
                 if (targProcedure is ProcedureBattle) isGoBattle = true;
                 else if(targProcedure is ProcedureBattlePve)isGoPveBattle = true;
-                else if (targProcedure is ProcedureBattleNetwork) isGoNetworkBattle = true;
                
             }
         }
@@ -64,11 +63,6 @@ namespace Lachesis.GamePlay
                 ChangeState<ProcedureBattlePve>(procedureOwner, nextProcedureData);
                 return;
             }
-
-            if (isGoNetworkBattle)
-            {
-                ChangeState<ProcedureBattleNetwork>(procedureOwner, nextProcedureData);
-            } 
         }
 
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)

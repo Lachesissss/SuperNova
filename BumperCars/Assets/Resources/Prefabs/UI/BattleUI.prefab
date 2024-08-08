@@ -1132,7 +1132,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1823034810192947444}
-  - component: {fileID: 555387385480161242}
+  - component: {fileID: 8436742366607686259}
+  - component: {fileID: 2398684601596296616}
   m_Layer: 5
   m_Name: BattleUI
   m_TagString: Untagged
@@ -1166,7 +1167,43 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &555387385480161242
+--- !u!114 &8436742366607686259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4203340721358906937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 569161e47c39e4c43ad4c56ae3ca75af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  entityEnum: 0
+  player1ScoreText: {fileID: 1589192016051716957}
+  player2ScoreText: {fileID: 3211101492822654779}
+  targetScoreText: {fileID: 6711038050324066031}
+  settingBtn: {fileID: 7942729681724505017}
+  continueBtn: {fileID: 4021120450945205389}
+  backToTittleBtn: {fileID: 981730878428055983}
+  p1BoostCoolingImg: {fileID: 1030290555167255946}
+  p2BoostCoolingImg: {fileID: 2013550770071978375}
+  p1SwitchCoolingImg: {fileID: 5802085418106206115}
+  p2SwitchCoolingImg: {fileID: 6200326265800345184}
+  popupGo: {fileID: 825430903997096759}
+  player1SkillSlots:
+  - {fileID: 1179033470302239197}
+  - {fileID: 978080691273364791}
+  - {fileID: 4910628773491097594}
+  player2SkillSlots:
+  - {fileID: 3910085025637803837}
+  - {fileID: 7072449304082977852}
+  - {fileID: 1921571805510508206}
+  popupTipsRootTrans: {fileID: 1447193242562219511}
+--- !u!114 &2398684601596296616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

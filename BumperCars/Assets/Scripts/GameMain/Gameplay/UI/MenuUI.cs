@@ -10,8 +10,6 @@ namespace Lachesis.GamePlay
         public Button doubleModeBtn;
         public Button pveModeBtn;
         public Button quitGameBtn;
-        public Button createRoomBtn;
-        public Button joinRoomBtn;
 
         public override void OnReCreateFromPool(object userData = null)
         {
@@ -20,8 +18,6 @@ namespace Lachesis.GamePlay
             doubleModeBtn.onClick.AddListener(OnEnterDoubleMode);
             pveModeBtn.onClick.AddListener(OnEnterPveMode);
             quitGameBtn.onClick.AddListener(OnQuitGame);
-            createRoomBtn.onClick.AddListener(OnCreateMirrorRoom);
-            joinRoomBtn.onClick.AddListener(OnJoinMirrorRoom);
             
         }
 
@@ -32,8 +28,6 @@ namespace Lachesis.GamePlay
             doubleModeBtn.onClick.RemoveAllListeners();
             pveModeBtn.onClick.RemoveAllListeners();
             quitGameBtn.onClick.RemoveAllListeners();
-            createRoomBtn.onClick.RemoveAllListeners();
-            joinRoomBtn.onClick.RemoveAllListeners();
         }
         
         private void OnEnterSingleMode()
@@ -48,16 +42,6 @@ namespace Lachesis.GamePlay
         private void OnEnterPveMode()
         {
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattlePve)));
-        }
-
-        private void OnCreateMirrorRoom()
-        {
-            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattleNetwork), true));
-        }
-
-        private void OnJoinMirrorRoom()
-        {
-            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattleNetwork), false));
         }
         
         private void OnQuitGame()

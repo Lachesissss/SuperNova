@@ -30,10 +30,8 @@ namespace Lachesis.GamePlay
         public static FSMManager FSMManager { get; private set; }
 
         public static EntityManager EntityManager { get; private set; }
-        public static NetworkEntityManager NetworkEntityManager { get; private set; }
         public static AtlasManager AtlasManager { get; private set; }
         public static SkillManager SkillManager { get; private set; }
-        public static NetworkSkillManager NetworkSkillManager { get; private set; }
         public static ProcedureManager ProcedureManager { get; private set; }
 
         public static PlayerInputManager PlayerInputManager { get; private set; }
@@ -48,13 +46,10 @@ namespace Lachesis.GamePlay
             ConfigManager = GetModule<ConfigManager>();
             ConfigManager.Initialize();
             EntityManager = GetModule<EntityManager>();
-            NetworkEntityManager = GetModule<NetworkEntityManager>();
             EntityManager.Initialize(ConfigManager.GetConfig<EntityConfig>()); //EntityManager应该在EventManager之前ShutDown，防止Unsubscribe不存在的事件Handler
-            NetworkEntityManager.Initialize(ConfigManager.GetConfig<NetworkEntityConfig>()); 
             EventManager = GetModule<EventManager>(); //这里先简单处理一下，后面给GameMoudle加个priority
             AtlasManager = GetModule<AtlasManager>();
             SkillManager = GetModule<SkillManager>();
-            NetworkSkillManager = GetModule<NetworkSkillManager>();
             
 
             if (ProcedureManager == null)
@@ -95,7 +90,6 @@ namespace Lachesis.GamePlay
             ProcedureManager.Initialize(GetModule<FSMManager>(), procedureBases);
             AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
             SkillManager.Initialize(ConfigManager.GetConfig<SkillConfig>());
-            NetworkSkillManager.Initialize(ConfigManager.GetConfig<NetworkSkillConfig>());
             yield return new WaitForEndOfFrame();
 
             ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());
