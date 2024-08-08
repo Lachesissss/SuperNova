@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
+using UnityEngine.AI;
 using ProcedureOwner = FSM<Lachesis.Core.ProcedureManager>;
 using Random = UnityEngine.Random;
 
@@ -186,16 +187,31 @@ namespace Lachesis.GamePlay
             }
         }
         
+        Vector3 RandomNavMeshLocation(float radius)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * radius;
+            NavMeshHit hit;
+            Vector3 finalPosition = Vector3.zero;
+            if (NavMesh.SamplePosition(randomDirection, out hit, radius, 1))
+            {
+                finalPosition = hit.position;
+            }
+            return finalPosition;
+        }
+        
         Vector3 GetRandomPositionInBattleField()
         {
-            float angle = Random.Range(0f, Mathf.PI * 2);
-            float distance = Random.Range(0f, m_battleField.Radius);
-            Vector3 position = new Vector3(
-                m_battleField.fieldCenter.position.x + distance * Mathf.Cos(angle),
-                0,
-                m_battleField.fieldCenter.position.z + distance * Mathf.Sin(angle)
-            );
-            return position;
+            int NavMeshLayerBite = 0;
+            NavMeshLayerBite+= 1 << NavMesh.GetAreaFromName("Walkable");
+            Vector3 randomDirection = Random.insideUnitSphere * m_battleField.Radius;
+            randomDirection+=m_battleField.fieldCenter.position;
+            NavMeshHit hit;
+            Vector3 finalPosition = Vector3.zero;
+            if (NavMesh.SamplePosition(randomDirection, out hit, m_battleField.Radius, NavMeshLayerBite))
+            {
+                finalPosition = hit.position;
+            }
+            return finalPosition;
         }
         
         private bool CheckStateChange()
@@ -466,6 +482,7 @@ namespace Lachesis.GamePlay
         {
             var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, lastColor);
             carAI.SetCar(car);
+            carAI.ResetCarAIState();
             carAI.ClearSkills();
             battleModel.player2Camera.ReSetTrackedTarget(car);
         }
@@ -474,6 +491,7 @@ namespace Lachesis.GamePlay
         {
             var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity, lastColor);
             carAI.SetCar(car);
+            carAI.ResetCarAIState();
             carAI.ClearSkills();
         }
         
