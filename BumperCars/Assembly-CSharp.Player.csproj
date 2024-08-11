@@ -48,16 +48,14 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarPlayer.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\BossInfoUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\GlobalConfig.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\NetworkSkillManager.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Network\BumperCarNetworkManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIState.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Entity\NetworkEntityComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\SwitchCarEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarCamera.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarController.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\NetworkCarController.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Interactable\Coin.cs" />
+    <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\OscillatePosition.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIChaseState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerCoolingUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\ConfigManager.cs" />
@@ -71,6 +69,8 @@
     <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleModel.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\TypeNamePair.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\CarriedScoreUpdateEventArgs.cs" />
+    <Compile Include="Assets\Layer Lab\Scripts\PanelControl.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\MenuUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\SkillType.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureMenu.cs" />
@@ -78,38 +78,41 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventPool.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\AtlasConfig.cs" />
+    <Compile Include="Assets\Floating_Island\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattle.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleField.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\AttackInfo.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMBase.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SkillSlot.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\CarriedScoreUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Travis Game Assets\Status Effects\Demo Scene\Scripts\StatusEffectsPreview.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Entity\NetworkEntity.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\StrongerSkill.cs" />
+    <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\BlendShapeAnimator.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\BattlePveUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\EntityConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\Entity.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBase.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityManager.cs" />
+    <Compile Include="Assets\Layer Lab\Scripts\PanelView.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SkillItem.cs" />
+    <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\OscillateScale.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameModule.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\GetSkillEventArgs.cs" />
+    <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\RotationScript.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\BattleUI.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattleNetwork.cs" />
+    <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\Rnd_Animation.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerArriveHomeEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Interactable\PlayerHome.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\AttackHitArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Interactable\CoinProducer.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\AttackEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarAttacker.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightingPrepareEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\FlipVerticalSkill.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\NetworkSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\GameEventArgs.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ScoreUpdateEventArgs.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\NetworkCarAttacker.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PopupTips.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Network\NetworkManagerEntity.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIPatrolState.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\NetworkCarComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\AtlasManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ShowUITipsEventArgs.cs" />
@@ -122,15 +125,15 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementPveUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarBody.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlement.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\GetNetworkSkillEvent.cs" />
+    <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\OscillateRotation.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\ProcedureType.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarComponent.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\NetworkCarPlayer.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\SkillConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSM.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Entity\NetworkEntityManager.cs" />
+    <Compile Include="Assets\Layer Lab\GUI Pro-FantasyRPG\Extensions\UIParticle\UIParticleSystem.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\LightingSkill.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ScoreUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\ParticleSystemEffect.cs" />
     <Reference Include="UnityEngine">
       <HintPath>K:\Unity\Editor\2022.3.39f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\Variations\mono\Managed\UnityEngine.dll</HintPath>
@@ -338,9 +341,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>J:\Unity_Project\SuperNova\BumperCars\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\AOT\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="BouncyCastle.Cryptography">
-      <HintPath>J:\Unity_Project\SuperNova\BumperCars\Assets\Mirror\Plugins\BouncyCastle\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>K:\Unity\Editor\2022.3.39f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
@@ -710,6 +710,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.Player.csproj">
+      <Project>{b8a41253-5cf6-91a8-5d3c-bb8d3a748817}</Project>
+      <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
+      <Project>{b4f5a7c8-4fd6-80f6-359d-773a8f605950}</Project>
+      <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.Postprocessing.Runtime.Player.csproj">
       <Project>{eae9af9e-e05a-9a32-55c2-582b30b3f463}</Project>
       <Name>Unity.Postprocessing.Runtime.Player</Name>
@@ -722,41 +730,21 @@
       <Project>{4d68313e-7e35-2dae-601f-ced6f95dbcb7}</Project>
       <Name>Unity.VisualScripting.Core.Player</Name>
     </ProjectReference>
-    <ProjectReference Include="Mirror.Player.csproj">
-      <Project>{bc7952fe-5b35-63d8-ae6f-3e11aa7bf012}</Project>
-      <Name>Mirror.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.Player.csproj">
       <Project>{be3b1062-7863-c342-2b6f-3e57b9bebc55}</Project>
       <Name>UnityEngine.UI.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Transports.Player.csproj">
-      <Project>{145cbb8b-843b-cad3-ef22-d9777e401825}</Project>
-      <Name>Mirror.Transports.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Components.Player.csproj">
-      <Project>{17b6eb28-342b-210b-cb0a-5f9030c9e575}</Project>
-      <Name>Mirror.Components.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Flow.Player.csproj">
       <Project>{fe195af5-3274-6160-e323-13c3d7aca901}</Project>
       <Name>Unity.VisualScripting.Flow.Player</Name>
     </ProjectReference>
-    <ProjectReference Include="Telepathy.Player.csproj">
-      <Project>{c977c74e-b5bb-e89a-ebf7-8652ea708aa6}</Project>
-      <Name>Telepathy.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.Timeline.Player.csproj">
       <Project>{a855caf2-d26f-666d-26c3-7edf0fa8495f}</Project>
       <Name>Unity.Timeline.Player</Name>
     </ProjectReference>
-    <ProjectReference Include="SimpleWebTransport.Player.csproj">
-      <Project>{16ab7149-8405-d949-4f0b-601fbc7fe062}</Project>
-      <Name>SimpleWebTransport.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Authenticators.Player.csproj">
-      <Project>{ed898e45-e87e-f11a-2666-a66c4e572def}</Project>
-      <Name>Mirror.Authenticators.Player</Name>
+    <ProjectReference Include="Unity.RenderPipelines.Core.ShaderLibrary.Player.csproj">
+      <Project>{5c1dce1f-6743-de70-f7a7-d7b4d7e7ce97}</Project>
+      <Name>Unity.RenderPipelines.Core.ShaderLibrary.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Player.csproj">
       <Project>{25225081-5cd8-ea1b-948d-3117a04b8fe6}</Project>
@@ -765,10 +753,6 @@
     <ProjectReference Include="Unity.VisualScripting.State.Player.csproj">
       <Project>{c16f3177-619e-1f3f-81b2-7dcb1df44d8d}</Project>
       <Name>Unity.VisualScripting.State.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="kcp2k.Player.csproj">
-      <Project>{41317ecc-2d4c-f3c3-05cd-0b5cbace71f8}</Project>
-      <Name>kcp2k.Player</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

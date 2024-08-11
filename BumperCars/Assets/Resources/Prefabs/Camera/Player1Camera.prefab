@@ -72,7 +72,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 223
+    m_Bits: 479
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityEnum: 0
   car: {fileID: 0}
+  type: 0
   thirdPersonOffsetStart: {x: 0, y: 0.5, z: 0}
   thirdPersonOffsetEnd: {x: 0, y: 2, z: -6}
   thirdPersonAngle: {x: 20, y: 0, z: 0}
@@ -107,4 +108,3 @@ MonoBehaviour:
   thirdPersonRotationSpeed: 50
   flipMaterial: {fileID: 2100000, guid: 64f8a092967169743babc96d6a75a7d8, type: 2}
   m_isFlip: 0
-  postProcessVolume: {fileID: 0}

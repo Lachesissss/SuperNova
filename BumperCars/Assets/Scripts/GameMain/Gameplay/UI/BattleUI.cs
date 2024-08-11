@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,9 +17,11 @@ namespace Lachesis.GamePlay
     }
     public class BattleUI : Entity
     {
-        public Text player1ScoreText;
-        public Text player2ScoreText;
-        public Text targetScoreText;
+        public TextMeshProUGUI player1ScoreText;
+        public TextMeshProUGUI player2ScoreText;
+        public TextMeshProUGUI player1CarriedScoreText;
+        public TextMeshProUGUI player2CarriedScoreText;
+        public TextMeshProUGUI targetScoreText;
         public Button settingBtn;
         public Button continueBtn;
         public Button backToTittleBtn;
@@ -83,7 +86,8 @@ namespace Lachesis.GamePlay
             InitCoolingImg(p2BoostCoolingImg);
             InitCoolingImg(p1SwitchCoolingImg);
             InitCoolingImg(p2SwitchCoolingImg);
-            GameEntry.EventManager.AddListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.AddListener(ScoreUIUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.AddListener(CarriedScoreUIUpdateEventArgs.EventId, OnCarriedScoreUpdate);
             GameEntry.EventManager.AddListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.AddListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.AddListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
@@ -107,7 +111,8 @@ namespace Lachesis.GamePlay
         {
             base.OnReturnToPool(isShutDown);
             m_instance = null;
-            GameEntry.EventManager.RemoveListener(ScoreUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.RemoveListener(ScoreUIUpdateEventArgs.EventId, OnScoreUpdate);
+            GameEntry.EventManager.RemoveListener(CarriedScoreUIUpdateEventArgs.EventId, OnCarriedScoreUpdate);
             GameEntry.EventManager.RemoveListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.RemoveListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.RemoveListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
@@ -139,9 +144,15 @@ namespace Lachesis.GamePlay
         
         private void RefreshScore(int p1Score, int p2Score)
         {
-            player1ScoreText.text = $"{m_p1Name}得分：{p1Score}";
-            player2ScoreText.text = $"{m_p2Name}得分：{p2Score}";
-            targetScoreText.text = $"目标：{m_targetScore}分";
+            player1ScoreText.text = $"{p1Score}";
+            player2ScoreText.text = $"{p2Score}";
+            targetScoreText.text = $"目标:{m_targetScore}";
+        }
+
+        private void RefreshCarriedScore(int p1CarriedScore, int p2CarriedScore)
+        {
+            player1CarriedScoreText.text = $"{p1CarriedScore}";
+            player2CarriedScoreText.text = $"{p2CarriedScore}";
         }
 
         public void RefreshAll(BattleUIData battleUIData)
@@ -153,17 +164,22 @@ namespace Lachesis.GamePlay
             m_controller2 = battleUIData.carController2;
             m_targetScore = battleUIData.targetScore;
             RefreshScore(0,0);
+            RefreshCarriedScore(0, 0);
             RefreshSkillSlotsUI();
         }
 
         private void OnScoreUpdate(object sender, GameEventArgs e)
         {
-            if(e is ScoreUpdateEventArgs scoreUpdateEventArgs)
+            if (e is ScoreUIUpdateEventArgs scoreUpdateEventArgs)
             {
                 RefreshScore(scoreUpdateEventArgs.p1NewScore, scoreUpdateEventArgs.p2NewScore);
             }
         }
-        
+
+        private void OnCarriedScoreUpdate(object sender, GameEventArgs e)
+        {
+            if (e is CarriedScoreUIUpdateEventArgs args) RefreshCarriedScore(args.p1NewCarriedScore, args.p2NewCarriedScore);
+        }
         private void OnPlayerBattleUIUpdate(object sender, GameEventArgs e)
         {
             if(e is PlayerSkillSlotsUIUpdateEventArgs args)

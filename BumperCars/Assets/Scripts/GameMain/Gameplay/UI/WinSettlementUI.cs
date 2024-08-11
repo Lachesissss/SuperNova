@@ -1,21 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using Lachesis.Core;
-using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
 {
     public class WinSettlementUI : Entity
     {
-        public Text winnerText;
+        public TextMeshProUGUI winnerText;
         public Button goBackToTittleBtn;
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
             if(userData is SettlementData data)
             {
-                winnerText.text = $"胜利者：{data.winner}！！" ;
+                winnerText.text = $"胜利者: \n{data.winner}";
             }
             goBackToTittleBtn.onClick.AddListener(OnGoBackToTitleBtnClicked);
         }

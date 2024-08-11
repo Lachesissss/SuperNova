@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Lachesis.Core;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Lachesis.GamePlay
 {
@@ -20,6 +19,7 @@ namespace Lachesis.GamePlay
         public List<Skill> skillSlots;
         public bool canBoost;
         public bool canSwitch;
+        public int carriedPoints;
         protected GlobalConfig m_globalConfig;
         public bool IsHasCar=>carComponent!=null;
 
@@ -33,29 +33,21 @@ namespace Lachesis.GamePlay
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
         {
             base.OnReCreateFromPool(pos, rot, userData);
-            canBoost = true;
-            canSwitch = true;
-            GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnGetSkill);
-            if(userData is CarControllerData data)
-            {
-                carComponent = data.carComponent;
-                ClearSkills();
-                controllerName = data.controllerName;
-                carComponent.carControllerName = controllerName;
-                carComponent.controller = this;
-            }
-            else
-            {
-                Debug.LogError("初始化CarController需要传入CarControllerData！");
-            }
+            resetCarController(userData);
             
         }
 
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
+            resetCarController(userData);
+        }
+
+        private void resetCarController(object userData = null)
+        {
             canBoost = true;
             canSwitch = true;
+            carriedPoints = 0;
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnGetSkill);
             if (userData is CarControllerData data)
             {
@@ -69,7 +61,7 @@ namespace Lachesis.GamePlay
                 Debug.LogError("初始化CarController需要传入CarControllerData！");
             }
         }
-
+        
         public void SetCar(CarComponent car)
         {
             if (carComponent != null)
@@ -142,7 +134,7 @@ namespace Lachesis.GamePlay
                     GameEntry.EventManager.Invoke(this, PlayerSkillSlotsUIUpdateEventArgs.Create());
                     var config = GameEntry.SkillManager.GetSkillConfigItem(skillSlots[index].skillEnum);
                     
-                    var showMsg = $"[{carComponent.carControllerName}]释放了[{skillSlots[index].skillName}],{config.activateText}!";
+                    var showMsg = $"[{carComponent.carControllerName}]释放了[{skillSlots[index].skillName}], {config.activateText}!";
                     Debug.Log(showMsg);
                     if (!m_globalConfig.isUnlimitedFire) //无限火力
                         skillSlots[index] = null;
@@ -150,7 +142,7 @@ namespace Lachesis.GamePlay
                 }
                 else
                 {
-                    var showMsg = $"[{carComponent.carControllerName}]释放[{skillSlots[index]}]失败，需要目标";
+                    var showMsg = $"[{carComponent.carControllerName}]释放[{skillSlots[index]}]失败, 需要目标";
                     Debug.Log(showMsg);
                     //BattleUI.ShowPopupTips(showMsg);
                 }

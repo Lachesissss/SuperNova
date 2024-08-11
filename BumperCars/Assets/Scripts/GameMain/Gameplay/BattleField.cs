@@ -1,12 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
 {
     public class BattleField : Entity
     {
+        public CoinProducer coinProducer;
+        public PlayerHome player1Home;
+        public PlayerHome player2Home;
         public Transform spawnTrans1; 
         public Transform spawnTrans2; 
         public Transform dieOutTrans;

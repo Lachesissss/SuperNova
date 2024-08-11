@@ -12,6 +12,7 @@ namespace Lachesis.GamePlay
         public virtual void OnEntityReCreateFromPool(object userData = null)
         {
         }
+        
 
         public virtual void OnEntityReturnToPool(bool isShutDown = false)
         {

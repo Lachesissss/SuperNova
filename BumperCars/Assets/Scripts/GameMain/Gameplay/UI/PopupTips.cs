@@ -1,15 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 namespace Lachesis.GamePlay
 {
     public class PopupTips : Entity
     {
-        public Text tipsContentText;
+        public TextMeshProUGUI tipsContentText;
         
         private RectTransform m_rectTransform;
 

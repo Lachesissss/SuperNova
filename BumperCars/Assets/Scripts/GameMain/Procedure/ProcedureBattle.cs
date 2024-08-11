@@ -20,6 +20,7 @@ namespace Lachesis.GamePlay
         
         
         private static Dictionary<string, int> m_playerScoreDict;
+        private static Dictionary<string, int> m_playerCarriedScoreDict;
         private BattleUI m_battleUI;
         private bool isGoMenu;
         private bool isGoSettlement;
@@ -33,8 +34,11 @@ namespace Lachesis.GamePlay
             battleModel = BattleModel.Instance;
             m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
             m_playerScoreDict = new Dictionary<string, int>();
+            m_playerCarriedScoreDict = new Dictionary<string, int>();
             m_playerScoreDict.Add(m_globalConfig.p1Name, 0);
             m_playerScoreDict.Add(m_globalConfig.p2Name, 0);
+            m_playerCarriedScoreDict.Add(m_globalConfig.p1Name, 0);
+            m_playerCarriedScoreDict.Add(m_globalConfig.p2Name, 0);
         }
 
 
@@ -51,6 +55,8 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             GameEntry.EventManager.AddListener(SwitchCarEventArgs.EventId, OnSwitchCar);
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
+            GameEntry.EventManager.AddListener(CarriedScoreUpdateEventArgs.EventId, OnCoinPicked);
+            GameEntry.EventManager.AddListener(PlayerArriveHomeEventArgs.EventId, OnPlayerArriveHome);
             isGoMenu = false;
             isGoSettlement = false;
             m_settlementData = null;
@@ -110,14 +116,14 @@ namespace Lachesis.GamePlay
             m_battleField = GameEntry.EntityManager.CreateEntity<BattleField>(EntityEnum.BattleField, Vector3.zero, Quaternion.identity);
             var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation, CarComponent.ClothColor.Yellow);
             var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, CarComponent.ClothColor.Black);
-            var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity,CarComponent.ClothColor.Red);
+            //var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity,CarComponent.ClothColor.Red);
             var carPlayerData1 = new CarController.CarControllerData(){carComponent = car1, controllerName = m_globalConfig.p1Name, userData = CarPlayer.PlayerType.P1};
             var carPlayerData2 = new CarController.CarControllerData(){carComponent = car2, controllerName = m_globalConfig.p2Name, userData = CarPlayer.PlayerType.P2};
-            var carAiData = new CarController.CarControllerData(){carComponent = car3, controllerName = $"人机{carAiIndex++}"};
+            //var carAiData = new CarController.CarControllerData(){carComponent = car3, controllerName = $"人机{carAiIndex++}"};
             
             var carPlayer1 = battleModel.AddPlayer(carPlayerData1);
             var carPlayer2 = battleModel.AddPlayer(carPlayerData2);
-            var carAi = battleModel.AddAI(carAiData);
+            //var carAi = battleModel.AddAI(carAiData);
             
             // var carPlayer1 = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, carPlayerData1);
             // var carPlayer2 = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, carPlayerData2);
@@ -289,6 +295,31 @@ namespace Lachesis.GamePlay
                 battleModel.skillPickUpItems.Remove(item);
             }
         }
+
+        private void OnCoinPicked(object sender, GameEventArgs e)
+        {
+            if (e is CarriedScoreUpdateEventArgs args)
+                if (m_playerCarriedScoreDict.ContainsKey(args.playerName))
+                {
+                    m_playerCarriedScoreDict[args.playerName] += args.getPointNum;
+                    GameEntry.EventManager.Invoke(this,
+                        CarriedScoreUIUpdateEventArgs.Create(m_playerCarriedScoreDict[m_globalConfig.p1Name], m_playerCarriedScoreDict[m_globalConfig.p2Name]));
+                }
+        }
+
+        private void OnPlayerArriveHome(object sender, GameEventArgs e)
+        {
+            if (e is PlayerArriveHomeEventArgs args)
+                if (m_playerScoreDict.ContainsKey(args.playerName))
+                {
+                    m_playerScoreDict[args.playerName] += m_playerCarriedScoreDict[args.playerName];
+                    m_playerCarriedScoreDict[args.playerName] = 0;
+                    GameEntry.EventManager.Invoke(this,
+                        ScoreUIUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
+                    GameEntry.EventManager.Invoke(this,
+                        CarriedScoreUIUpdateEventArgs.Create(m_playerCarriedScoreDict[m_globalConfig.p1Name], m_playerCarriedScoreDict[m_globalConfig.p2Name]));
+                }
+        }
         
         //由于流程退出的自动回收机制，这里不用根据DungeonMode区分，都回收了
         protected internal override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
@@ -315,10 +346,14 @@ namespace Lachesis.GamePlay
             
             m_playerScoreDict[m_globalConfig.p1Name] = 0;
             m_playerScoreDict[m_globalConfig.p2Name] = 0;
+            m_playerCarriedScoreDict[m_globalConfig.p1Name] = 0;
+            m_playerCarriedScoreDict[m_globalConfig.p2Name] = 0;
             GameEntry.EventManager.RemoveListener(AttackHitArgs.EventId, OnAttackHappened);
             GameEntry.EventManager.RemoveListener(ProcedureChangeEventArgs.EventId, OnProcedureChange);
             GameEntry.EventManager.RemoveListener(SwitchCarEventArgs.EventId, OnSwitchCar);
             GameEntry.EventManager.RemoveListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
+            GameEntry.EventManager.RemoveListener(CarriedScoreUpdateEventArgs.EventId, OnCoinPicked);
+            GameEntry.EventManager.RemoveListener(PlayerArriveHomeEventArgs.EventId, OnPlayerArriveHome);
         }
 
         protected internal override void OnDestroy(ProcedureOwner procedureOwner)
@@ -387,7 +422,7 @@ namespace Lachesis.GamePlay
 
                     if(attackInfo.attackType==AttackType.Collide)
                     {
-                        var showMsg = $"{carComponent.carControllerName} 在与{killer}的激烈碰撞中牺牲了！";
+                        var showMsg = $"[{carComponent.carControllerName}]在与[{killer}]的激烈碰撞中牺牲了!";
                         Debug.Log(showMsg);
                         GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                     }
@@ -396,7 +431,7 @@ namespace Lachesis.GamePlay
                         if(attackInfo.userData is SkillEnum skillEnum)
                         {
                             var skillCfg = GameEntry.SkillManager.GetSkillConfigItem(skillEnum);
-                            var showMsg = $"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}！";
+                            var showMsg = $"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}!";
                             Debug.Log(showMsg);
                             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                         }
@@ -404,9 +439,12 @@ namespace Lachesis.GamePlay
                             
                     if (m_playerScoreDict.ContainsKey(killer))
                     {
-                        m_playerScoreDict[killer] += 1;
-                        GameEntry.EventManager.Invoke(ScoreUpdateEventArgs.EventId,
-                            ScoreUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
+                        m_playerScoreDict[killer] += 1; //击杀分数直接加1，并夺取被杀者分数
+                        if (m_playerCarriedScoreDict.ContainsKey(attackInfo.underAttacker))
+                            m_playerCarriedScoreDict[killer] += m_playerCarriedScoreDict[carController.controllerName];
+
+                        GameEntry.EventManager.Invoke(ScoreUIUpdateEventArgs.EventId,
+                            ScoreUIUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
                     }
                 }
                 else
@@ -423,6 +461,15 @@ namespace Lachesis.GamePlay
                 Debug.Log(showMsg);
                 GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
             }
+
+            if (m_playerCarriedScoreDict.ContainsKey(carController.controllerName))
+            {
+                m_playerCarriedScoreDict[carController.controllerName] = 0;
+                GameEntry.EventManager.Invoke(this,
+                    CarriedScoreUIUpdateEventArgs.Create(m_playerCarriedScoreDict[m_globalConfig.p1Name], m_playerCarriedScoreDict[m_globalConfig.p2Name]));
+            }
+
+            
         }
         
         private void WinSettlement()
@@ -514,6 +561,15 @@ namespace Lachesis.GamePlay
                     car2 = controller;
                     get2 = true;
                 }
+            }
+
+            if (car2 != null && car1 != null && Vector3.Distance(car1.carComponent.transform.position, car2.carComponent.transform.position) >
+                m_globalConfig.switchMinDistance)
+            {
+                var showMsg = $"无法切换, 需要与对方距离小于{m_globalConfig.switchMinDistance}米";
+                GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
+                Debug.Log(showMsg);
+                return false;
             }
             
             return get1&&get2;

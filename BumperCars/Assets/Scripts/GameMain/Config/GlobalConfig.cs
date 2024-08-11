@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GlobalConfig", menuName = "ScriptableObject/GlobalConfig", order = 0)]
 public class GlobalConfig : ScriptableObject
@@ -28,4 +27,6 @@ public class GlobalConfig : ScriptableObject
     public float extremeDodgeTime = 0.5f;
     public string pveBossName = "Boss";
     public int pveBossMaxHealth = 100;
+    public float coinRefreshTime = 30f; //硬币刷新周期
+    public float switchMinDistance = 8f; //切换最短距离
 }
