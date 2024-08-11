@@ -42,8 +42,7 @@ namespace Lachesis.GamePlay
         //Pve
         BossCar,
 
-        //Network
-        BumperCarNetworkManagers
+        MagicShieldEffect
     }
     
     public class EntityManager : GameModule

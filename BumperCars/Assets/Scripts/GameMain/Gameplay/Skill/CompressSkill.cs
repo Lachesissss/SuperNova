@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,17 +24,29 @@ namespace Lachesis.GamePlay
         {
             if (TryGetSkillTarget(source, out var target))
             {
-                if (target == m_battleModel.player1Camera.car)
+                void OnHit()
                 {
-                    CarCamera.Compress(m_battleModel.player2Camera, m_battleModel.player1Camera);
-                    return true;
-                }
+                    if (target == m_battleModel.player1Camera.car)
+                    {
+                        CarCamera.Compress(m_battleModel.player2Camera, m_battleModel.player1Camera);
+                    }
 
-                if (target == m_battleModel.player2Camera.car)
-                {
-                    CarCamera.Compress(m_battleModel.player1Camera, m_battleModel.player2Camera);
-                    return true;
+                    if (target == m_battleModel.player2Camera.car)
+                    {
+                        CarCamera.Compress(m_battleModel.player1Camera, m_battleModel.player2Camera);
+                    }
                 }
+                
+                var attackInfo = new AttackInfo();
+                attackInfo.attacker = source.carControllerName;
+                attackInfo.underAttacker = target.carControllerName;
+                attackInfo.attackTime = DateTime.Now;
+                attackInfo.attackType = AttackType.Skill;
+                attackInfo.userData = skillEnum;
+                attackInfo.attackDamge = 0;
+                attackInfo.canDodge = false;
+                GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo, OnHit));
+                return true;
             }
 
             return false;

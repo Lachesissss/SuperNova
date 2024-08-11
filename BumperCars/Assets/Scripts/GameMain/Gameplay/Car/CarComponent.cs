@@ -58,6 +58,10 @@ namespace Lachesis.GamePlay
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
         
         private bool m_isInWitchTime = false;
+
+        private bool m_isHasMagicShield;
+
+        private Entity m_shieldEffectEntity;
         public bool IsInWitchTime =>m_isInWitchTime;
         
         public enum ClothColor
@@ -200,6 +204,7 @@ namespace Lachesis.GamePlay
             m_carTurnValue = 0;
             m_isHandBrake = false;
             m_isInWitchTime = false;
+            m_isHasMagicShield = false;
             bodyRb.velocity = Vector3.zero;
             bodyRb.angularVelocity = Vector3.zero;
             bodyRb.mass = m_startMass;
@@ -262,22 +267,42 @@ namespace Lachesis.GamePlay
         private void OnAttackArrived(object sender, GameEventArgs e)
         {
             if(e is AttackEventArgs args)
-            {
                 if(args.attackInfo.underAttacker == carControllerName)
                 {
-                    if(m_isInWitchTime)
+                    if (m_isInWitchTime && args.attackInfo.canDodge)
                     {
                         GameEntry.instance.StartCoroutine(ShowWitchTimeEffect(controller.carComponent.transform));
                     }
                     else
                     {
-                        GameEntry.EventManager.Invoke(this, AttackHitArgs.Create(args.attackInfo));
-                        args.OnHit.Invoke();
+                        if (m_isHasMagicShield)
+                        {
+                            m_isHasMagicShield = false;
+                            GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);
+                        }
+                        else
+                        {
+                            GameEntry.EventManager.Invoke(this, AttackHitArgs.Create(args.attackInfo));
+                            args.OnHit.Invoke();
+                        }
                     }
                 }
-            }
         }
 
+        public void GetMagicShield()
+        {
+            m_isHasMagicShield = true;
+            m_shieldEffectEntity = GameEntry.EntityManager.CreateEntity<MagicShieldEffect>(EntityEnum.MagicShieldEffect, transform, new Vector3(0, 0.5f, 0));
+            StartCoroutine(DelayToReturnShield());
+        }
+
+        private IEnumerator DelayToReturnShield()
+        {
+            yield return new WaitForSeconds(10f);
+            m_isHasMagicShield = false;
+            GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);
+        }
+        
         private IEnumerator ShowWitchTimeEffect(Transform source)
         {
             int randomValue = Random.Range(0, 2) == 0 ? -1 : 1;

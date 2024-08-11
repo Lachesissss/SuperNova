@@ -1,9 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Lachesis.Core;
-using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Lachesis.GamePlay
 {
@@ -15,6 +10,7 @@ namespace Lachesis.GamePlay
         public AttackType attackType;
         public object userData;
         public int attackDamge;
+        public bool canDodge = true;
     }
 
     public enum AttackType

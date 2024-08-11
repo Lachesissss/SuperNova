@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -22,19 +23,31 @@ namespace Lachesis.GamePlay
         {
             if (TryGetSkillTarget(source, out var target))
             {
-                if (target == m_battleModel.player1Camera.car)
+                void OnHit()
                 {
-                    m_battleModel.player1Camera.SetFlipVertical(true);
-                    GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player1Camera));
-                    return true;
+                    if (target == m_battleModel.player1Camera.car)
+                    {
+                        m_battleModel.player1Camera.SetFlipVertical(true);
+                        GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player1Camera));
+                    }
+
+                    if (target == m_battleModel.player2Camera.car)
+                    {
+                        m_battleModel.player2Camera.SetFlipVertical(true);
+                        GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player2Camera));
+                    }
                 }
 
-                if (target == m_battleModel.player2Camera.car)
-                {
-                    m_battleModel.player2Camera.SetFlipVertical(true);
-                    GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player2Camera));
-                    return true;
-                }
+                var attackInfo = new AttackInfo();
+                attackInfo.attacker = source.carControllerName;
+                attackInfo.underAttacker = target.carControllerName;
+                attackInfo.attackTime = DateTime.Now;
+                attackInfo.attackType = AttackType.Skill;
+                attackInfo.userData = skillEnum;
+                attackInfo.attackDamge = 0;
+                attackInfo.canDodge = false;
+                GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo, OnHit));
+                return true;
             }
 
             return false;
