@@ -62,7 +62,9 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillPickUpItem.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ProcedureChangeEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StoneHitEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightningEffect.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\ScarletImplosionSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattlePve.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Assets\Scripts\GameMain\Config\AtlasConfig.cs" />
     <Compile Include="Assets\Floating_Island\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattle.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\ScarletImplosionEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleField.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\AttackInfo.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMBase.cs" />
@@ -109,9 +112,10 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarAttacker.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightingPrepareEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMManager.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightingHitEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\FlipVerticalSkill.cs" />
-    <Compile Include="Assets\Scripts\GameMain\Event\GameEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\MagicShieldEffect.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\GameEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PopupTips.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIPatrolState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillManager.cs" />
@@ -128,6 +132,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarBody.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlement.cs" />
     <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\OscillateRotation.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\CoinPickedUpEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\ProcedureType.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarComponent.cs" />

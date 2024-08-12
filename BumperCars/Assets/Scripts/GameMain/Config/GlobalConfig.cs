@@ -15,8 +15,8 @@ public class GlobalConfig : ScriptableObject
     public float playerReviveTime = 5f;//玩家复活间隔
     public int targetScore = 10;//获胜分数
     public float carBoostCoolingTime = 5f;//冲刺冷却
-    public float carSwitchCoolingTimeMin = 3f;//冲刺冷却随机下限
-    public float carSwitchCoolingTimeMax = 6f;//冲刺冷却随机上限
+    public float carSwitchCoolingTimeMin = 2f;//切换冷却随机下限
+    public float carSwitchCoolingTimeMax = 2f;//切换冷却随机上限
     public string p1Name = "玩家1";
     public string p2Name = "玩家2";
     public int maxSkillCount = 3;//最大技能数量

@@ -193,6 +193,7 @@ namespace Lachesis.GamePlay
         
         private void OnDrawGizmos() // shows a Gizmos representing the waypoints and AI FOV
         {
+            if(!IsHasCar) return;
             if (ShowGizmos == true)
             {
                 for (int i = 0; i < waypoints.Count; i++)

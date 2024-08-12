@@ -78,7 +78,8 @@ namespace Lachesis.GamePlay
         {
             if(!canSwitch) return;
             carComponent.DoSwitch();
-            float randomCooling = Random.Range(m_globalConfig.carSwitchCoolingTimeMin, m_globalConfig.carSwitchCoolingTimeMax);
+            //float randomCooling = Random.Range(m_globalConfig.carSwitchCoolingTimeMin, m_globalConfig.carSwitchCoolingTimeMax);
+            float randomCooling = m_globalConfig.carSwitchCoolingTimeMin;
             var coolingInfo = new CoolingInfo();
             coolingInfo.playerName = controllerName;
             coolingInfo.isSwitchCoolingInfoChanged = true;

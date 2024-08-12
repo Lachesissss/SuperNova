@@ -396,11 +396,13 @@ namespace Lachesis.GamePlay
                         {//目前人机立即复活
                             if(dungeonMode == DungeonMode.Single)
                             {
-                                ReviveAISingleMode(carAI,lastColor);
+                                GameEntry.instance.GameStartCoroutine(DelayToReviveAISingleMode(carAI, lastColor));
+                                //ReviveAISingleMode(carAI,lastColor);
                             }
                             else
                             {
-                                ReviveAIDoubleMode(carAI,lastColor);
+                                GameEntry.instance.GameStartCoroutine(DelayToReviveAIDoubleMode(carAI, lastColor));
+                                //ReviveAIDoubleMode(carAI,lastColor);
                             }
                         }
                     }
@@ -524,6 +526,18 @@ namespace Lachesis.GamePlay
                 carPlayer.SetCar(car);
                 carPlayer.ClearSkills();
             }
+        }
+
+        private IEnumerator DelayToReviveAIDoubleMode(CarAI carAi, CarComponent.ClothColor lastColor)
+        {
+            yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
+            ReviveAIDoubleMode(carAi, lastColor);
+        }
+        
+        private IEnumerator DelayToReviveAISingleMode(CarAI carAi, CarComponent.ClothColor lastColor)
+        {
+            yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
+            ReviveAISingleMode(carAi, lastColor);
         }
         
         private void ReviveAISingleMode(CarAI carAI,CarComponent.ClothColor lastColor)

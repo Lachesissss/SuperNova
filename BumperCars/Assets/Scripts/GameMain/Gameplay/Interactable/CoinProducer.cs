@@ -25,6 +25,12 @@ namespace Lachesis.GamePlay
             curInterval = 0;
         }
 
+        public override void OnEntityReturnToPool(bool isShutDown = false)
+        {
+            base.OnEntityReturnToPool(isShutDown);
+            GameEntry.EventManager.RemoveListener(CoinPickedUpEventArgs.EventId, OnCoinPickedUp);
+        }
+
         private void OnCoinPickedUp(object sender, GameEventArgs e)
         {
             if(e is CoinPickedUpEventArgs args)

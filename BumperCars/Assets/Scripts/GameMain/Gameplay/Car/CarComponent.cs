@@ -28,6 +28,7 @@ namespace Lachesis.GamePlay
         public CarController controller;
         public ParticleSystem energyEffect;
         public ParticleSystem boostEffect;
+        public ParticleSystem reviveEffect;
         
         public float maxAngle;
         public float targetAngle;
@@ -217,6 +218,8 @@ namespace Lachesis.GamePlay
             carControllerName = "未定义";
             energyEffect.Stop();
             boostEffect.Stop();
+            reviveEffect.Play();
+            StartCoroutine(StopReviveEffect());
             carAttacker.Reset();
             GameEntry.EventManager.AddListener(AttackEventArgs.EventId, OnAttackArrived);
             
@@ -346,6 +349,12 @@ namespace Lachesis.GamePlay
         {
             yield return null; // 等待一帧
             foreach (var wheel in wheelColliders) wheel.brakeTorque = 0;
+        }
+        
+        private IEnumerator StopReviveEffect()
+        {
+            yield return new WaitForSeconds(1.5f); 
+            reviveEffect.Stop();
         }
 
         public void ChangeCarTurnState(float turnValue)
