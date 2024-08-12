@@ -434,7 +434,7 @@ namespace Lachesis.GamePlay
                         if(attackInfo.userData is SkillEnum skillEnum)
                         {
                             var skillCfg = GameEntry.SkillManager.GetSkillConfigItem(skillEnum);
-                            var showMsg = $"[{carName}]被{killer}使用[{skillCfg.skillName}]{skillCfg.killText}!";
+                            var showMsg = $"[{carName}]被[{killer}]使用[{skillCfg.skillName}]{skillCfg.killText}!";
                             Debug.Log(showMsg);
                             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
                         }
