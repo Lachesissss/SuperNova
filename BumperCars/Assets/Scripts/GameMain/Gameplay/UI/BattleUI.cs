@@ -23,6 +23,7 @@ namespace Lachesis.GamePlay
         public TextMeshProUGUI player2CarriedScoreText;
         public TextMeshProUGUI targetScoreText;
         public Button settingBtn;
+        public Button closeBtn;
         public Button continueBtn;
         public Button backToTittleBtn;
         public Image p1BoostCoolingImg;
@@ -93,6 +94,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
             settingBtn.onClick.AddListener(OnSettingBtnClicked);
             continueBtn.onClick.AddListener(OnContinueBtnClicked);
+            closeBtn.onClick.AddListener(OnContinueBtnClicked);
             backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
             if(userData is BattleUIData battleUIData)
             {
@@ -118,6 +120,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.RemoveListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
             settingBtn.onClick.RemoveAllListeners();
             continueBtn.onClick.RemoveAllListeners();
+            closeBtn.onClick.RemoveAllListeners();
             backToTittleBtn.onClick.RemoveAllListeners();
         }
 

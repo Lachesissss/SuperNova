@@ -4,6 +4,7 @@ namespace Lachesis.GamePlay
 {
     public class PlayerHome : EntityComponent
     {
+        public ParticleSystem levelUpEffect;
         public enum PlayerHomeType
         {
             Player1,

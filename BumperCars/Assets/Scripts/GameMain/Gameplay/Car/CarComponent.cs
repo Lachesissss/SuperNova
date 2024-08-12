@@ -17,6 +17,8 @@ namespace Lachesis.GamePlay
         public DriverMode driverMode = DriverMode.Back;
         public float idealRPM = 200;
         public float maxRPM = 400;
+        public float backIdealRPM = 50;
+        public float backMaxRPM = 100;
         public float moveTorque = 30000;
         public float handBreakTorque = 60000;
         public float autoBreakTorque = 10000;
@@ -24,6 +26,8 @@ namespace Lachesis.GamePlay
         public Transform centerOfGravity;
         public CarAttacker carAttacker;
         public CarController controller;
+        public ParticleSystem energyEffect;
+        public ParticleSystem boostEffect;
         
         public float maxAngle;
         public float targetAngle;
@@ -72,14 +76,15 @@ namespace Lachesis.GamePlay
             Black
         }
         
-        private static readonly string yellowColor = "FFFFFF";
-        private static readonly string blackColor = "0001FF";
-        private static readonly string greenColor = "00F3FF";
-        private static readonly string redcolor = "FF0000";
+        private static readonly string yellowColor = "F76C09";
+        private static readonly string blackColor = "0FC3EE";
+        private static readonly string greenColor = "5BD511";
+        private static readonly string redcolor = "F70B3E";
         
         [SerializeField]
         private List<Renderer> bodyRenderers;
         public ClothColor clothColor;
+        private static readonly int SpecColor = Shader.PropertyToID("_SpecColor");
 
         public void AddEffectEntity(Entity entity)
         {
@@ -153,7 +158,7 @@ namespace Lachesis.GamePlay
             forceDirection.y = 0;
             forceDirection = forceDirection.normalized;
             bodyRb.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + bodyRb.velocity;
-            
+            boostEffect.Play();
             // 暂时降低摩擦力
             StartCoroutine(TemporarilyReduceFriction(wheelColliders));
             
@@ -210,6 +215,8 @@ namespace Lachesis.GamePlay
             bodyRb.mass = m_startMass;
             controller =null;
             carControllerName = "未定义";
+            energyEffect.Stop();
+            boostEffect.Stop();
             carAttacker.Reset();
             GameEntry.EventManager.AddListener(AttackEventArgs.EventId, OnAttackArrived);
             
@@ -242,25 +249,22 @@ namespace Lachesis.GamePlay
                 {
                     case ClothColor.Black:
                         setColor =  GetColorByHexString(blackColor);
-                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
                         break;
                     case ClothColor.Green:
                         setColor =  GetColorByHexString(greenColor);
-                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
                         break;
                     case ClothColor.Red:
                         setColor =  GetColorByHexString(redcolor);
-                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
                         break;
                     case ClothColor.Yellow:
                         setColor =  GetColorByHexString(yellowColor);
-                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
                         break;
                     default:
                         setColor =  GetColorByHexString(yellowColor);
-                        foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.color = setColor;
+                        
                         break;
                 }
+                foreach (var bodyRenderer in bodyRenderers)bodyRenderer.material.SetColor(SpecColor, setColor);;
             }
         }
 
@@ -279,6 +283,7 @@ namespace Lachesis.GamePlay
                         {
                             m_isHasMagicShield = false;
                             GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);
+                            GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create($"[{carControllerName}]的[秘法护盾]效果发动!"));
                         }
                         else
                         {
@@ -292,7 +297,7 @@ namespace Lachesis.GamePlay
         public void GetMagicShield()
         {
             m_isHasMagicShield = true;
-            m_shieldEffectEntity = GameEntry.EntityManager.CreateEntity<MagicShieldEffect>(EntityEnum.MagicShieldEffect, transform, new Vector3(0, 0.5f, 0));
+            m_shieldEffectEntity = GameEntry.EntityManager.CreateEntity<MagicShieldEffect>(EntityEnum.MagicShieldEffect, transform);
             StartCoroutine(DelayToReturnShield());
         }
 
@@ -373,10 +378,26 @@ namespace Lachesis.GamePlay
         private void WheelsUpdate()
         {
             var forwardValue = m_carForwardValue > 0.05 || m_carForwardValue < -0.05 ? m_carForwardValue : 0;
+            if(forwardValue>0)
+            {
+                if(energyEffect.isStopped)
+                {
+                    energyEffect.Play();
+                }
+            }
+            else
+            {
+                if(energyEffect.isPlaying)
+                {
+                    energyEffect.Stop();
+                }
+            }
+            if(forwardValue<0) forwardValue*=0.2f;
             var scaledTorque = forwardValue * moveTorque;
             var curRPM = leftBackCollider.rpm;
             if (curRPM is float.NaN)
                 curRPM = 0;
+
             if (curRPM < idealRPM)
                 scaledTorque = Mathf.Lerp(scaledTorque / 10f, scaledTorque, curRPM / idealRPM);
             else

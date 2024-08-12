@@ -9,6 +9,7 @@ namespace Lachesis.GamePlay
     {
         private bool hasCollided;//碰撞冷却标记
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
+        private Vector3 effectDeltaPos = new Vector3(0,0.5f,0);
         private Rigidbody m_carBody;
         private GlobalConfig m_globalConfig;
         private CarComponent m_SelfComponent;
@@ -51,7 +52,7 @@ namespace Lachesis.GamePlay
 
                     // 暂时降低摩擦力
                     StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, otherCar.entityEnum==EntityEnum.BossCar));
-
+                    GameEntry.EntityManager.CreateEntity<StoneHitEffect>(EntityEnum.StoneHitEffect, otherCar.transform, effectDeltaPos);
                     // 重置碰撞标记
                     StartCoroutine(ResetCollisionFlag());
                 }

@@ -17,7 +17,7 @@ namespace Lachesis.GamePlay
         private BattleModel battleModel;
         private int carAiIndex = 0;
         private int maxSkillPickUpItemsCount = 8;
-        
+        private Vector3 skillItemSpawnOffset = new Vector3(0,0.5f,0);
         
         private static Dictionary<string, int> m_playerScoreDict;
         private static Dictionary<string, int> m_playerCarriedScoreDict;
@@ -208,6 +208,7 @@ namespace Lachesis.GamePlay
         Vector3 GetRandomPositionInBattleField()
         {
             int NavMeshLayerBite = 0;
+            
             NavMeshLayerBite+= 1 << NavMesh.GetAreaFromName("Walkable");
             Vector3 randomDirection = Random.insideUnitSphere * m_battleField.Radius;
             randomDirection+=m_battleField.fieldCenter.position;
@@ -217,7 +218,7 @@ namespace Lachesis.GamePlay
             {
                 finalPosition = hit.position;
             }
-            return finalPosition;
+            return finalPosition+skillItemSpawnOffset;
         }
         
         private bool CheckStateChange()

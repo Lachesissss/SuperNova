@@ -29,4 +29,5 @@ public class GlobalConfig : ScriptableObject
     public int pveBossMaxHealth = 100;
     public float coinRefreshTime = 30f; //硬币刷新周期
     public float switchMinDistance = 8f; //切换最短距离
+    public int maxCoinSpawnNum = 3; //同时生成的最大硬币（分数币）数量
 }

@@ -22,7 +22,7 @@ MonoBehaviour:
     skillType:
       typeName: Lachesis.GamePlay.LightingSkill, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-    spawnProb: 3
+    spawnProb: 2
     openInPve: 1
   - skillEnum: 1
     skillName: "\u5DE8\u77F3\u4E4B\u9B42"
@@ -56,4 +56,26 @@ MonoBehaviour:
       typeName: Lachesis.GamePlay.CompressSkill, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     spawnProb: 1
+    openInPve: 0
+  - skillEnum: 4
+    skillName: "\u79D8\u6CD5\u62A4\u76FE"
+    iconName: shield
+    activateText: "\u9B54\u6CD5\u80FD\u91CF\u5145\u76C8\u5468\u56F4"
+    killText: 
+    showTextOnRelease: 1
+    skillType:
+      typeName: Lachesis.GamePlay.MagicShieldSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    spawnProb: 1
+    openInPve: 0
+  - skillEnum: 5
+    skillName: "\u7329\u7EA2\u805A\u7206"
+    iconName: implosion
+    activateText: 
+    killText: "\u541E\u566C\u7075\u9B42"
+    showTextOnRelease: 0
+    skillType:
+      typeName: Lachesis.GamePlay.ScarletImplosionSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    spawnProb: 2
     openInPve: 0

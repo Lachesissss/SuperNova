@@ -34,6 +34,16 @@ namespace Lachesis.GamePlay
                 }
             }
         }
+        
+        public static float rotationSpeed = 90f;
+        public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
+            float rotationAmount = rotationSpeed * elapseSeconds;
+
+            // 绕世界坐标系的Y轴旋转
+            transform.Rotate(Vector3.up, rotationAmount, Space.World);
+        }
     }
 }
 

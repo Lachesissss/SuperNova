@@ -81,7 +81,7 @@ namespace Lachesis.GamePlay
                 // 暂时降低摩擦力
                 var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
                 GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, target.entityEnum == EntityEnum.BossCar));
-                
+                GameEntry.EntityManager.CreateEntity<LightingHitEffect>(EntityEnum.LightingHitEffect, target.transform, effectDeltaPos);
             }
             
             var attackInfo = new AttackInfo();

@@ -13,6 +13,8 @@ namespace Lachesis.GamePlay
         Stronger,
         FlipVertical,
         Compress,
+        Shield,
+        Implosion,
         //Slip,
         //Swap,
         //Summon,

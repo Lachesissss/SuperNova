@@ -42,7 +42,10 @@ namespace Lachesis.GamePlay
         //Pve
         BossCar,
 
-        MagicShieldEffect
+        MagicShieldEffect,
+        ScarletImplosionEffect,
+        StoneHitEffect,
+        LightingHitEffect,
     }
     
     public class EntityManager : GameModule
