@@ -16,14 +16,14 @@ namespace Lachesis.GamePlay
         }
         private PlayerInputManager input;
         public PlayerType playerType;
-        private bool Boost => playerType == PlayerType.P1?input.boostP1:input.boostP2;
-        private bool Skill1 => playerType == PlayerType.P1?input.skill1P1:input.skill1P2;
-        private bool Skill2 => playerType == PlayerType.P1?input.skill2P1:input.skill2P2;
-        private bool Skill3 => playerType == PlayerType.P1?input.skill3P1:input.skill3P2;
-        private bool Switch => playerType == PlayerType.P1?input.switchP1:input.switchP2;
-        private float SteeringDelta => playerType == PlayerType.P1?input.steeringDeltaP1:input.steeringDeltaP2;
-        private float MotorDelta => playerType == PlayerType.P1?input.motorDeltaP1:input.motorDeltaP2;
-        private bool Handbrake => playerType == PlayerType.P1?input.handbrakeP1:input.handbrakeP2;
+        private bool Boost => playerType == PlayerType.P1?input.boostP1:(m_globalConfig.p2UsingJoySticks?input.boostP2J:input.boostP2) ;
+        private bool Skill1 => playerType == PlayerType.P1?input.skill1P1:(m_globalConfig.p2UsingJoySticks?input.skill1P2J:input.skill1P2);
+        private bool Skill2 => playerType == PlayerType.P1?input.skill2P1:(m_globalConfig.p2UsingJoySticks?input.skill2P2J:input.skill2P2);
+        private bool Skill3 => playerType == PlayerType.P1?input.skill3P1:(m_globalConfig.p2UsingJoySticks?input.skill3P2J:input.skill3P2);
+        private bool Switch => playerType == PlayerType.P1?input.switchP1:(m_globalConfig.p2UsingJoySticks?input.switchP2J:input.switchP2);
+        private float SteeringDelta => playerType == PlayerType.P1?input.steeringDeltaP1:(m_globalConfig.p2UsingJoySticks?input.steeringDeltaP2J:input.steeringDeltaP2);
+        private float MotorDelta => playerType == PlayerType.P1?input.motorDeltaP1:(m_globalConfig.p2UsingJoySticks?input.motorDeltaP2J:input.motorDeltaP2);
+        private bool Handbrake => playerType == PlayerType.P1?input.handbrakeP1:(m_globalConfig.p2UsingJoySticks?input.handbrakeP2J:input.handbrakeP2);
 
         public override void OnInit(object userData = null)
         {

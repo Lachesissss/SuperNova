@@ -110,8 +110,12 @@ namespace Lachesis.GamePlay
                 else
                 {
                     if (Vector3.Distance(owner.waypoints[owner.currentWayPoint], owner.destination.position) > 3.5)
+                    {
                         //离目标太远的路径点就抛弃掉，重新创建路径
                         owner.waypoints.RemoveAt(owner.currentWayPoint);
+                        owner.m_RVOManager.UpdateAgentTarget(owner.carComponent.transform, owner.GetCurTarget());
+                    }
+                    
                     //CustomPath(owner.destination);
                     if (owner.currentWayPoint >= owner.waypoints.Count)
                     {
@@ -162,6 +166,7 @@ namespace Lachesis.GamePlay
                 {   //这里不知道为啥第一次会生成一个奇怪位置的waypoints但是目前表现正常先不管
                     owner.waypoints.AddRange(path.corners.ToList());
                     owner.DebugLog("Custom Path generated successfully", false);
+                    owner.m_RVOManager.UpdateAgentTarget(owner.carComponent.transform, owner.GetCurTarget());
                 }
                 else
                 {
@@ -169,6 +174,7 @@ namespace Lachesis.GamePlay
                     {
                         owner.waypoints.AddRange(path.corners.ToList());
                         owner.DebugLog("Custom Path generated successfully", false);
+                        owner.m_RVOManager.UpdateAgentTarget(owner.carComponent.transform, owner.GetCurTarget());
                     }
                     else
                     {

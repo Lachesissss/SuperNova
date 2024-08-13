@@ -32,6 +32,7 @@ namespace Lachesis.GamePlay
         public static EntityManager EntityManager { get; private set; }
         public static AtlasManager AtlasManager { get; private set; }
         public static SkillManager SkillManager { get; private set; }
+        public static RVOManager RVOManager { get; private set; }
         public static ProcedureManager ProcedureManager { get; private set; }
 
         public static PlayerInputManager PlayerInputManager { get; private set; }
@@ -50,6 +51,7 @@ namespace Lachesis.GamePlay
             EventManager = GetModule<EventManager>(); //这里先简单处理一下，后面给GameMoudle加个priority
             AtlasManager = GetModule<AtlasManager>();
             SkillManager = GetModule<SkillManager>();
+            RVOManager = GetModule<RVOManager>();
             
 
             if (ProcedureManager == null)
@@ -90,6 +92,7 @@ namespace Lachesis.GamePlay
             ProcedureManager.Initialize(GetModule<FSMManager>(), procedureBases);
             AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
             SkillManager.Initialize(ConfigManager.GetConfig<SkillConfig>());
+            RVOManager.Init();
             yield return new WaitForEndOfFrame();
 
             ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());

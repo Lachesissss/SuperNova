@@ -33,7 +33,7 @@ namespace Lachesis.GamePlay
         
         private IEnumerator DelayToAttack(CarComponent source, CarComponent target)
         {
-            var startPos = target.transform.position+target.bodyRb.velocity*0.8f+new Vector3(0,0.3f,0);//提前预测0.8秒后的位置
+            var startPos = target.transform.position+target.bodyRb.velocity*0.8f+new Vector3(0.05f,0.3f,0.05f);//提前预测0.8秒后的位置
             var effect = GameEntry.EntityManager.CreateEntity<ScarletImplosionEffect>(EntityEnum.ScarletImplosionEffect, startPos, target.transform.rotation);
             yield return new WaitForSeconds(1.1f);
             if(Vector3.Distance(target.transform.position, startPos)<=3.5*1.5f)

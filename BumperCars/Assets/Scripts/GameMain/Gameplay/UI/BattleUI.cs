@@ -26,6 +26,12 @@ namespace Lachesis.GamePlay
         public Button closeBtn;
         public Button continueBtn;
         public Button backToTittleBtn;
+        public Button p2JoySticksSwitchOnBtn;
+        public Button p2JoySticksSwitchOffBtn;
+        public GameObject p2JoySticksSwitchOnGO;
+        public GameObject p2JoySticksSwitchOffGO;
+        public GameObject p2JoySticksTextGO;
+        public GameObject p2KeyBoardTextGO;
         public Image p1BoostCoolingImg;
         public Image p2BoostCoolingImg;
         public Image p1SwitchCoolingImg;
@@ -59,7 +65,11 @@ namespace Lachesis.GamePlay
             base.OnInit(userData);
             popupTextQueue = new();
             curShowTips = new();
-            
+            var isP2Js = GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks;
+            p2JoySticksSwitchOffGO.SetActive(!isP2Js);
+            p2JoySticksSwitchOnGO.SetActive(isP2Js);
+            p2KeyBoardTextGO.SetActive(!isP2Js);
+            p2JoySticksTextGO.SetActive(isP2Js);
         }
         
         private void InitCoolingImg(Image img)
@@ -96,6 +106,8 @@ namespace Lachesis.GamePlay
             continueBtn.onClick.AddListener(OnContinueBtnClicked);
             closeBtn.onClick.AddListener(OnContinueBtnClicked);
             backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
+            p2JoySticksSwitchOnBtn.onClick.AddListener(SwitchOnP2JoySticks);
+            p2JoySticksSwitchOffBtn.onClick.AddListener(SwitchOffP2JoySticks);
             if(userData is BattleUIData battleUIData)
             {
                 RefreshAll(battleUIData);
@@ -122,6 +134,8 @@ namespace Lachesis.GamePlay
             continueBtn.onClick.RemoveAllListeners();
             closeBtn.onClick.RemoveAllListeners();
             backToTittleBtn.onClick.RemoveAllListeners();
+            p2JoySticksSwitchOnBtn.onClick.RemoveAllListeners();
+            p2JoySticksSwitchOffBtn.onClick.RemoveAllListeners();
         }
 
         public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
@@ -143,6 +157,24 @@ namespace Lachesis.GamePlay
         private void OnBackToTittleBtnClicked()
         {
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
+        }
+        
+        private void SwitchOnP2JoySticks()
+        {
+            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = true;
+            p2JoySticksSwitchOffGO.SetActive(false);
+            p2JoySticksSwitchOnGO.SetActive(true);
+            p2KeyBoardTextGO.SetActive(false);
+            p2JoySticksTextGO.SetActive(true);
+        }
+        
+        private void SwitchOffP2JoySticks()
+        {
+            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = false;
+            p2JoySticksSwitchOffGO.SetActive(true);
+            p2JoySticksSwitchOnGO.SetActive(false);
+            p2KeyBoardTextGO.SetActive(true);
+            p2JoySticksTextGO.SetActive(false);
         }
         
         private void RefreshScore(int p1Score, int p2Score)

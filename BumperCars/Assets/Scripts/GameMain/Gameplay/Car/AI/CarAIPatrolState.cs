@@ -138,6 +138,7 @@ namespace Lachesis.GamePlay
                     {
                         owner.waypoints.AddRange(path.corners.ToList());
                         owner.DebugLog("Custom Path generated successfully", false);
+                        owner.m_RVOManager.UpdateAgentTarget(owner.carComponent.transform, owner.GetCurTarget());
                     }
                     else
                     {
@@ -145,6 +146,7 @@ namespace Lachesis.GamePlay
                         {
                             owner.waypoints.AddRange(path.corners.ToList());
                             owner.DebugLog("Custom Path generated successfully", false);
+                            owner.m_RVOManager.UpdateAgentTarget(owner.carComponent.transform, owner.GetCurTarget());
                         }
                         else
                         {

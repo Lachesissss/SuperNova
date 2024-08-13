@@ -18,7 +18,7 @@ namespace Lachesis.GamePlay
         
         private FSM<CarAI> m_CarAIFsm;
         private FSMManager m_FsmManager;
-        
+        public RVOManager m_RVOManager;
         #region NavMesh寻路
         
         public List<string> NavMeshLayers;
@@ -47,6 +47,7 @@ namespace Lachesis.GamePlay
         public void ResetCarAIState()
         {
             waypoints.Clear();
+            m_RVOManager.UpdateAgentTarget(carComponent.transform, GetCurTarget());
             currentWayPoint = 0;
             allowMovement = false;
             postionToFollow = Vector3.zero;
@@ -56,6 +57,7 @@ namespace Lachesis.GamePlay
         public override void OnInit(object userData = null)
         {
             base.OnInit(userData);
+            m_RVOManager = GameEntry.RVOManager;
         }
 
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
@@ -75,15 +77,25 @@ namespace Lachesis.GamePlay
             m_FsmManager = GameEntry.FSMManager;
             CarAIState[] carAIStates = { new CarAIChaseState(), new CarAIPatrolState() };
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
+            m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
             m_CarAIFsm.Start<CarAIPatrolState>();
             NavMeshLayerBite = 0;
             CalculateNavMashLayerBite();
         }
         
+        public Vector3 GetCurTarget()
+        {
+            if(waypoints.Count>0)
+            {
+                return waypoints[0];
+            }
+            return Vector3.zero;
+        }
         public override void OnReturnToPool(bool isShowDown = false)
         {
             base.OnReturnToPool(isShowDown);
             m_CarAIFsm.Clear();
+            m_RVOManager.RemoveAgent(carComponent.transform);
         }
         
         private void CalculateNavMashLayerBite()
@@ -187,6 +199,7 @@ namespace Lachesis.GamePlay
             if (currentWayPoint > 1 && waypoints.Count > 3)
             {
                 waypoints.RemoveAt(0);
+                m_RVOManager.UpdateAgentTarget(carComponent.transform, GetCurTarget());
                 currentWayPoint--;
             }
         }
@@ -261,6 +274,13 @@ namespace Lachesis.GamePlay
             base.OnSwitchCar();
             ResetCarAIState(); //切换时暂时失去目标
             destination = null;
+        }
+
+        public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
+        {
+            base.OnUpdate(elapseSeconds, realElapseSeconds);
+            Debug.Log($"RVOOutPut: {m_RVOManager.GetRVOVelocity(carComponent.transform)}");
+            Debug.Log($"RB: {carComponent.transform.GetComponent<Rigidbody>().velocity}");
         }
     }
 }
