@@ -19,6 +19,8 @@ namespace Lachesis.GamePlay
         private FSM<CarAI> m_CarAIFsm;
         private FSMManager m_FsmManager;
         public RVOManager m_RVOManager;
+        public Vector3 RVODir => m_RVOManager.GetRVOVelocity(carComponent.transform).normalized;
+        public bool isUsingRVO = true;
         #region NavMesh寻路
         
         public List<string> NavMeshLayers;
@@ -87,7 +89,9 @@ namespace Lachesis.GamePlay
         {
             if(waypoints.Count>0)
             {
-                return waypoints[0];
+                for (var i = 0; i < waypoints.Count; i++)
+                    if (currentWayPoint == i)
+                        return waypoints[i];
             }
             return Vector3.zero;
         }
@@ -95,7 +99,7 @@ namespace Lachesis.GamePlay
         {
             base.OnReturnToPool(isShowDown);
             m_CarAIFsm.Clear();
-            m_RVOManager.RemoveAgent(carComponent.transform);
+            if (!isShowDown) m_RVOManager.RemoveAgent(carComponent.transform);
         }
         
         private void CalculateNavMashLayerBite()
@@ -179,7 +183,8 @@ namespace Lachesis.GamePlay
             
             Vector3 relativeVector =  carComponent.transform.InverseTransformPoint(postionToFollow);
             steeringDelta = (relativeVector.x / relativeVector.magnitude);
-            if(Vector3.Dot(carComponent.transform.forward, relativeVector.normalized)<0)
+            //if(Vector3.Dot(carComponent.transform.forward, relativeVector.normalized)<0)
+            if (Vector3.Dot(carComponent.transform.forward, isUsingRVO ? RVODir : relativeVector.normalized) < 0)
             {
                 if(steeringDelta>=0)
                 {
@@ -190,8 +195,6 @@ namespace Lachesis.GamePlay
                     steeringDelta = -1;
                 }
             }
-            
-            
         }
         
         public void ListOptimizer()
@@ -223,6 +226,10 @@ namespace Lachesis.GamePlay
                     Gizmos.DrawWireSphere(waypoints[i], 2f);
                 }
                 //DrawFOV();
+                Gizmos.color = Color.blue; // 设置线条颜色，可以根据需要修改
+                var direction = m_RVOManager.GetRVOVelocity(carComponent.transform).normalized;
+                Gizmos.DrawLine(carComponent.transform.position, carComponent.transform.position + direction * 2);
+                
                 if (Application.isPlaying)
                 {
                     DrawTargetArea();
@@ -279,8 +286,9 @@ namespace Lachesis.GamePlay
         public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
-            Debug.Log($"RVOOutPut: {m_RVOManager.GetRVOVelocity(carComponent.transform)}");
-            Debug.Log($"RB: {carComponent.transform.GetComponent<Rigidbody>().velocity}");
+            if (!IsHasCar) return;
+            //Debug.Log($"RVOOutPut: {m_RVOManager.GetRVOVelocity(carComponent.transform)}");
+            //Debug.Log($"RB: {carComponent.transform.GetComponent<Rigidbody>().velocity}");
         }
     }
 }

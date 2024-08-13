@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
 using RVO;
@@ -21,7 +20,7 @@ namespace Lachesis.GamePlay
             m_RVOAgentTargetDict = new();
             m_RVOAgentRbDict = new();
             Simulator.Instance.setTimeStep(0.25f);
-            Simulator.Instance.setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.0f, 2.0f, new RVO.Vector2(0.0f, 0.0f));
+            Simulator.Instance.setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.0f, 2.0f, new Vector2(0.0f, 0.0f));
 
             // add in awake
             Simulator.Instance.processObstacles();
@@ -93,7 +92,7 @@ namespace Lachesis.GamePlay
                 Simulator.Instance.setAgentPosition(kv.Value, curPos);
                 var rigidBodyVelocity = m_RVOAgentRbDict[kv.Key].velocity;
                 Simulator.Instance.setAgentVelocity(kv.Value, new Vector2(rigidBodyVelocity.x, rigidBodyVelocity.z));
-                Debug.Log($"RVOInput: {rigidBodyVelocity}");
+                //Debug.Log($"RVOInput: {rigidBodyVelocity}");
                 Vector2 goalVector = target - curPos;
                 if (RVOMath.absSq(goalVector) > 1.0f)
                 {
