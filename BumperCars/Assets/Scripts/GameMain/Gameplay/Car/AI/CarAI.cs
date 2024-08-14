@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using Lachesis.Core;
 using UnityEngine;
 using UnityEngine.AI;
@@ -197,7 +196,8 @@ namespace Lachesis.GamePlay
                                 motorDelta = 0.4f;
                             }
 
-                            if(dot<-0.8&&lastEmergencyBrakingTime<=0) lastEmergencyBrakingTime = EmergencyBrakingTime;
+                            if (dot < -0.8 && lastEmergencyBrakingTime <= 0 && carComponent.bodyRb.velocity.magnitude > 1)
+                                lastEmergencyBrakingTime = EmergencyBrakingTime;
                         }
                     }
                     

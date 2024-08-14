@@ -1,11 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
-using System.IO;
 using Lachesis.Core;
+using UnityEngine;
 using ProcedureOwner = FSM<Lachesis.Core.ProcedureManager>;
-using Random = UnityEngine.Random;
 
 namespace Lachesis.GamePlay
 {
@@ -23,6 +21,7 @@ namespace Lachesis.GamePlay
         private bool isGoSettlement;
         private SettlementPveData m_settlementPveData;
         private GlobalConfig m_globalConfig;
+        private readonly Dictionary<CarAI, Vector3> spawnPosDict = new();
 
         protected internal override void OnInit(ProcedureOwner procedureOwner)
         {
@@ -57,19 +56,33 @@ namespace Lachesis.GamePlay
         private void TestEnter()
         {
             m_battleField = GameEntry.EntityManager.CreateEntity<TestField>(EntityEnum.TestField, Vector3.zero, Quaternion.identity);
-            var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,  new Vector3(5,0,10), Quaternion.identity, CarComponent.ClothColor.Yellow);
-            var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(5,0,-10), Quaternion.identity, CarComponent.ClothColor.Black);
-            var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(-5,0,10), Quaternion.identity, CarComponent.ClothColor.Red);
-            var car4 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(-5,0,-10), Quaternion.identity, CarComponent.ClothColor.Green);
+            var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(10, 0, 10), Quaternion.identity,
+                CarComponent.ClothColor.Yellow);
+            var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(10, 0, -10), Quaternion.identity,
+                CarComponent.ClothColor.Black);
+            var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(-10, 0, 10), Quaternion.identity,
+                CarComponent.ClothColor.Red);
+            var car4 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(-10, 0, -10), Quaternion.identity,
+                CarComponent.ClothColor.Green);
+            var car5 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, new Vector3(0, 0, 0), Quaternion.identity,
+                CarComponent.ClothColor.Green);
             var carAiData1 = new CarController.CarControllerData(){carComponent = car1, controllerName = $"人机{carAiIndex++}"};
             var carAiData2 = new CarController.CarControllerData(){carComponent = car2, controllerName = $"人机{carAiIndex++}"};
             var carAiData3 = new CarController.CarControllerData(){carComponent = car3, controllerName = $"人机{carAiIndex++}"};
-            var carAiData4 = new CarController.CarControllerData(){carComponent = car4, controllerName = $"人机{carAiIndex++}"};
+            var carAiData4 = new CarController.CarControllerData { carComponent = car4, controllerName = $"人机{carAiIndex++}" };
+            var carAiData5 = new CarController.CarControllerData { carComponent = car5, controllerName = $"人机{carAiIndex++}" };
             
             var carAi1 = battleModel.AddAI(carAiData1);
             var carAi2 = battleModel.AddAI(carAiData2);
             var carAi3 = battleModel.AddAI(carAiData3);
             var carAi4 = battleModel.AddAI(carAiData4);
+            var carAi5 = battleModel.AddAI(carAiData5);
+
+            spawnPosDict.Add(carAi1, new Vector3(10, 0, 10));
+            spawnPosDict.Add(carAi2, new Vector3(10, 0, -10));
+            spawnPosDict.Add(carAi3, new Vector3(-10, 0, 10));
+            spawnPosDict.Add(carAi4, new Vector3(-10, 0, -10));
+            spawnPosDict.Add(carAi5, new Vector3(0, 0, 0));
             
             
             var battleUIData =new BattleUI.BattleUIData(){p1Name = m_globalConfig.p1Name,p2Name = m_globalConfig.p2Name,
@@ -229,6 +242,7 @@ namespace Lachesis.GamePlay
         {
             var carComponent =carController.carComponent;
             var carName = carComponent.carControllerName;
+            battleModel.deadCnt++;
             if (battleModel.lastAttackInfoDict.TryGetValue(carName, out var attackInfo))
             {
                 var now = DateTime.Now;
@@ -299,7 +313,7 @@ namespace Lachesis.GamePlay
         
         private void ReviveAI(CarAI carAI, CarComponent.ClothColor lastColor)
         {
-            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity,lastColor);
+            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, spawnPosDict[carAI], Quaternion.identity, lastColor);
             carAI.SetCar(car);
             carAI.ClearSkills();
         }

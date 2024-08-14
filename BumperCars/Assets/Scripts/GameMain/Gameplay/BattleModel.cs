@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace Lachesis.GamePlay
         public List<CarController> carControllers;
         public List<SkillPickUpItem> skillPickUpItems;
         private Dictionary<string,CarController> carDict;
-        
+        public int deadCnt = 0;
         public CarCamera player1Camera;
         public CarCamera player2Camera;
         

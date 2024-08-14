@@ -146,8 +146,8 @@ namespace Lachesis.GamePlay
             {
                 if(!attackNumWrited)
                 {
-                    string path = m_globalConfig.isUsingRVO? "Assets/Scripts/RVO/openRVO.txt":"Assets/Scripts/RVO/closeRVO.txt";
-                    WriteToFile(path, attackNum.ToString());
+                    var path = m_globalConfig.isUsingRVO ? "Scripts/RVO/openRVO.txt" : "Scripts/RVO/closeRVO.txt";
+                    WriteToFile(path, $"attackNum:{attackNum} deadNum:{BattleModel.Instance.deadCnt}");
                     attackNumWrited = true;
                 }
                 
@@ -504,17 +504,13 @@ namespace Lachesis.GamePlay
         
         public static void WriteToFile(string fileName, string content, bool append = false)
         {
-            string path = Application.persistentDataPath + "/" + fileName;
+            var path = Application.dataPath + "/" + fileName;
 
             // 根据append参数决定是覆盖写入还是追加写入
             if (append)
-            {
                 File.AppendAllText(path, content);
-            }
             else
-            {
                 File.WriteAllText(path, content);
-            }
         }
     }
 }
