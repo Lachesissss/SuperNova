@@ -31,4 +31,5 @@ public class GlobalConfig : ScriptableObject
     public float switchMinDistance = 8f; //切换最短距离
     public int maxCoinSpawnNum = 3; //同时生成的最大硬币（分数币）数量
     public bool p2UsingJoySticks = true; //P2控制
+    public bool isUsingRVO = true;
 }

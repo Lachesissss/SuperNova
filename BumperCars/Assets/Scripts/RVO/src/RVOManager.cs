@@ -19,8 +19,8 @@ namespace Lachesis.GamePlay
             m_RVOAgentDict = new();
             m_RVOAgentTargetDict = new();
             m_RVOAgentRbDict = new();
-            Simulator.Instance.setTimeStep(0.25f);
-            Simulator.Instance.setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.0f, 2.0f, new Vector2(0.0f, 0.0f));
+            Simulator.Instance.setTimeStep(0.1f);
+            Simulator.Instance.setAgentDefaults(10.0f, 10, 5.0f, 5.0f, 3f, 8.0f, new Vector2(0.0f, 0.0f));
 
             // add in awake
             Simulator.Instance.processObstacles();

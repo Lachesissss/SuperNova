@@ -35,7 +35,6 @@ namespace Lachesis.GamePlay
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
             if(!IsHasCar) return;
-            
             carComponent.ChangeCarTurnState(SteeringDelta*0.4f);
             carComponent.ChangeCarForwardState(MotorDelta);
             carComponent.ChangeCarHandBrakeState(Handbrake);

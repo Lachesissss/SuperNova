@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Lachesis.Core;
 using UnityEngine;
 using UnityEngine.AI;
@@ -19,8 +21,10 @@ namespace Lachesis.GamePlay
         private FSM<CarAI> m_CarAIFsm;
         private FSMManager m_FsmManager;
         public RVOManager m_RVOManager;
+        public static float EmergencyBrakingTime = 0.8f;
+        private float lastEmergencyBrakingTime = 0f;//剩余紧急制动时间
         public Vector3 RVODir => m_RVOManager.GetRVOVelocity(carComponent.transform).normalized;
-        public bool isUsingRVO = true;
+        public bool isUsingRVO;
         #region NavMesh寻路
         
         public List<string> NavMeshLayers;
@@ -54,12 +58,14 @@ namespace Lachesis.GamePlay
             allowMovement = false;
             postionToFollow = Vector3.zero;
             navMeshPath = new NavMeshPath();
+            lastEmergencyBrakingTime = 0;
         }
 
         public override void OnInit(object userData = null)
         {
             base.OnInit(userData);
             m_RVOManager = GameEntry.RVOManager;
+            isUsingRVO = GameEntry.ConfigManager.GetConfig<GlobalConfig>().isUsingRVO;
         }
 
         public override void OnReCreateFromPool(Vector3 pos, Quaternion rot, object userData = null)
@@ -82,6 +88,7 @@ namespace Lachesis.GamePlay
             m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
             m_CarAIFsm.Start<CarAIPatrolState>();
             NavMeshLayerBite = 0;
+            lastEmergencyBrakingTime=0;
             CalculateNavMashLayerBite();
         }
         
@@ -99,7 +106,11 @@ namespace Lachesis.GamePlay
         {
             base.OnReturnToPool(isShowDown);
             m_CarAIFsm.Clear();
-            if (!isShowDown) m_RVOManager.RemoveAgent(carComponent.transform);
+            if(!isShowDown)
+            {
+                StopAllCoroutines();
+                m_RVOManager.RemoveAgent(carComponent.transform);
+            }
         }
         
         private void CalculateNavMashLayerBite()
@@ -145,23 +156,6 @@ namespace Lachesis.GamePlay
         {
             if(allowMovement)
             {
-                var speedOfWheels = carComponent.GetRPM();
-                if(speedOfWheels<carComponent.maxRPM)
-                {
-                    if(Vector3.Dot(postionToFollow-carComponent.transform.position, carComponent.transform.forward)<0)
-                    {
-                        //方向不对减速掉头
-                        motorDelta = 0.2f;
-                    }
-                    else
-                    {
-                        motorDelta = 1;
-                    }
-                }
-                else
-                {
-                    motorDelta = 0;
-                }
                 if (Vector3.Distance(carComponent.transform.position, postionToFollow) < 1)
                 {
                     handBrake = true;
@@ -170,6 +164,49 @@ namespace Lachesis.GamePlay
                 {
                     handBrake = false;
                 }
+                if(lastEmergencyBrakingTime>0)
+                {
+                    handBrake = true;
+                }
+                var speedOfWheels = carComponent.GetRPM();
+                if(speedOfWheels<carComponent.maxRPM)
+                {
+                    if(Vector3.Dot( postionToFollow-carComponent.transform.position, carComponent.transform.forward)<0)
+                    {
+                        //方向不对减速掉头
+                        motorDelta = 0.2f;
+                        
+                    }
+                    else
+                    {
+                        motorDelta = 1;
+                    }
+                    if(isUsingRVO)
+                    {
+                        var dot = Vector3.Dot( RVODir, (postionToFollow-carComponent.transform.position).normalized);
+                        //Debug.Log(dot);
+                        if(dot<0.8)
+                        {
+                            //RVO预测与NavMesh目标方向差距较大，说明其他车辆靠近
+                            if(Vector3.Dot( RVODir, carComponent.transform.forward)<0)
+                            {
+                                motorDelta = 0.2f;
+                            }
+                            else
+                            {
+                                motorDelta = 0.4f;
+                            }
+
+                            if(dot<-0.8&&lastEmergencyBrakingTime<=0) lastEmergencyBrakingTime = EmergencyBrakingTime;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    motorDelta = 0;
+                }
+               
             }
             else
             {
@@ -178,13 +215,22 @@ namespace Lachesis.GamePlay
             }
         }
         
+        private IEnumerator EmergencyBraking()
+        {
+            handBrake = true;
+            yield return new WaitForSeconds(0.8f);
+            handBrake = false;
+        }
+        
         public void SetSteeringMove() // Applies steering to the Current waypoint
         {
-            
             Vector3 relativeVector =  carComponent.transform.InverseTransformPoint(postionToFollow);
+            relativeVector.y = 0;
             steeringDelta = (relativeVector.x / relativeVector.magnitude);
             //if(Vector3.Dot(carComponent.transform.forward, relativeVector.normalized)<0)
-            if (Vector3.Dot(carComponent.transform.forward, isUsingRVO ? RVODir : relativeVector.normalized) < 0)
+           
+            
+            if (Vector3.Dot(carComponent.transform.forward, isUsingRVO?RVODir: relativeVector.normalized) < 0)
             {
                 if(steeringDelta>=0)
                 {
@@ -195,6 +241,16 @@ namespace Lachesis.GamePlay
                     steeringDelta = -1;
                 }
             }
+            // if(isUsingRVO)
+            // {
+            //     var cross = Vector3.Cross(RVODir,relativeVector.normalized);
+            //     if(Vector3.Dot( relativeVector.normalized,  RVODir) < 0.8)
+            //     {
+            //         if(cross.y>0) steeringDelta = 1;
+            //         else steeringDelta = -1;
+            //     }
+            // }
+            
         }
         
         public void ListOptimizer()
@@ -287,9 +343,15 @@ namespace Lachesis.GamePlay
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
             if (!IsHasCar) return;
+            if(lastEmergencyBrakingTime>0)
+            {
+                lastEmergencyBrakingTime-=elapseSeconds;
+            }
             //Debug.Log($"RVOOutPut: {m_RVOManager.GetRVOVelocity(carComponent.transform)}");
             //Debug.Log($"RB: {carComponent.transform.GetComponent<Rigidbody>().velocity}");
         }
+        
+        
     }
 }
 

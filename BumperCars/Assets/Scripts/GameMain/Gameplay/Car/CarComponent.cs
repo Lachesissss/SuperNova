@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Lachesis.Core;
 using UnityEngine;
 
@@ -33,7 +34,8 @@ namespace Lachesis.GamePlay
         public float maxAngle;
         public float targetAngle;
         public float returnAngleSpeed = 400;
-        
+        public static int attackNum = 0;
+        public static bool attackNumWrited = false;
         public Rigidbody bodyRb;
         [Header("车轮碰撞体")] public WheelCollider leftFrontCollider;
         public WheelCollider leftBackCollider;
@@ -140,7 +142,17 @@ namespace Lachesis.GamePlay
         public override void OnReturnToPool(bool isShutDown = false)
         {
             base.OnReturnToPool(isShutDown);
-            if(isShutDown) return;
+            if(isShutDown)
+            {
+                if(!attackNumWrited)
+                {
+                    string path = m_globalConfig.isUsingRVO? "Assets/Scripts/RVO/openRVO.txt":"Assets/Scripts/RVO/closeRVO.txt";
+                    WriteToFile(path, attackNum.ToString());
+                    attackNumWrited = true;
+                }
+                
+                return;
+            }
             StopAllCoroutines();
             GameEntry.EventManager.RemoveListener(AttackEventArgs.EventId, OnAttackArrived);
             foreach (var effectEntity in m_effectEntities)
@@ -276,6 +288,8 @@ namespace Lachesis.GamePlay
             if(e is AttackEventArgs args)
                 if(args.attackInfo.underAttacker == carControllerName)
                 {
+                    //TODO:碰撞计数
+                    attackNum++;
                     if (m_isInWitchTime && args.attackInfo.canDodge)
                     {
                         GameEntry.instance.StartCoroutine(ShowWitchTimeEffect(controller.carComponent.transform));
@@ -296,7 +310,6 @@ namespace Lachesis.GamePlay
                     }
                 }
         }
-
         public void GetMagicShield()
         {
             m_isHasMagicShield = true;
@@ -486,6 +499,21 @@ namespace Lachesis.GamePlay
             else
             {
                 return Color.white;
+            }
+        }
+        
+        public static void WriteToFile(string fileName, string content, bool append = false)
+        {
+            string path = Application.persistentDataPath + "/" + fileName;
+
+            // 根据append参数决定是覆盖写入还是追加写入
+            if (append)
+            {
+                File.AppendAllText(path, content);
+            }
+            else
+            {
+                File.WriteAllText(path, content);
             }
         }
     }

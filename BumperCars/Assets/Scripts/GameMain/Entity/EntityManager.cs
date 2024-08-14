@@ -46,6 +46,8 @@ namespace Lachesis.GamePlay
         ScarletImplosionEffect,
         StoneHitEffect,
         LightingHitEffect,
+        
+        TestField,
     }
     
     public class EntityManager : GameModule
