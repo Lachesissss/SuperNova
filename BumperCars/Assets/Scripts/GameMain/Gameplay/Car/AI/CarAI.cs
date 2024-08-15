@@ -82,13 +82,17 @@ namespace Lachesis.GamePlay
         private void ResetCarAI(object userData)
         {
             m_FsmManager = GameEntry.FSMManager;
+            if(userData is CarControllerData)
+            {
+                m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
+            }
             CarAIState[] carAIStates = { new CarAIChaseState(), new CarAIPatrolState() };
             m_CarAIFsm = m_FsmManager.CreateFsm(this, carAIStates);
-            m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
             m_CarAIFsm.Start<CarAIPatrolState>();
             NavMeshLayerBite = 0;
             lastEmergencyBrakingTime=0;
             CalculateNavMashLayerBite();
+            
         }
         
         public Vector3 GetCurTarget()
@@ -101,6 +105,30 @@ namespace Lachesis.GamePlay
             }
             return Vector3.zero;
         }
+        
+        public  override void SetCar(CarComponent car)
+        {
+            if (carComponent != null)
+            {
+                ClearCar();
+                Debug.LogWarning("在Controller有控制对象的时候SetCar会将当前控制对象回收，请确认是否符合预期");
+            }
+            carComponent = car;
+            m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
+            SetCarInfo();
+        }
+        
+        public override void ClearCar() 
+        {
+            if(carComponent!=null)
+            {
+                carComponent.controller = null;
+                GameEntry.EntityManager.ReturnEntity(carComponent.entityEnum, carComponent);
+                m_RVOManager.RemoveAgent(carComponent.transform);
+                carComponent = null;
+            }
+        }
+        
         public override void OnReturnToPool(bool isShowDown = false)
         {
             base.OnReturnToPool(isShowDown);
@@ -108,7 +136,6 @@ namespace Lachesis.GamePlay
             if(!isShowDown)
             {
                 StopAllCoroutines();
-                m_RVOManager.RemoveAgent(carComponent.transform);
             }
         }
         
@@ -173,7 +200,7 @@ namespace Lachesis.GamePlay
                     if(Vector3.Dot( postionToFollow-carComponent.transform.position, carComponent.transform.forward)<0)
                     {
                         //方向不对减速掉头
-                        motorDelta = 0.2f;
+                        motorDelta = 0.3f;
                         
                     }
                     else
@@ -189,7 +216,7 @@ namespace Lachesis.GamePlay
                             //RVO预测与NavMesh目标方向差距较大，说明其他车辆靠近
                             if(Vector3.Dot( RVODir, carComponent.transform.forward)<0)
                             {
-                                motorDelta = 0.2f;
+                                motorDelta = 0.3f;
                             }
                             else
                             {

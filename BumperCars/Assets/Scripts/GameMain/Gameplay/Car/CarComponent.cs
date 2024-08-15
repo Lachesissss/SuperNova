@@ -182,8 +182,6 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Invoke(this, SwitchCarEventArgs.Create());
         }
         
-        
-        
         private IEnumerator TemporarilyReduceFriction(List<WheelCollider> wheelColliders)
         {
             for (var i = 0; i < wheelColliders.Count; i++)

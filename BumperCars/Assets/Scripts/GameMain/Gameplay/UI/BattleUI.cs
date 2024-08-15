@@ -40,6 +40,8 @@ namespace Lachesis.GamePlay
         public List<SkillSlot> player1SkillSlots;
         public List<SkillSlot> player2SkillSlots;
         public Transform popupTipsRootTrans;
+        public UltimateSkillBar player1Ultimate;
+        public UltimateSkillBar player2Ultimate;
         private string m_p1Name;
         private string m_p2Name;
         private int m_targetScore;
@@ -102,12 +104,15 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.AddListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.AddListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
+            GameEntry.EventManager.AddListener(UltimateSkillUIUpdateArgs.EventId, OnUltimateSkillUIUpdate);
             settingBtn.onClick.AddListener(OnSettingBtnClicked);
             continueBtn.onClick.AddListener(OnContinueBtnClicked);
             closeBtn.onClick.AddListener(OnContinueBtnClicked);
             backToTittleBtn.onClick.AddListener(OnBackToTittleBtnClicked);
             p2JoySticksSwitchOnBtn.onClick.AddListener(SwitchOnP2JoySticks);
             p2JoySticksSwitchOffBtn.onClick.AddListener(SwitchOffP2JoySticks);
+            player1Ultimate.SetLevel(0);
+            player2Ultimate.SetLevel(0);
             if(userData is BattleUIData battleUIData)
             {
                 RefreshAll(battleUIData);
@@ -130,6 +135,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.RemoveListener(PlayerSkillSlotsUIUpdateEventArgs.EventId, OnPlayerBattleUIUpdate);
             GameEntry.EventManager.RemoveListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.RemoveListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
+            GameEntry.EventManager.RemoveListener(UltimateSkillUIUpdateArgs.EventId, OnUltimateSkillUIUpdate);
             settingBtn.onClick.RemoveAllListeners();
             continueBtn.onClick.RemoveAllListeners();
             closeBtn.onClick.RemoveAllListeners();
@@ -236,6 +242,22 @@ namespace Lachesis.GamePlay
             if(e is ShowUITipsEventArgs args)
             {
                 ShowPopupTips(args.content);
+            }
+        }
+
+        private void OnUltimateSkillUIUpdate(object sender, GameEventArgs e)
+        {
+            if(e is UltimateSkillUIUpdateArgs args)
+            {
+                if(BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(m_p1Name, out var value1))
+                {
+                    player1Ultimate.SetLevel(value1); 
+                }
+                
+                if(BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(m_p2Name, out var value2))
+                {
+                    player2Ultimate.SetLevel(value2); 
+                }
             }
         }
         

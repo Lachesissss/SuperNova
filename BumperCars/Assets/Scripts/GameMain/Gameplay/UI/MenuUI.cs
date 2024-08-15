@@ -1,5 +1,6 @@
 using Lachesis.Core;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
@@ -10,6 +11,13 @@ namespace Lachesis.GamePlay
         public Button doubleModeBtn;
         public Button pveModeBtn;
         public Button quitGameBtn;
+        public Button illustrateBtn;
+        public Button illustrateReturnBtn;
+        public TabItem ruleTab;
+        public TabItem operationTab;
+        public TabItem storyTab;
+        public GameObject illustratePageGO;
+        
 
         public override void OnReCreateFromPool(object userData = null)
         {
@@ -18,7 +26,13 @@ namespace Lachesis.GamePlay
             doubleModeBtn.onClick.AddListener(OnEnterDoubleMode);
             pveModeBtn.onClick.AddListener(OnEnterPveMode);
             quitGameBtn.onClick.AddListener(OnQuitGame);
-            
+            illustrateBtn.onClick.AddListener(OpenIllustratePage);
+            illustrateReturnBtn.onClick.AddListener(CloseIllustratePage);
+            ruleTab.selfButton.onClick.AddListener(OnRuleTabClicked);
+            operationTab.selfButton.onClick.AddListener(OnOperationTabClicked);
+            storyTab.selfButton.onClick.AddListener(OnStoryTabClicked);
+            OnRuleTabClicked();
+            CloseIllustratePage();
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
@@ -28,6 +42,11 @@ namespace Lachesis.GamePlay
             doubleModeBtn.onClick.RemoveAllListeners();
             pveModeBtn.onClick.RemoveAllListeners();
             quitGameBtn.onClick.RemoveAllListeners();
+            illustrateBtn.onClick.RemoveAllListeners();
+            illustrateReturnBtn.onClick.RemoveAllListeners();
+            ruleTab.selfButton.onClick.RemoveAllListeners();
+            operationTab.selfButton.onClick.RemoveAllListeners();
+            storyTab.selfButton.onClick.RemoveAllListeners();
         }
         
         private void OnEnterSingleMode()
@@ -54,7 +73,36 @@ namespace Lachesis.GamePlay
             Application.Quit();
 #endif
         }
-
+        
+        private void OpenIllustratePage()
+        {
+            illustratePageGO.SetActive(true);
+        }
+        
+        private void CloseIllustratePage()
+        {
+            illustratePageGO.SetActive(false);
+        }
+        
+        private void OnRuleTabClicked()
+        {
+            ruleTab.Enable();
+            operationTab.Disable();
+            storyTab.Disable();
+        }
+        
+        private void OnOperationTabClicked()
+        {
+            operationTab.Enable();
+            ruleTab.Disable();
+            storyTab.Disable();
+        }
+        private void OnStoryTabClicked()
+        {
+            storyTab.Enable();
+            operationTab.Disable();
+            ruleTab.Disable();
+        }
     }
     
     public enum DungeonMode

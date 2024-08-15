@@ -38,7 +38,7 @@ namespace Lachesis.GamePlay
             if (other.gameObject.layer == LayerMask.NameToLayer("BumperCar"))
             {
                 var controller = other.GetComponent<CarBody>().carComponent;
-                GameEntry.EventManager.Invoke(this, CarriedScoreUpdateEventArgs.Create(controller.carControllerName, 1));
+                GameEntry.EventManager.Invoke(this, CarriedScoreUpdateEventArgs.Create(controller.carControllerName, GameEntry.ConfigManager.GetConfig<GlobalConfig>().coinScore));
                 GameEntry.EventManager.Invoke(this, CoinPickedUpEventArgs.Create(1));
                 GameEntry.EntityManager.ReturnEntity(EntityEnum.Coin, this);
             }

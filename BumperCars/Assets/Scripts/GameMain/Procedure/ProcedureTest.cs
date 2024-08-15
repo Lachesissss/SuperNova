@@ -77,7 +77,7 @@ namespace Lachesis.GamePlay
             var carAi3 = battleModel.AddAI(carAiData3);
             var carAi4 = battleModel.AddAI(carAiData4);
             var carAi5 = battleModel.AddAI(carAiData5);
-
+            spawnPosDict.Clear();
             spawnPosDict.Add(carAi1, new Vector3(10, 0, 10));
             spawnPosDict.Add(carAi2, new Vector3(10, 0, -10));
             spawnPosDict.Add(carAi3, new Vector3(-10, 0, 10));

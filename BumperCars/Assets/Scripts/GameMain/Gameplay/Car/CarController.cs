@@ -52,6 +52,7 @@ namespace Lachesis.GamePlay
             if (userData is CarControllerData data)
             {
                 carComponent = data.carComponent;
+                
                 controllerName = data.controllerName;
                 ClearSkills();
                 SetCarInfo();
@@ -62,7 +63,7 @@ namespace Lachesis.GamePlay
             }
         }
         
-        public void SetCar(CarComponent car)
+        public virtual void SetCar(CarComponent car)
         {
             if (carComponent != null)
             {
@@ -74,7 +75,7 @@ namespace Lachesis.GamePlay
             SetCarInfo();
         }
 
-        private void SetCarInfo()
+        protected void SetCarInfo()
         {
             carComponent.carControllerName = controllerName;
             carComponent.controller = this;
@@ -91,6 +92,7 @@ namespace Lachesis.GamePlay
         public override void OnReturnToPool(bool isShutDown = false)
         {
             base.OnReturnToPool(isShutDown);
+            ClearCar();
             if(!isShutDown)
             {
                 StopAllCoroutines();
@@ -120,6 +122,18 @@ namespace Lachesis.GamePlay
             }
         }
 
+        public void FireUltimateSkill()
+        {
+            var uSkill = GameEntry.SkillManager.CreateSkill(m_globalConfig.ultimateSkill);
+            if(uSkill.TryActivate(carComponent))
+            {
+                Debug.Log("成功释放终极技能");
+            }
+            else
+            {
+                Debug.Log("终极技能失败");
+            }
+        }
 
         public void ActivateSkill(int index)
         {
@@ -159,7 +173,7 @@ namespace Lachesis.GamePlay
             return true;
         }
         
-        public void ClearCar() 
+        public virtual void ClearCar() 
         {
             if(carComponent!=null)
             {
@@ -173,8 +187,18 @@ namespace Lachesis.GamePlay
         {
             var carComponent1 = carCtrl1.carComponent;
             var carComponent2 = carCtrl2.carComponent;
+            GameEntry.RVOManager.RemoveAgent(carComponent1.transform);
+            GameEntry.RVOManager.RemoveAgent(carComponent2.transform);
             carCtrl1.carComponent = carComponent2;
             carCtrl2.carComponent = carComponent1;
+            if(carCtrl1 is CarAI)
+            {
+                GameEntry.RVOManager.AddAgent(carCtrl1.carComponent.transform, Vector3.zero);
+            }
+            if(carCtrl2 is CarAI)
+            {
+                GameEntry.RVOManager.AddAgent(carCtrl2.carComponent.transform, Vector3.zero);
+            }
             carCtrl1.OnSwitchCar();
             carCtrl2.OnSwitchCar();
         }

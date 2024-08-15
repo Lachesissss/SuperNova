@@ -48,6 +48,7 @@ namespace Lachesis.GamePlay
         LightingHitEffect,
         
         TestField,
+        PortalEffect,
     }
     
     public class EntityManager : GameModule

@@ -1,3 +1,4 @@
+using Lachesis.GamePlay;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GlobalConfig", menuName = "ScriptableObject/GlobalConfig", order = 0)]
@@ -13,7 +14,8 @@ public class GlobalConfig : ScriptableObject
     public float frictionRestoreDelay = 1f;//打滑效果恢复的事件
     public float carAISearchRange = 12f;//AI索敌范围
     public float playerReviveTime = 5f;//玩家复活间隔
-    public int targetScore = 10;//获胜分数
+    public float aiReviveTime = 12f;//人机复活间隔
+    public int targetScore = 20;//获胜分数
     public float carBoostCoolingTime = 5f;//冲刺冷却
     public float carSwitchCoolingTimeMin = 2f;//切换冷却随机下限
     public float carSwitchCoolingTimeMax = 2f;//切换冷却随机上限
@@ -32,4 +34,6 @@ public class GlobalConfig : ScriptableObject
     public int maxCoinSpawnNum = 3; //同时生成的最大硬币（分数币）数量
     public bool p2UsingJoySticks = true; //P2控制
     public bool isUsingRVO = true;
+    public int coinScore = 2;
+    public SkillEnum ultimateSkill;
 }

@@ -60,7 +60,7 @@ namespace Lachesis.GamePlay
             isGoMenu = false;
             isGoSettlement = false;
             m_settlementData = null;
-            
+            battleModel.spawnPosDict.Clear();
             //关卡相关，生成实例
             if(this.userData is DungeonMode mode)
             {
@@ -87,28 +87,22 @@ namespace Lachesis.GamePlay
         private void SingleModeEnter()
         {
             m_battleField = GameEntry.EntityManager.CreateEntity<BattleField>(EntityEnum.BattleField, Vector3.zero, Quaternion.identity);
-            var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation,CarComponent.ClothColor.Yellow);
-            var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, CarComponent.ClothColor.Black);
+            var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans3.position,m_battleField.spawnTrans3.rotation,CarComponent.ClothColor.Yellow);
+            var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans5.position,m_battleField.spawnTrans5.rotation, CarComponent.ClothColor.Black);
             var controllerData1 = new CarController.CarControllerData(){carComponent = car1, controllerName = m_globalConfig.p1Name, userData = CarPlayer.PlayerType.P1};
             var aiName = $"人机{carAiIndex++}";
             var controllerData2 = new CarController.CarControllerData { carComponent = car2, controllerName = aiName };
             var carPlayer = battleModel.AddPlayer(controllerData1);
             var carAi = battleModel.AddAI(controllerData2);
             
-            // var carPlayer = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, controllerData1);
-            // var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarAI,Vector3.zero, Quaternion.identity,controllerData2);
-            // carControllers.Add(carPlayer);
-            // carControllers.Add(carAi);
+            battleModel.spawnPosDict.Add(carPlayer,  m_battleField.spawnTrans3);
+            battleModel.spawnPosDict.Add(carAi,  m_battleField.spawnTrans5);
             
             var battleUIData =new BattleUI.BattleUIData(){p1Name = m_globalConfig.p1Name,p2Name = m_globalConfig.p2Name,
                 targetScore = m_globalConfig.targetScore, carController1 = carPlayer, carController2 = carAi
             };
             m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             battleModel.SetBattleCamera(carPlayer, carAi);
-            // player1Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player1Camera, Vector3.zero, Quaternion.identity, carPlayer.carComponent);
-            // player2Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carAi.carComponent);
-            // m_ControllerCameraDict.Add(carPlayer,player1Camera);
-            // m_ControllerCameraDict.Add(carAi,player2Camera);
         }
         
         private void DoubleModeEnter()
@@ -116,31 +110,29 @@ namespace Lachesis.GamePlay
             m_battleField = GameEntry.EntityManager.CreateEntity<BattleField>(EntityEnum.BattleField, Vector3.zero, Quaternion.identity);
             var car1 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation, CarComponent.ClothColor.Yellow);
             var car2 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, CarComponent.ClothColor.Black);
-            //var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity,CarComponent.ClothColor.Red);
+            var car3 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans5.position,m_battleField.spawnTrans5.rotation,CarComponent.ClothColor.Red);
+            var car4 = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans6.position,m_battleField.spawnTrans6.rotation,CarComponent.ClothColor.Green);
             var carPlayerData1 = new CarController.CarControllerData(){carComponent = car1, controllerName = m_globalConfig.p1Name, userData = CarPlayer.PlayerType.P1};
             var carPlayerData2 = new CarController.CarControllerData(){carComponent = car2, controllerName = m_globalConfig.p2Name, userData = CarPlayer.PlayerType.P2};
-            //var carAiData = new CarController.CarControllerData(){carComponent = car3, controllerName = $"人机{carAiIndex++}"};
+            var carAiData1 = new CarController.CarControllerData(){carComponent = car3, controllerName = $"人机{carAiIndex++}"};
+            var carAiData2 = new CarController.CarControllerData(){carComponent = car4, controllerName = $"人机{carAiIndex++}"};
             
             var carPlayer1 = battleModel.AddPlayer(carPlayerData1);
             var carPlayer2 = battleModel.AddPlayer(carPlayerData2);
-            //var carAi = battleModel.AddAI(carAiData);
+            var carAi1 = battleModel.AddAI(carAiData1);
+            var carAi2 = battleModel.AddAI(carAiData2);
             
-            // var carPlayer1 = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, carPlayerData1);
-            // var carPlayer2 = GameEntry.EntityManager.CreateEntity<CarPlayer>(EntityEnum.CarPlayer, Vector3.zero, Quaternion.identity, carPlayerData2);
-            // var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarAI,Vector3.zero, Quaternion.identity,carAiData);
-            // carControllers.Add(carPlayer1);
-            // carControllers.Add(carPlayer2);
-            // carControllers.Add(carAi);
+            
+            battleModel.spawnPosDict.Add(carPlayer1,  m_battleField.spawnTrans1);
+            battleModel.spawnPosDict.Add(carPlayer2,  m_battleField.spawnTrans2);
+            battleModel.spawnPosDict.Add(carAi1,  m_battleField.spawnTrans5);
+            battleModel.spawnPosDict.Add(carAi2,  m_battleField.spawnTrans6);
             
             var battleUIData =new BattleUI.BattleUIData(){p1Name = m_globalConfig.p1Name,p2Name = m_globalConfig.p2Name,
                 targetScore = m_globalConfig.targetScore, carController1 = carPlayer1, carController2 = carPlayer2
             };
             m_battleUI = GameEntry.EntityManager.CreateEntity<BattleUI>(EntityEnum.BattleUI, GameEntry.instance.canvasRoot.transform, battleUIData);
             battleModel.SetBattleCamera(carPlayer1, carPlayer2);
-            // player1Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player1Camera, Vector3.zero, Quaternion.identity, carPlayer1.carComponent);
-            // player2Camera = GameEntry.EntityManager.CreateEntity<CarCamera>(EntityEnum.Player2Camera, Vector3.zero, Quaternion.identity, carPlayer2.carComponent);
-            // m_ControllerCameraDict.Add(carPlayer1,player1Camera);
-            // m_ControllerCameraDict.Add(carPlayer2,player2Camera);
             
         }
         
@@ -449,6 +441,15 @@ namespace Lachesis.GamePlay
                         GameEntry.EventManager.Invoke(ScoreUIUpdateEventArgs.EventId,
                             ScoreUIUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
                     }
+                    
+                    if(battleModel.killOtherPlayerNumDict.ContainsKey(killer)&&battleModel.killOtherPlayerNumDict.ContainsKey(attackInfo.underAttacker))
+                    {
+                        if(battleModel.killOtherPlayerNumDict[killer]<3)
+                        {
+                            battleModel.killOtherPlayerNumDict[killer]++;
+                            GameEntry.EventManager.Invoke(UltimateSkillUIUpdateArgs.EventId, UltimateSkillUIUpdateArgs.Create());
+                        }
+                    }
                 }
                 else
                 {
@@ -493,7 +494,8 @@ namespace Lachesis.GamePlay
         private IEnumerator DelayToRevivePlayerSingleMode(CarPlayer carPlayer,CarComponent.ClothColor lastColor)
         {
             yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
-            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation,lastColor);
+            var spawnTrans = battleModel.spawnPosDict[carPlayer];
+            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, spawnTrans.position,spawnTrans.rotation,lastColor);
             battleModel.player1Camera.ReSetTrackedTarget(car);
             carPlayer.SetCar(car);
             carPlayer.ClearSkills();
@@ -508,7 +510,8 @@ namespace Lachesis.GamePlay
             yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
             if(carPlayer.playerType == CarPlayer.PlayerType.P1)
             {
-                var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, m_battleField.spawnTrans1.position,m_battleField.spawnTrans1.rotation,lastColor);
+                var spawnTrans = battleModel.spawnPosDict[carPlayer];
+                var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car, spawnTrans.position,spawnTrans.rotation,lastColor);
                 battleModel.player1Camera.ReSetTrackedTarget(car);
                 carPlayer.SetCar(car);
                 carPlayer.ClearSkills();
@@ -530,19 +533,20 @@ namespace Lachesis.GamePlay
 
         private IEnumerator DelayToReviveAIDoubleMode(CarAI carAi, CarComponent.ClothColor lastColor)
         {
-            yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
+            yield return new WaitForSeconds(m_globalConfig.aiReviveTime);
             ReviveAIDoubleMode(carAi, lastColor);
         }
         
         private IEnumerator DelayToReviveAISingleMode(CarAI carAi, CarComponent.ClothColor lastColor)
         {
-            yield return new WaitForSeconds(m_globalConfig.playerReviveTime);
+            yield return new WaitForSeconds(m_globalConfig.aiReviveTime);
             ReviveAISingleMode(carAi, lastColor);
         }
         
         private void ReviveAISingleMode(CarAI carAI,CarComponent.ClothColor lastColor)
         {
-            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,m_battleField.spawnTrans2.position,m_battleField.spawnTrans2.rotation, lastColor);
+            var spawnTrans = battleModel.spawnPosDict[carAI];
+            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,spawnTrans.position,spawnTrans.rotation, lastColor);
             carAI.SetCar(car);
             carAI.ResetCarAIState();
             carAI.ClearSkills();
@@ -551,7 +555,8 @@ namespace Lachesis.GamePlay
         
         private void ReviveAIDoubleMode(CarAI carAI, CarComponent.ClothColor lastColor)
         {
-            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,Vector3.zero,Quaternion.identity, lastColor);
+            var spawnTrans = battleModel.spawnPosDict[carAI];
+            var car = GameEntry.EntityManager.CreateEntity<CarComponent>(EntityEnum.Car,spawnTrans.position,spawnTrans.rotation, lastColor);
             carAI.SetCar(car);
             carAI.ResetCarAIState();
             carAI.ClearSkills();

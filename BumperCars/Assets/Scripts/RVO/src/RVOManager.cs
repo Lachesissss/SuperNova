@@ -25,6 +25,7 @@ namespace Lachesis.GamePlay
             // add in awake
             Simulator.Instance.processObstacles();
         }
+        
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
             if(m_RVOAgentDict==null||m_RVOAgentDict.Count==0) return;

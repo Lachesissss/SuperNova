@@ -22,7 +22,8 @@ MonoBehaviour:
   frictionRestoreDelay: 1
   carAISearchRange: 12
   playerReviveTime: 5
-  targetScore: 10
+  aiReviveTime: 12
+  targetScore: 20
   carBoostCoolingTime: 5
   carSwitchCoolingTimeMin: 2
   carSwitchCoolingTimeMax: 6
@@ -41,3 +42,7 @@ MonoBehaviour:
   maxCoinSpawnNum: 3
   p2UsingJoySticks: 1
   isUsingRVO: 1
+  coinScore: 2
+  UltimateSkill:
+    typeName: Lachesis.GamePlay.TownPortal, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null

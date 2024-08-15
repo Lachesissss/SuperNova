@@ -10,7 +10,9 @@ namespace Lachesis.GamePlay
         public Dictionary< CarController,CarCamera> controllerCameraDict;
         public List<CarController> carControllers;
         public List<SkillPickUpItem> skillPickUpItems;
+        public Dictionary<CarController, Transform> spawnPosDict;
         private Dictionary<string,CarController> carDict;
+        public Dictionary<string,int> killOtherPlayerNumDict;
         public int deadCnt = 0;
         public CarCamera player1Camera;
         public CarCamera player2Camera;
@@ -22,6 +24,8 @@ namespace Lachesis.GamePlay
             carControllers = new();
             skillPickUpItems = new();
             carDict = new();
+            spawnPosDict = new();
+            killOtherPlayerNumDict = new();
         }
 
         public static BattleModel Instance { get; } = new BattleModel();
@@ -32,6 +36,9 @@ namespace Lachesis.GamePlay
             controllerCameraDict.Clear();
             carControllers.Clear();
             skillPickUpItems.Clear();
+            carDict.Clear();
+            spawnPosDict.Clear();
+            killOtherPlayerNumDict.Clear();
         }
         
         public void SetBattleCamera(CarController p1Controller, CarController p2Controller)
@@ -49,6 +56,7 @@ namespace Lachesis.GamePlay
             if(!carDict.ContainsKey(carPlayer1.controllerName))
             {
                 carDict.Add(carPlayer1.controllerName, carPlayer1);
+                killOtherPlayerNumDict.Add(carPlayer1.controllerName, 0);
             }
             return carPlayer1;
         }
@@ -57,6 +65,7 @@ namespace Lachesis.GamePlay
         {
             var carAi = GameEntry.EntityManager.CreateEntity<CarAI>(EntityEnum.CarAI, Vector3.zero, Quaternion.identity, aiData);
             carControllers.Add(carAi);
+            
             if(!carDict.ContainsKey(carAi.controllerName))
             {
                 carDict.Add(carAi.controllerName, carAi);

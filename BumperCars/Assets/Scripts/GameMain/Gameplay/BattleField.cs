@@ -9,6 +9,10 @@ namespace Lachesis.GamePlay
         public PlayerHome player2Home;
         public Transform spawnTrans1; 
         public Transform spawnTrans2; 
+        public Transform spawnTrans3; 
+        public Transform spawnTrans4; 
+        public Transform spawnTrans5; 
+        public Transform spawnTrans6; 
         public Transform dieOutTrans;
         public Transform fieldCenter;
         public Transform edge;

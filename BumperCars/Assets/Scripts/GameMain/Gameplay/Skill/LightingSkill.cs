@@ -8,7 +8,7 @@ namespace Lachesis.GamePlay
     {
         public float attackSpeed = 10f;
         private Vector3 deltaPos = new Vector3(0,0.05f,0);
-        private Vector3 effectDeltaPos = new Vector3(0,0.5f,0);
+        private static Vector3 effectDeltaPos = new Vector3(0,0.5f,0);
         private GlobalConfig m_globalConfig;
         
         public override void Init(object userData = null)

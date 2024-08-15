@@ -36,32 +36,34 @@ namespace Lachesis.GamePlay
             var startPos = target.transform.position+target.bodyRb.velocity*0.8f+new Vector3(0.05f,0.3f,0.05f);//提前预测0.8秒后的位置
             var effect = GameEntry.EntityManager.CreateEntity<ScarletImplosionEffect>(EntityEnum.ScarletImplosionEffect, startPos, target.transform.rotation);
             yield return new WaitForSeconds(1.1f);
-            if(Vector3.Distance(target.transform.position, startPos)<=3.5*1.5f)
+            var targetList = GetTargetsInArea(startPos, source);
+            
+            foreach (var car in targetList)
             {
                 void OnHit()
                 {
                     // 施加瞬间水平力
-                    var forceDirection = target.transform.position - startPos;
+                    var forceDirection = car.transform.position - startPos;
                     forceDirection.y = 0;
                     forceDirection = forceDirection.normalized;
                     forceDirection.y = 0.2f;
-                    target.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass / target.bodyRb.mass));
-                    target.bodyRb.angularVelocity = attackAngularSpeed;
+                    car.bodyRb.velocity += forceDirection * (attackSpeed * (source.bodyRb.mass / car.bodyRb.mass));
+                    car.bodyRb.angularVelocity = attackAngularSpeed;
                     // 暂时降低摩擦力
-                    var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
-                    GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, target.entityEnum == EntityEnum.BossCar));
-                
+                    var otherWheelColliders = car.GetComponentsInChildren<WheelCollider>();
+                    GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, car.entityEnum == EntityEnum.BossCar));
                 }
-            
+                
                 var attackInfo = new AttackInfo();
                 attackInfo.attacker = source.carControllerName;
-                attackInfo.underAttacker = target.carControllerName;
+                attackInfo.underAttacker = car.carControllerName;
                 attackInfo.attackTime = DateTime.Now;
                 attackInfo.attackType = AttackType.Skill;
                 attackInfo.userData = skillEnum;
-                attackInfo.attackDamge = (int) Mathf.Ceil(source.bodyRb.mass*3/ target.bodyRb.mass);
+                attackInfo.attackDamge = (int) Mathf.Ceil(source.bodyRb.mass*3/ car.bodyRb.mass);
                 GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo,OnHit));
-            } 
+            }
+            
             yield return new WaitForSeconds(0.9f);
             GameEntry.EntityManager.ReturnEntity(EntityEnum.ScarletImplosionEffect, effect);
         }
@@ -86,6 +88,20 @@ namespace Lachesis.GamePlay
                 
 
             return target != null;
+        }
+        
+        public List<CarComponent> GetTargetsInArea(Vector3 skillCenter, CarComponent source)
+        {
+            var targets = new List<CarComponent>();
+            foreach (var controller in BattleModel.Instance.carControllers)
+            {
+                if(GameEntry.ProcedureManager.CurrentProcedure is ProcedureBattlePve&& controller is CarPlayer) continue;//这里先这样处理，Pve下不索队友
+                if (controller.IsHasCar && controller != source.controller&&Vector3.Distance(controller.carComponent.transform.position, skillCenter)<=3.5*1.5f)
+                {
+                    targets.Add(controller.carComponent);
+                }
+            }
+            return targets;
         }
         
         private IEnumerator TemporarilyReduceFriction(WheelCollider[] wheelColliders, bool isBoss)
