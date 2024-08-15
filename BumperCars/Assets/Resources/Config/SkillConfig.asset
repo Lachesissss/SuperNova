@@ -27,7 +27,7 @@ MonoBehaviour:
   - skillEnum: 1
     skillName: "\u5DE8\u77F3\u4E4B\u9B42"
     iconName: stronger
-    activateText: "\u53D8\u5F97\u575A\u5982\u78D0\u77F3"
+    activateText: "\u53D8\u5F97\u94DC\u5899\u94C1\u58C1"
     killText: 
     showTextOnRelease: 1
     skillType:
@@ -38,7 +38,7 @@ MonoBehaviour:
   - skillEnum: 2
     skillName: "\u6DF7\u4E71\u89C6\u754C "
     iconName: flipvertical
-    activateText: "\u4E16\u754C\u98A0\u5012\u4E86"
+    activateText: "\u654C\u4EBA\u7684\u4E16\u754C\u98A0\u5012\u4E86"
     killText: 
     showTextOnRelease: 1
     skillType:
@@ -88,5 +88,16 @@ MonoBehaviour:
     skillType:
       typeName: Lachesis.GamePlay.TownPortal, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-    spawnProb: 10
+    spawnProb: 0
     openInPve: 0
+  - skillEnum: 7
+    skillName: "\u7075\u9B42\u4E92\u6362"
+    iconName: switch
+    activateText: "\u4E0D\u53EF\u601D\u8BAE\u7684\u4E8B\u60C5\u53D1\u751F\u4E86"
+    killText: 
+    showTextOnRelease: 0
+    skillType:
+      typeName: Lachesis.GamePlay.SwitchSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    spawnProb: 1
+    openInPve: 1

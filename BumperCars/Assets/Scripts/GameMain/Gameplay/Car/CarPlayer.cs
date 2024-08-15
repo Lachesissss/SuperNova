@@ -20,6 +20,7 @@ namespace Lachesis.GamePlay
         private bool Skill1 => playerType == PlayerType.P1?input.skill1P1:(m_globalConfig.p2UsingJoySticks?input.skill1P2J:input.skill1P2);
         private bool Skill2 => playerType == PlayerType.P1?input.skill2P1:(m_globalConfig.p2UsingJoySticks?input.skill2P2J:input.skill2P2);
         private bool Skill3 => playerType == PlayerType.P1?input.skill3P1:(m_globalConfig.p2UsingJoySticks?input.skill3P2J:input.skill3P2);
+        private bool Ultimate => playerType == PlayerType.P1?input.UltimateP1:(m_globalConfig.p2UsingJoySticks?input.UltimateP2J:input.UltimateP2);
         private bool Switch => playerType == PlayerType.P1?input.switchP1:(m_globalConfig.p2UsingJoySticks?input.switchP2J:input.switchP2);
         private float SteeringDelta => playerType == PlayerType.P1?input.steeringDeltaP1:(m_globalConfig.p2UsingJoySticks?input.steeringDeltaP2J:input.steeringDeltaP2);
         private float MotorDelta => playerType == PlayerType.P1?input.motorDeltaP1:(m_globalConfig.p2UsingJoySticks?input.motorDeltaP2J:input.motorDeltaP2);
@@ -44,7 +45,11 @@ namespace Lachesis.GamePlay
             }
             if(Switch)
             {
-                TrySwitch();
+                //TrySwitch();
+            }
+            if(Ultimate)
+            {
+                TryUltimateSkill();
             }
             if(Skill1)
             {

@@ -38,8 +38,6 @@ namespace Lachesis.GamePlay
             yield return new WaitForSeconds(5f);
             if(source.controller==null) yield break;
             source.transform.position = BattleModel.Instance.spawnPosDict[source.controller].position;
-            BattleModel.Instance.killOtherPlayerNumDict[source.carControllerName] = 0;
-            GameEntry.EventManager.Invoke(this, UltimateSkillUIUpdateArgs.Create());
             source.RemoveEffectEntity(portalEffect);
             GameEntry.EntityManager.ReturnEntity(EntityEnum.PortalEffect, portalEffect);
         }

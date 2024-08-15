@@ -48,6 +48,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarPlayer.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\BossInfoUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\TestField.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\UltimateSkillUIUpdateArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventManager.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattlePve.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SwitchSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Input\PlayerInputManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\BattleModel.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\TypeNamePair.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameModule.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\GetSkillEventArgs.cs" />
     <Compile Include="Assets\Scripts\RVO\src\Agent.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\TownPortalSkill.cs" />
     <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\RotationScript.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\BattleUI.cs" />
     <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\Rnd_Animation.cs" />
@@ -117,6 +120,7 @@
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\AttackHitArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Interactable\CoinProducer.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\AttackEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\UltimateSkillBar.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarAttacker.cs" />
     <Compile Include="Assets\Scripts\RVO\src\Obstacle.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightingPrepareEffect.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\FlipVerticalSkill.cs" />
     <Compile Include="Assets\Scripts\RVO\src\KdTree.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\MagicShieldEffect.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\TabItem.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\GameEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PopupTips.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIPatrolState.cs" />
@@ -135,6 +140,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\MagicShieldSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureWinSettlementPve.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\PortalEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\CompressSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\PlayerSkillSlot.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameEntry.cs" />

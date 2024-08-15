@@ -32,6 +32,8 @@ namespace Lachesis.GamePlay
         public GameObject p2JoySticksSwitchOffGO;
         public GameObject p2JoySticksTextGO;
         public GameObject p2KeyBoardTextGO;
+        public GameObject p2KeyBoardUltimateGO;
+        public GameObject p2JoySticksUltimateGO;
         public Image p1BoostCoolingImg;
         public Image p2BoostCoolingImg;
         public Image p1SwitchCoolingImg;
@@ -72,6 +74,8 @@ namespace Lachesis.GamePlay
             p2JoySticksSwitchOnGO.SetActive(isP2Js);
             p2KeyBoardTextGO.SetActive(!isP2Js);
             p2JoySticksTextGO.SetActive(isP2Js);
+            p2KeyBoardUltimateGO.SetActive(!isP2Js);
+            p2JoySticksUltimateGO.SetActive(isP2Js);
         }
         
         private void InitCoolingImg(Image img)
@@ -172,6 +176,8 @@ namespace Lachesis.GamePlay
             p2JoySticksSwitchOnGO.SetActive(true);
             p2KeyBoardTextGO.SetActive(false);
             p2JoySticksTextGO.SetActive(true);
+            p2KeyBoardUltimateGO.SetActive(false);
+            p2JoySticksUltimateGO.SetActive(true);
         }
         
         private void SwitchOffP2JoySticks()
@@ -181,6 +187,8 @@ namespace Lachesis.GamePlay
             p2JoySticksSwitchOnGO.SetActive(false);
             p2KeyBoardTextGO.SetActive(true);
             p2JoySticksTextGO.SetActive(false);
+            p2KeyBoardUltimateGO.SetActive(true);
+            p2JoySticksUltimateGO.SetActive(false);
         }
         
         private void RefreshScore(int p1Score, int p2Score)

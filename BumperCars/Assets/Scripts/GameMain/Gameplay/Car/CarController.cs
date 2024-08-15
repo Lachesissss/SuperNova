@@ -122,16 +122,21 @@ namespace Lachesis.GamePlay
             }
         }
 
-        public void FireUltimateSkill()
+        public void TryUltimateSkill()
         {
-            var uSkill = GameEntry.SkillManager.CreateSkill(m_globalConfig.ultimateSkill);
-            if(uSkill.TryActivate(carComponent))
+            if (BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(controllerName, out int value)&&value>=3)
             {
-                Debug.Log("成功释放终极技能");
-            }
-            else
-            {
-                Debug.Log("终极技能失败");
+                var uSkill = GameEntry.SkillManager.CreateSkill(m_globalConfig.ultimateSkill);
+                if(uSkill.TryActivate(carComponent))
+                {
+                    Debug.Log("成功释放终极技能");
+                    BattleModel.Instance.killOtherPlayerNumDict[controllerName] = 0;
+                    GameEntry.EventManager.Invoke(this, UltimateSkillUIUpdateArgs.Create());
+                }
+                else
+                {
+                    Debug.Log("终极技能失败");
+                }
             }
         }
 

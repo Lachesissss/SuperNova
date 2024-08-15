@@ -16,6 +16,7 @@ namespace Lachesis.GamePlay
         Shield,
         Implosion,
         TownPortal,
+        Switch,
         //Slip,
         //Swap,
         //Summon,

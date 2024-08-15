@@ -583,14 +583,14 @@ namespace Lachesis.GamePlay
                 }
             }
 
-            if (car2 != null && car1 != null && Vector3.Distance(car1.carComponent.transform.position, car2.carComponent.transform.position) >
-                m_globalConfig.switchMinDistance)
-            {
-                var showMsg = $"无法切换, 需要与对方距离小于{m_globalConfig.switchMinDistance}米";
-                GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
-                Debug.Log(showMsg);
-                return false;
-            }
+            // if (car2 != null && car1 != null && Vector3.Distance(car1.carComponent.transform.position, car2.carComponent.transform.position) >
+            //     m_globalConfig.switchMinDistance)
+            // {
+            //     var showMsg = $"无法切换, 需要与对方距离小于{m_globalConfig.switchMinDistance}米";
+            //     GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create(showMsg));
+            //     Debug.Log(showMsg);
+            //     return false;
+            // }
             
             return get1&&get2;
         }
