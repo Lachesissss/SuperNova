@@ -126,7 +126,21 @@ namespace Lachesis.GamePlay
         {
             if (BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(controllerName, out int value)&&value>=3)
             {
-                var uSkill = GameEntry.SkillManager.CreateSkill(m_globalConfig.ultimateSkill);
+                SkillEnum ultimateSkill;
+                if(controllerName == m_globalConfig.p1Name)
+                {
+                    ultimateSkill = BattleModel.Instance.p1Ultimate;
+                }
+                else if(controllerName == m_globalConfig.p2Name)
+                {
+                    ultimateSkill = BattleModel.Instance.p2Ultimate;
+                }
+                else
+                {
+                    Debug.LogError("人机目前无法释放终极技能");
+                    return;
+                }
+                var uSkill = GameEntry.SkillManager.CreateSkill(ultimateSkill);
                 if(uSkill.TryActivate(carComponent))
                 {
                     Debug.Log("成功释放终极技能");

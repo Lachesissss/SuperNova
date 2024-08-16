@@ -38,6 +38,8 @@ namespace Lachesis.GamePlay
         public Image p2BoostCoolingImg;
         public Image p1SwitchCoolingImg;
         public Image p2SwitchCoolingImg;
+        public Image p1UltimateImg;
+        public Image p2UltimateImg;
         public GameObject popupGo;
         public List<SkillSlot> player1SkillSlots;
         public List<SkillSlot> player2SkillSlots;
@@ -212,6 +214,10 @@ namespace Lachesis.GamePlay
             m_controller1 = battleUIData.carController1;
             m_controller2 = battleUIData.carController2;
             m_targetScore = battleUIData.targetScore;
+            var skillCfg1 = GameEntry.SkillManager.GetSkillConfigItem(BattleModel.Instance.p1Ultimate);
+            p1UltimateImg.sprite = GameEntry.AtlasManager.GetSprite(AtlasEnum.Skill, skillCfg1.iconName);
+            var skillCfg2 = GameEntry.SkillManager.GetSkillConfigItem(BattleModel.Instance.p2Ultimate);
+            p2UltimateImg.sprite = GameEntry.AtlasManager.GetSprite(AtlasEnum.Skill, skillCfg2.iconName);
             RefreshScore(0,0);
             RefreshCarriedScore(0, 0);
             RefreshSkillSlotsUI();

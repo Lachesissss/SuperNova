@@ -162,7 +162,7 @@ namespace Lachesis.GamePlay
                 skill1P2J = GetInput(fire1InputP2J) >= 0.5f;
                 skill2P2J = GetInput(fire2InputP2J) >= 0.5f;
                 skill3P2J = GetInput(fire3InputP2J) >= 0.5f;
-                UltimateP2 = GetInput(UltimateInputP2) >= 0.5f;
+                UltimateP2J = GetInput(UltimateInputP2J) >= 0.5f;
             }
         }
 

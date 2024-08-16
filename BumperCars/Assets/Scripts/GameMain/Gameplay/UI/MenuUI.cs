@@ -51,11 +51,13 @@ namespace Lachesis.GamePlay
         
         private void OnEnterSingleMode()
         {
-            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Single));
+            BattleModel.Instance.currentDungeonMode = DungeonMode.Single;
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle)));
         }
         private void OnEnterDoubleMode()
         {
-            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureBattle), DungeonMode.Double));
+            BattleModel.Instance.currentDungeonMode = DungeonMode.Double;
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureSelectSecret)));
         }
         
         private void OnEnterPveMode()

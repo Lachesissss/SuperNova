@@ -27,7 +27,6 @@ namespace Lachesis.GamePlay
         private SettlementData m_settlementData;
         private GlobalConfig m_globalConfig;
         
-        private DungeonMode dungeonMode;
         protected internal override void OnInit(ProcedureOwner procedureOwner)
         {
             base.OnInit(procedureOwner);
@@ -62,22 +61,15 @@ namespace Lachesis.GamePlay
             m_settlementData = null;
             battleModel.spawnPosDict.Clear();
             //关卡相关，生成实例
-            if(this.userData is DungeonMode mode)
-            {
-                dungeonMode = mode;
-                if(dungeonMode == DungeonMode.Single)
-                {
-                    SingleModeEnter();
-                }
-                else
-                {
-                    DoubleModeEnter();
-                }
-            }
-            else
+            if(BattleModel.Instance.currentDungeonMode == DungeonMode.Single)
             {
                 SingleModeEnter();
             }
+            else
+            {
+                DoubleModeEnter();
+            }
+
             //测试,创建技能卡
             // GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, Vector3.zero, Quaternion.identity, SkillEnum.Lighting);
             // GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, new Vector3(-2, 0, 2), Quaternion.identity, SkillEnum.Stronger);
@@ -139,7 +131,7 @@ namespace Lachesis.GamePlay
         protected internal override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
-            if(dungeonMode==DungeonMode.Single)
+            if(BattleModel.Instance.currentDungeonMode==DungeonMode.Single)
             {
                 SingleModeUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
             }
@@ -375,7 +367,7 @@ namespace Lachesis.GamePlay
                         }
                         if( battleModel.carControllers[i] is CarPlayer carPlayer)
                         {
-                            if(dungeonMode == DungeonMode.Single)
+                            if(BattleModel.Instance.currentDungeonMode == DungeonMode.Single)
                             {
                                 GameEntry.instance.GameStartCoroutine(DelayToRevivePlayerSingleMode(carPlayer, lastColor));
                             }
@@ -386,7 +378,7 @@ namespace Lachesis.GamePlay
                         }
                         else if(battleModel.carControllers[i] is CarAI carAI)
                         {//目前人机立即复活
-                            if(dungeonMode == DungeonMode.Single)
+                            if(BattleModel.Instance.currentDungeonMode == DungeonMode.Single)
                             {
                                 GameEntry.instance.GameStartCoroutine(DelayToReviveAISingleMode(carAI, lastColor));
                                 //ReviveAISingleMode(carAI,lastColor);

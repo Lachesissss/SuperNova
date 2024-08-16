@@ -35,5 +35,6 @@ public class GlobalConfig : ScriptableObject
     public bool p2UsingJoySticks = true; //P2控制
     public bool isUsingRVO = true;
     public int coinScore = 2;
+    public float MagicShieldTime = 8f;
     public SkillEnum ultimateSkill;
 }

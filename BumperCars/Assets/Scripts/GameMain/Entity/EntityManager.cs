@@ -49,6 +49,8 @@ namespace Lachesis.GamePlay
         
         TestField,
         PortalEffect,
+        MarvelEffect,
+        SelectSecretUI,
     }
     
     public class EntityManager : GameModule

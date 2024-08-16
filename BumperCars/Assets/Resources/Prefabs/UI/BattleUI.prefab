@@ -442,7 +442,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: A
+  m_Text: B
 --- !u!1 &405258590513316516
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1303,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u7EC8\u6781\u6280\u80FD"
+  m_text: "\u4F20\u8BF4\u79D8\u6CD5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6bdb9cc97bb1ab14fa6c72ba9e68f6c7, type: 2}
   m_sharedMaterial: {fileID: 3069830777039080449, guid: 6bdb9cc97bb1ab14fa6c72ba9e68f6c7, type: 2}
@@ -2318,7 +2318,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u7EC8\u6781\u6280\u80FD"
+  m_text: "\u4F20\u8BF4\u79D8\u6CD5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6bdb9cc97bb1ab14fa6c72ba9e68f6c7, type: 2}
   m_sharedMaterial: {fileID: 3069830777039080449, guid: 6bdb9cc97bb1ab14fa6c72ba9e68f6c7, type: 2}
@@ -2699,7 +2699,7 @@ RectTransform:
   m_GameObject: {fileID: 2555066232392320635}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8132116261030314254}
@@ -2708,8 +2708,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 160, y: -27.5}
-  m_SizeDelta: {x: 56, y: 44}
+  m_AnchoredPosition: {x: 170, y: -20}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4436831070578112334
 CanvasRenderer:
@@ -2739,7 +2739,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 44fcbe9a150c244b7b2ae28131d46f92, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1faa4cc4b7a2c134e8b35dc534ab10f8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4282,6 +4282,8 @@ MonoBehaviour:
   p2BoostCoolingImg: {fileID: 2013550770071978375}
   p1SwitchCoolingImg: {fileID: 5802085418106206115}
   p2SwitchCoolingImg: {fileID: 6200326265800345184}
+  p1UltimateImg: {fileID: 6474353727162700937}
+  p2UltimateImg: {fileID: 4044131285566058557}
   popupGo: {fileID: 5767047322432968920}
   player1SkillSlots:
   - {fileID: 1179033470302239197}
@@ -7292,8 +7294,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 160, y: -27.5}
-  m_SizeDelta: {x: 56, y: 44}
+  m_AnchoredPosition: {x: 170, y: -20}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3590183191944813527
 CanvasRenderer:
@@ -7323,7 +7325,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 44fcbe9a150c244b7b2ae28131d46f92, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7db56189fbe59234fbd0882649a7baa2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

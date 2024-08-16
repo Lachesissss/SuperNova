@@ -17,6 +17,7 @@ namespace Lachesis.GamePlay
         Implosion,
         TownPortal,
         Switch,
+        Marvel,
         //Slip,
         //Swap,
         //Summon,
@@ -27,6 +28,7 @@ namespace Lachesis.GamePlay
     {
         Dictionary<SkillEnum, SkillConfigItem> m_skillConfigItemDict = new();
         private float totalWeight;
+        private float totalWeightExludeUltimate;
         //List<Skill> curSkills = new();
         public void Initialize(SkillConfig skillConfig)
         {
@@ -36,6 +38,7 @@ namespace Lachesis.GamePlay
                if(config.spawnProb<0) config.spawnProb = 0;
             }
             totalWeight = m_skillConfigItemDict.Values.Sum(config => config.spawnProb);
+            totalWeightExludeUltimate = m_skillConfigItemDict.Values.Sum(config => config.isUltimate?0: config.spawnProb);
         }
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
@@ -96,25 +99,49 @@ namespace Lachesis.GamePlay
             return null;
         }
         
-        public SkillEnum GetRandomSkillEnum()
+        public SkillEnum GetRandomSkillEnum(bool excludeUltimate = true)
         {
-            float randomValue = Random.Range(0f, totalWeight);
-            SkillEnum randomSkill = SkillEnum.Lighting;
-            float cumulativeWeight = 0f;
-
-            foreach (var kvp in m_skillConfigItemDict)
+            if(excludeUltimate)
             {
-                if (kvp.Value.spawnProb > 0)
+                float randomValue = Random.Range(0f, totalWeightExludeUltimate);
+                SkillEnum randomSkill = SkillEnum.Lighting;
+                float cumulativeWeight = 0f;
+
+                foreach (var kvp in m_skillConfigItemDict)
                 {
-                    cumulativeWeight += kvp.Value.spawnProb;
-                    if (randomValue <= cumulativeWeight)
+                    if(kvp.Value.isUltimate) continue;
+                    if (kvp.Value.spawnProb > 0)
                     {
-                        randomSkill = kvp.Key;
-                        break;
+                        cumulativeWeight += kvp.Value.spawnProb;
+                        if (randomValue <= cumulativeWeight)
+                        {
+                            randomSkill = kvp.Key;
+                            break;
+                        }
                     }
                 }
+                return randomSkill;
             }
-            return randomSkill;
+            else
+            {
+                float randomValue = Random.Range(0f, totalWeight);
+                SkillEnum randomSkill = SkillEnum.Lighting;
+                float cumulativeWeight = 0f;
+
+                foreach (var kvp in m_skillConfigItemDict)
+                {
+                    if (kvp.Value.spawnProb > 0)
+                    {
+                        cumulativeWeight += kvp.Value.spawnProb;
+                        if (randomValue <= cumulativeWeight)
+                        {
+                            randomSkill = kvp.Key;
+                            break;
+                        }
+                    }
+                }
+                return randomSkill;
+            }
         }
         
         public SkillEnum GetRandomSkillEnumPve()
@@ -136,6 +163,19 @@ namespace Lachesis.GamePlay
                 }
             }
             return randomSkill;
+        }
+        
+        public List<SkillEnum> GetAllUltimateSkill()
+        {
+           var list = new List<SkillEnum>();
+           foreach (var kv in m_skillConfigItemDict)
+           {
+               if(kv.Value.isUltimate)
+               {
+                   list.Add(kv.Key);
+               }
+           }
+           return list;
         }
     }
 }

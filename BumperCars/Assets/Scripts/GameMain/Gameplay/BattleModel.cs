@@ -16,7 +16,9 @@ namespace Lachesis.GamePlay
         public int deadCnt = 0;
         public CarCamera player1Camera;
         public CarCamera player2Camera;
-        
+        public SkillEnum p1Ultimate;
+        public SkillEnum p2Ultimate;
+        public DungeonMode currentDungeonMode;
         BattleModel()
         {
             lastAttackInfoDict = new();
@@ -26,6 +28,9 @@ namespace Lachesis.GamePlay
             carDict = new();
             spawnPosDict = new();
             killOtherPlayerNumDict = new();
+            currentDungeonMode = DungeonMode.Single;//默认是单人训练
+            p1Ultimate = SkillEnum.TownPortal; //默认都是传送
+            p2Ultimate = SkillEnum.TownPortal;
         }
 
         public static BattleModel Instance { get; } = new BattleModel();

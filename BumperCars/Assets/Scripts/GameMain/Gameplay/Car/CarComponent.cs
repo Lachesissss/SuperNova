@@ -294,10 +294,10 @@ namespace Lachesis.GamePlay
                     }
                     else
                     {
-                        if (m_isHasMagicShield)
+                        if (m_isHasMagicShield&&args.attackInfo.attackType==AttackType.Skill)
                         {
-                            m_isHasMagicShield = false;
-                            GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);
+                            //m_isHasMagicShield = false;
+                            //GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);
                             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create($"[{carControllerName}]的[秘法护盾]效果发动!"));
                         }
                         else
@@ -317,7 +317,7 @@ namespace Lachesis.GamePlay
 
         private IEnumerator DelayToReturnShield()
         {
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(m_globalConfig.MagicShieldTime);
             m_isHasMagicShield = false;
             GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);
         }

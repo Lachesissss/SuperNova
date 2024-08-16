@@ -72,7 +72,7 @@ namespace Lachesis.GamePlay
                         target = controller.carComponent;
                     }
                 }
-
+            
             return target != null;
         }
 
