@@ -28,7 +28,7 @@ namespace Lachesis.GamePlay
             if (source == null) return false;
             var portalEffect = GameEntry.EntityManager.CreateEntity<PortalEffect>(EntityEnum.PortalEffect, source.transform, effectDeltaPos);
             source.AddEffectEntity(portalEffect);
-            GameEntry.instance.StartCoroutine(DelayToTownPortal(source, portalEffect));
+            source.StartCoroutine(DelayToTownPortal(source, portalEffect));
             return true;
         }
 

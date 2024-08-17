@@ -28,7 +28,7 @@ namespace Lachesis.GamePlay
                     if (target == m_battleModel.player1Camera.car)
                     {
                         m_battleModel.player1Camera.SetFlipVertical(true);
-                        GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player1Camera));
+                        source.StartCoroutine(DelayToRecoverFlip(m_battleModel.player1Camera));
                     }
 
                     if (target == m_battleModel.player2Camera.car)

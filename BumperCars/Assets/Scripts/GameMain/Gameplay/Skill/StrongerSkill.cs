@@ -28,7 +28,7 @@ namespace Lachesis.GamePlay
             var strongerEffect = GameEntry.EntityManager.CreateEntity<StrongerEffect>(EntityEnum.StrongerEffect, source.transform);
             source.AddEffectEntity(strongerEffect);
             source.bodyRb.mass*=1.7f;
-            GameEntry.instance.StartCoroutine(DelayToRecoverBodyMass(source, strongerEffect));
+            source.StartCoroutine(DelayToRecoverBodyMass(source, strongerEffect));
             return true;
         }
 

@@ -25,7 +25,7 @@ namespace Lachesis.GamePlay
         {
             if (TryGetSkillTarget(source, out var target))
             {
-                GameEntry.instance.StartCoroutine(DelayToAttack(source, target)); 
+                source.StartCoroutine(DelayToAttack(source, target)); 
                 return true;
             }
 

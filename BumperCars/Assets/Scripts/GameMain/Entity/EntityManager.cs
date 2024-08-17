@@ -51,6 +51,7 @@ namespace Lachesis.GamePlay
         PortalEffect,
         MarvelEffect,
         SelectSecretUI,
+        LokiEffect
     }
     
     public class EntityManager : GameModule

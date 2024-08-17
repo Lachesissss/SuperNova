@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillResources:
   - skillEnum: 0
-    skillName: "\u96F7\u9706\u4E07\u94A7\u4E4B\u77DB"
+    skillName: "\u7535\u675F\u89E3\u653E"
     iconName: lighting
     activateText: 
     killText: "\u5904\u4EE5\u7535\u5211"
@@ -135,10 +135,42 @@ MonoBehaviour:
     skillType:
       typeName: Lachesis.GamePlay.MarvelSkill, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
-    spawnProb: 10
+    spawnProb: 0
     openInPve: 1
     isUltimate: 1
     describe: "    \u4F20\u8BF4\u4E2D, \u53E4\u4EE3\u5DEB\u5E08\u66FE\u638C\u63E1\u4E00\u79CD\u80FD\u591F\u53EC\u5524\u5947\u8FF9\u7684\u795E\u79D8\u9B54\u6CD5,
       \u8FD9\u79CD\u9B54\u6CD5\u80FD\u5728\u6218\u58EB\u6700\u9700\u8981\u7684\u65F6\u5019,
       \u8D50\u4E88\u4ED6\u4EEC\u65E0\u7A77\u7684\u529B\u91CF!"
     minDescribe: "10\u79D2\u5185\u65E0\u9650\u83B7\u53D6\u6280\u80FD\u5361\uFF01"
+  - skillEnum: 9
+    skillName: "\u8BE1\u8BA1\u4E4B\u79D8\u6CD5"
+    iconName: loki
+    activateText: "\u5373\u5C06\u65BD\u5C55\u8BE1\u8BA1"
+    killText: 
+    showTextOnRelease: 1
+    skillType:
+      typeName: Lachesis.GamePlay.LokiSkill, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+    spawnProb: 0
+    openInPve: 0
+    isUltimate: 1
+    describe: "    \u4F20\u8BF4\u4E2D, \u53E4\u4EE3\u5DEB\u5E08\u66FE\u638C\u63E1\u4E00\u79CD\u80FD\u591F\u53EC\u5524\u5947\u8FF9\u7684\u795E\u79D8\u9B54\u6CD5,
+      \u8FD9\u79CD\u9B54\u6CD5\u80FD\u5728\u6218\u58EB\u6700\u9700\u8981\u7684\u65F6\u5019,
+      \u8D50\u4E88\u4ED6\u4EEC\u65E0\u7A77\u7684\u529B\u91CF!"
+    minDescribe: "5\u79D2\u540E\u5077\u53D6\u4E00\u534A\u80CC\u5305\u5206\u6570\u548C\u79D8\u6CD5\u724C!"
+  - skillEnum: 10
+    skillName: "\u96F7\u9706\u4E4B\u79D8\u6CD5"
+    iconName: superLighting
+    activateText: "\u96F7\u7535\u80FD\u91CF\u73AF\u7ED5\u5468\u8EAB"
+    killText: 
+    showTextOnRelease: 1
+    skillType:
+      typeName: Lachesis.GamePlay.SuperLightingSkill, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    spawnProb: 0
+    openInPve: 1
+    isUltimate: 1
+    describe: "    \u4F20\u8BF4\u4E2D, \u53E4\u4EE3\u5DEB\u5E08\u66FE\u638C\u63E1\u4E00\u79CD\u80FD\u591F\u53EC\u5524\u5947\u8FF9\u7684\u795E\u79D8\u9B54\u6CD5,
+      \u8FD9\u79CD\u9B54\u6CD5\u80FD\u5728\u6218\u58EB\u6700\u9700\u8981\u7684\u65F6\u5019,
+      \u8D50\u4E88\u4ED6\u4EEC\u65E0\u7A77\u7684\u529B\u91CF!"
+    minDescribe: "\u968F\u673A\u91CA\u653E16\u9053\u5A01\u529B\u5341\u8DB3\u7684\u95EA\u7535!"

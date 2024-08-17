@@ -18,6 +18,10 @@ namespace Lachesis.GamePlay
         TownPortal,
         Switch,
         Marvel,
+
+        Loki,
+
+        SuperLighting
         //Slip,
         //Swap,
         //Summon,

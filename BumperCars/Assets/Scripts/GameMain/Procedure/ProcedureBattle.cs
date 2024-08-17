@@ -56,6 +56,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
             GameEntry.EventManager.AddListener(CarriedScoreUpdateEventArgs.EventId, OnCoinPicked);
             GameEntry.EventManager.AddListener(PlayerArriveHomeEventArgs.EventId, OnPlayerArriveHome);
+            GameEntry.EventManager.AddListener(CoinStealEventArgs.EventId, OnCoinStolen);
             isGoMenu = false;
             isGoSettlement = false;
             m_settlementData = null;
@@ -292,6 +293,19 @@ namespace Lachesis.GamePlay
                 }
         }
 
+        private void OnCoinStolen(object sender, GameEventArgs e)
+        {
+            if (e is CoinStealEventArgs args)
+                if (m_playerCarriedScoreDict.ContainsKey(args.stealerName) && m_playerCarriedScoreDict.ContainsKey(args.underStealerName))
+                {
+                    var stealNum = m_playerCarriedScoreDict[args.underStealerName] - m_playerCarriedScoreDict[args.underStealerName] / 2;
+                    m_playerCarriedScoreDict[args.underStealerName] /= 2;
+                    m_playerCarriedScoreDict[args.stealerName] += stealNum;
+                    GameEntry.EventManager.Invoke(this,
+                        CarriedScoreUIUpdateEventArgs.Create(m_playerCarriedScoreDict[m_globalConfig.p1Name], m_playerCarriedScoreDict[m_globalConfig.p2Name]));
+                }
+        }
+
         private void OnPlayerArriveHome(object sender, GameEventArgs e)
         {
             if (e is PlayerArriveHomeEventArgs args)
@@ -339,6 +353,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.RemoveListener(GetSkillEventArgs.EventId, OnSkillItemPicked);
             GameEntry.EventManager.RemoveListener(CarriedScoreUpdateEventArgs.EventId, OnCoinPicked);
             GameEntry.EventManager.RemoveListener(PlayerArriveHomeEventArgs.EventId, OnPlayerArriveHome);
+            GameEntry.EventManager.RemoveListener(CoinStealEventArgs.EventId, OnCoinStolen);
         }
 
         protected internal override void OnDestroy(ProcedureOwner procedureOwner)
@@ -351,8 +366,8 @@ namespace Lachesis.GamePlay
         {
             for(int i=0;i<battleModel.carControllers.Count;i++)
             {
-                if(i>=battleModel.carControllers.Count) break;
-                if(!battleModel.carControllers[i].IsHasCar) break;
+                if (i >= battleModel.carControllers.Count) continue;
+                if (!battleModel.carControllers[i].IsHasCar) continue;
                 if(battleModel.carControllers[i].carComponent.transform.position.y<m_battleField.dieOutTrans.position.y)
                 {
                     DeathProcess(battleModel.carControllers[i]);

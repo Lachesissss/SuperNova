@@ -53,14 +53,18 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\SwitchCarEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SuperLightingSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarCamera.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarController.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Interactable\Coin.cs" />
     <Compile Include="Assets\Scripts\RVO\src\RVOMath.cs" />
     <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\OscillatePosition.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LokiEffect.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\CoinStealEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIChaseState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerCoolingUIUpdateEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\MarvelSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\ConfigManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillPickUpItem.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSMState.cs" />
@@ -68,6 +72,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StoneHitEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\LightningEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\ScarletImplosionSkill.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SecretPanel.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattlePve.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
@@ -84,6 +89,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventPool.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\AtlasConfig.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\LokiSkill.cs" />
     <Compile Include="Assets\Floating_Island\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattle.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\ScarletImplosionEffect.cs" />
@@ -104,6 +110,7 @@
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityManager.cs" />
     <Compile Include="Assets\Layer Lab\Scripts\PanelView.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SkillItem.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureSelectSecret.cs" />
     <Compile Include="Assets\ithappy\Platformer_2_Obstacles\Scripts\OscillateScale.cs" />
     <Compile Include="Assets\Scripts\RVO\examples\Blocks.cs" />
     <Compile Include="Assets\Scripts\GameMain\GameCore\GameModule.cs" />
@@ -136,6 +143,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SkillManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\AtlasManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\ShowUITipsEventArgs.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\MarvelEffect.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\PlayerSkillSlotsUIUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\WinSettlementUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\MagicShieldSkill.cs" />
@@ -153,6 +161,7 @@
     <Compile Include="Assets\Scripts\GameMain\Config\ProcedureType.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarComponent.cs" />
     <Compile Include="Assets\Scripts\RVO\src\Vector2.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SelectSecretUI.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\SkillConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\FSM\FSM.cs" />
     <Compile Include="Assets\Layer Lab\GUI Pro-FantasyRPG\Extensions\UIParticle\UIParticleSystem.cs" />

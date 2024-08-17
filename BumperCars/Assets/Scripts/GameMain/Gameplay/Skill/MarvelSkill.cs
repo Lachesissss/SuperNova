@@ -28,7 +28,7 @@ namespace Lachesis.GamePlay
             if (source == null) return false;
             var marvelEffect = GameEntry.EntityManager.CreateEntity<MarvelEffect>(EntityEnum.MarvelEffect, source.transform, effectDeltaPos);
             source.AddEffectEntity(marvelEffect);
-            GameEntry.instance.StartCoroutine(MarvelTime(source, marvelEffect));
+            source.StartCoroutine(MarvelTime(source, marvelEffect));
             return true;
         }
 
