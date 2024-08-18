@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Lachesis.Core;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
@@ -14,6 +15,7 @@ namespace Lachesis.GamePlay
         private List<SkillEnum> m_ultimateList;
         private int curP1Index;
         private int curP2Index;
+        public AudioSource m_selectUIAudioSource;
         public override void OnInit(object userData = null)
         {
             base.OnInit(userData);
@@ -31,6 +33,7 @@ namespace Lachesis.GamePlay
             returnBtn.onClick.AddListener(OnReturnMenu);
             curP1Index = 0;
             curP2Index = 0;
+            m_selectUIAudioSource = GameEntry.SoundManager.PlayerSound(this, SoundEnum.SelectBg, true, 1, false, 0.1f);
             Refresh(false);
         }
 

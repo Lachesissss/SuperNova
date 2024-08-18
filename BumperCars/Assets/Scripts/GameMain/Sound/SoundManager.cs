@@ -28,7 +28,10 @@ namespace Lachesis.GamePlay
         PlayerDead,
         Win,
         BattleBg1,
-        BattleBg2
+        BattleBg2,
+        BattleBg3,
+        SelectBg,
+        MenuBg,
     }
 
     public class SoundManager : GameModule

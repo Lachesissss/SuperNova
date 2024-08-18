@@ -17,6 +17,7 @@ namespace Lachesis.GamePlay
         public TabItem operationTab;
         public TabItem storyTab;
         public GameObject illustratePageGO;
+        public AudioSource m_menuUIAudioSource;
         
 
         public override void OnReCreateFromPool(object userData = null)
@@ -33,6 +34,7 @@ namespace Lachesis.GamePlay
             storyTab.selfButton.onClick.AddListener(OnStoryTabClicked);
             InitTab();
             illustratePageGO.SetActive(false);
+            m_menuUIAudioSource = GameEntry.SoundManager.PlayerSound(this, SoundEnum.MenuBg, true, 1, false, 0.1f);
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
