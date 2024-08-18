@@ -154,6 +154,12 @@ namespace Lachesis.GamePlay
             else isP2Exist = false;
         }
 
+        public override void SetCar(CarComponent car)
+        {
+            base.SetCar(car);
+            GameEntry.SoundManager.PlayerSound(car, SoundEnum.CoinPlayerRevive, false);
+        }
+
         public override void OnSwitchCar()
         {
             base.OnSwitchCar();

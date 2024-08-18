@@ -35,7 +35,9 @@ namespace Lachesis.GamePlay
         {
             var startPos = target.transform.position+target.bodyRb.velocity*0.8f+new Vector3(0.05f,0.3f,0.05f);//提前预测0.8秒后的位置
             var effect = GameEntry.EntityManager.CreateEntity<ScarletImplosionEffect>(EntityEnum.ScarletImplosionEffect, startPos, target.transform.rotation);
+            GameEntry.SoundManager.PlayerSound(target, SoundEnum.DarkStart, false);
             yield return new WaitForSeconds(1.1f);
+            GameEntry.SoundManager.PlayerSound(target, SoundEnum.DarkHit, false);
             var targetList = GetTargetsInArea(startPos, source);
             
             foreach (var car in targetList)

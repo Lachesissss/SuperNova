@@ -29,15 +29,18 @@ namespace Lachesis.GamePlay
             source.AddEffectEntity(strongerEffect);
             source.bodyRb.mass*=1.7f;
             source.StartCoroutine(DelayToRecoverBodyMass(source, strongerEffect));
+            
             return true;
         }
 
         private IEnumerator DelayToRecoverBodyMass(CarComponent source, StrongerEffect strongerEffect)
         {
+            var audio = GameEntry.SoundManager.PlayerSound(source, SoundEnum.Stronger, false, 1, false);
             yield return new WaitForSeconds(15f);
             source.bodyRb.mass = m_globalConfig.defaultCarMass;
             source.RemoveEffectEntity(strongerEffect);
             GameEntry.EntityManager.ReturnEntity(EntityEnum.StrongerEffect, strongerEffect);
+            audio.Stop();
         }
     }
 }

@@ -14,12 +14,14 @@ namespace Lachesis.GamePlay
             if(userData is SettlementData data)
             {
                 winnerText.text = $"胜利者: \n{data.winner}";
+                GameEntry.SoundManager.PlayerSound(this, SoundEnum.Win);
             }
             goBackToTittleBtn.onClick.AddListener(OnGoBackToTitleBtnClicked);
         }
 
         private void OnGoBackToTitleBtnClicked()
         {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
             goBackToTittleBtn.onClick.RemoveAllListeners();
         }

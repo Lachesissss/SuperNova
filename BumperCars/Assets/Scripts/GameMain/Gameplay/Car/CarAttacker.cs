@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -55,6 +54,8 @@ namespace Lachesis.GamePlay
                     GameEntry.EntityManager.CreateEntity<StoneHitEffect>(EntityEnum.StoneHitEffect, otherCar.transform, effectDeltaPos);
                     // 重置碰撞标记
                     StartCoroutine(ResetCollisionFlag());
+                    if (m_SelfComponent.controller is CarPlayer || otherCar.controller is CarPlayer)
+                        GameEntry.SoundManager.PlayerSound(m_SelfComponent, SoundEnum.CarAttack, false);
                 }
                 
                 

@@ -51,6 +51,7 @@ namespace Lachesis.GamePlay
         {
             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create($"[{source.carControllerName}]将在5秒后施展诡计"));
             var lokiEffect = GameEntry.EntityManager.CreateEntity<LokiEffect>(EntityEnum.LokiEffect, source.transform, effectDeltaPos);
+            var lokiAudio = GameEntry.SoundManager.PlayerSound(source, SoundEnum.Marvel, false, 1.4f, false);
             yield return new WaitForSeconds(5f);
             if (source.controller == null || target.controller == null) yield break;
             var stealList = new List<Skill>();
@@ -70,6 +71,7 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.Invoke(this, CoinStealEventArgs.Create(source.carControllerName, target.carControllerName));
             GameEntry.EventManager.Invoke(this, PlayerSkillSlotsUIUpdateEventArgs.Create());
             source.RemoveEffectEntity(lokiEffect);
+            lokiAudio.Stop();
             GameEntry.EntityManager.ReturnEntity(EntityEnum.LokiEffect, lokiEffect);
         }
     }

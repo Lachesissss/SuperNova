@@ -4,6 +4,7 @@ namespace Lachesis.GamePlay
 {
     public class EntityComponent : MonoBehaviour
     {
+        public Entity entity;
         public virtual void OnEntityInit(object userData = null)
         {
             

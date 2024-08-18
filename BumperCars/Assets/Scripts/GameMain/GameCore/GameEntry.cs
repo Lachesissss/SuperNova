@@ -33,6 +33,7 @@ namespace Lachesis.GamePlay
         public static AtlasManager AtlasManager { get; private set; }
         public static SkillManager SkillManager { get; private set; }
         public static RVOManager RVOManager { get; private set; }
+        public static SoundManager SoundManager { get; private set; }
         public static ProcedureManager ProcedureManager { get; private set; }
 
         public static PlayerInputManager PlayerInputManager { get; private set; }
@@ -52,6 +53,7 @@ namespace Lachesis.GamePlay
             AtlasManager = GetModule<AtlasManager>();
             SkillManager = GetModule<SkillManager>();
             RVOManager = GetModule<RVOManager>();
+            SoundManager = GetModule<SoundManager>();
             
 
             if (ProcedureManager == null)
@@ -93,6 +95,7 @@ namespace Lachesis.GamePlay
             AtlasManager.SetConfig(ConfigManager.GetConfig<AtlasConfig>());
             SkillManager.Initialize(ConfigManager.GetConfig<SkillConfig>());
             RVOManager.Init();
+            SoundManager.Initialize(ConfigManager.GetConfig<SoundConfig>());
             yield return new WaitForEndOfFrame();
 
             ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());

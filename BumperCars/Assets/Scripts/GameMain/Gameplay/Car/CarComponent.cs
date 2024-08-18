@@ -174,6 +174,7 @@ namespace Lachesis.GamePlay
             boostEffect.Play();
             // 暂时降低摩擦力
             StartCoroutine(TemporarilyReduceFriction(wheelColliders));
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.Boost, false);
             
         }
         
@@ -290,11 +291,12 @@ namespace Lachesis.GamePlay
                     attackNum++;
                     if (m_isInWitchTime && args.attackInfo.canDodge)
                     {
+                        GameEntry.SoundManager.PlayerSound(this, SoundEnum.WitchTime, false);
                         GameEntry.instance.StartCoroutine(ShowWitchTimeEffect(controller.carComponent.transform));
                     }
                     else
                     {
-                        if (m_isHasMagicShield&&args.attackInfo.attackType==AttackType.Skill)
+                        if (m_isHasMagicShield && args.attackInfo.attackType == AttackType.Skill && args.attackInfo.canDodge)
                         {
                             //m_isHasMagicShield = false;
                             //GameEntry.EntityManager.ReturnEntity(EntityEnum.MagicShieldEffect, m_shieldEffectEntity);

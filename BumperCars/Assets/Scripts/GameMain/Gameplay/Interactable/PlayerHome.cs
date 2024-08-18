@@ -49,6 +49,7 @@ namespace Lachesis.GamePlay
                     {
                         m_playerScore = args.p1NewScore;
                         levelUpEffect.Play();
+                        GameEntry.SoundManager.PlayerSound(entity, SoundEnum.GetPoints, false);
                     }
                 }
                 else if (type == PlayerHomeType.Player2)
@@ -57,6 +58,7 @@ namespace Lachesis.GamePlay
                     {
                         m_playerScore = args.p2NewScore;
                         levelUpEffect.Play();
+                        GameEntry.SoundManager.PlayerSound(entity, SoundEnum.GetPoints, false);
                     }
                 }
             }

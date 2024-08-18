@@ -16,7 +16,13 @@ namespace Lachesis.GamePlay
         public virtual void OnInit(object userData = null)
         {
             GetEntityComponents();
-            foreach (var component in entityComponents) component.OnEntityInit(userData);
+            foreach (var component in entityComponents)
+            {
+                component.entity = this;
+                component.OnEntityInit(userData);
+            }
+
+            
         }
 
         //通过反射获取所有的实体组件，包括组件和组件的迭代器

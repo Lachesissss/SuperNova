@@ -54,7 +54,7 @@ namespace Lachesis.GamePlay
         private static BattleUI m_instance;
         private Queue<string> popupTextQueue;
         private List<PopupTips> curShowTips;
-        
+        private AudioSource m_battleBg1Source;
         public struct BattleUIData
         {
             public string p1Name;
@@ -130,6 +130,7 @@ namespace Lachesis.GamePlay
             }
             curShowTips.Clear();
             popupTextQueue.Clear();
+            m_battleBg1Source = GameEntry.SoundManager.PlayerSound(this, SoundEnum.BattleBg1, true, 1, false, 0.1f);
         }
         
         public override void OnReturnToPool(bool isShutDown = false)
@@ -158,39 +159,42 @@ namespace Lachesis.GamePlay
 
         private void OnSettingBtnClicked()
         {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             popupGo.SetActive(true);
         }
 
         private void OnContinueBtnClicked()
         {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             popupGo.SetActive(false);
         }
 
         private void OnBackToTittleBtnClicked()
         {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
         }
         
         private void SwitchOnP2JoySticks()
         {
-            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = true;
-            p2JoySticksSwitchOffGO.SetActive(false);
-            p2JoySticksSwitchOnGO.SetActive(true);
-            p2KeyBoardTextGO.SetActive(false);
-            p2JoySticksTextGO.SetActive(true);
-            p2KeyBoardUltimateGO.SetActive(false);
-            p2JoySticksUltimateGO.SetActive(true);
+            SwitchP2JoySticks(true);
         }
         
         private void SwitchOffP2JoySticks()
         {
-            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = false;
-            p2JoySticksSwitchOffGO.SetActive(true);
-            p2JoySticksSwitchOnGO.SetActive(false);
-            p2KeyBoardTextGO.SetActive(true);
-            p2JoySticksTextGO.SetActive(false);
-            p2KeyBoardUltimateGO.SetActive(true);
-            p2JoySticksUltimateGO.SetActive(false);
+            SwitchP2JoySticks(false);
+        }
+
+        private void SwitchP2JoySticks(bool isOn)
+        {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.Tab);
+            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = isOn;
+            p2JoySticksSwitchOffGO.SetActive(!isOn);
+            p2JoySticksSwitchOnGO.SetActive(isOn);
+            p2KeyBoardTextGO.SetActive(!isOn);
+            p2JoySticksTextGO.SetActive(isOn);
+            p2KeyBoardUltimateGO.SetActive(!isOn);
+            p2JoySticksUltimateGO.SetActive(isOn);
         }
         
         private void RefreshScore(int p1Score, int p2Score)

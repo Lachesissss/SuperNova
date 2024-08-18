@@ -64,6 +64,7 @@ namespace Lachesis.GamePlay
         private IEnumerator DelayToAttack(CarComponent source)
         {
             var lightingPrepareList = new List<LightingPrepareEffect>();
+            var lightingPrepareAudio = GameEntry.SoundManager.PlayerSound(source, SoundEnum.LightingPrepare, false, 1, false);
             for (var i = 0; i < effectDeltaPositions.Count; i++)
             {
                 yield return new WaitForSeconds(0.125f);
@@ -102,6 +103,7 @@ namespace Lachesis.GamePlay
                     var otherWheelColliders = target.GetComponentsInChildren<WheelCollider>();
                     GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, target.entityEnum == EntityEnum.BossCar));
                     GameEntry.EntityManager.CreateEntity<LightingHitEffect>(EntityEnum.LightingHitEffect, target.transform, targetEffectDelta);
+                    GameEntry.SoundManager.PlayerSound(target, SoundEnum.LightingHit, false);
                 }
 
                 var attackInfo = new AttackInfo();
@@ -109,11 +111,13 @@ namespace Lachesis.GamePlay
                 attackInfo.underAttacker = target.carControllerName;
                 attackInfo.attackTime = DateTime.Now;
                 attackInfo.attackType = AttackType.Skill;
+                attackInfo.canDodge = false;
                 attackInfo.userData = skillEnum;
                 attackInfo.attackDamge = (int)Mathf.Ceil(source.bodyRb.mass * 3 / target.bodyRb.mass);
                 GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo, OnHit));
             }
 
+            lightingPrepareAudio.Stop();
             lightingPrepareList.Clear();
         }
 

@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using Lachesis.Core;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
@@ -33,7 +31,7 @@ namespace Lachesis.GamePlay
             returnBtn.onClick.AddListener(OnReturnMenu);
             curP1Index = 0;
             curP2Index = 0;
-            Refresh();
+            Refresh(false);
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
@@ -49,6 +47,7 @@ namespace Lachesis.GamePlay
         
         private void OnEnterDoubleGame()
         {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             BattleModel.Instance.currentDungeonMode = DungeonMode.Double;
             BattleModel.Instance.p1Ultimate = m_ultimateList[curP1Index];
             BattleModel.Instance.p2Ultimate = m_ultimateList[curP2Index];
@@ -57,6 +56,7 @@ namespace Lachesis.GamePlay
 
         private void OnReturnMenu()
         {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
         }
         
@@ -87,9 +87,11 @@ namespace Lachesis.GamePlay
             if(curP2Index<0) curP2Index = m_ultimateList.Count-1;
             Refresh();
         }
-        
-        private void Refresh()
+
+        private void Refresh(bool playSound = true)
         {
+            if (playSound)
+                GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
             p1Panel.SetData(m_ultimateList[curP1Index]);
             p2Panel.SetData(m_ultimateList[curP2Index]);
         }

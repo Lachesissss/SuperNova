@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -21,16 +19,18 @@ namespace Lachesis.GamePlay
         {
             if(other.gameObject.layer == LayerMask.NameToLayer("BumperCar"))
             {
-                var controller = other.GetComponent<CarBody>().carComponent;
-                if(!controller.controller.IsSkillSlotFull())
+                var car = other.GetComponent<CarBody>().carComponent;
+                if (!car.controller.IsSkillSlotFull())
                 {
                     //发出获取技能卡的事件
-                    GameEntry.EventManager.Invoke(this, GetSkillEventArgs.Create(skillEnum, controller.carControllerName));
+                    GameEntry.EventManager.Invoke(this, GetSkillEventArgs.Create(skillEnum, car.carControllerName));
                     GameEntry.EntityManager.ReturnEntity(EntityEnum.SkillPickUpItem, this);
+                    if (car.controller is CarPlayer)
+                        GameEntry.SoundManager.PlayerSound(car, SoundEnum.PickUp, false);
                 }
                 else
                 {
-                    Debug.Log($"拾取失败，{controller.carControllerName}身上的技能槽已满！");
+                    Debug.Log($"拾取失败，{car.carControllerName}身上的技能槽已满！");
                 }
             }
         }

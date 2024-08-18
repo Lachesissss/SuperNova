@@ -35,11 +35,13 @@ namespace Lachesis.GamePlay
         private IEnumerator DelayToTownPortal(CarComponent source, PortalEffect portalEffect)
         {
             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create($"[{source.carControllerName}]将在5秒后传送回城"));
+            var portalAudio = GameEntry.SoundManager.PlayerSound(source, SoundEnum.Portal, false, 1.35f, false);
             yield return new WaitForSeconds(5f);
             if(source.controller==null) yield break;
             source.transform.position = BattleModel.Instance.spawnPosDict[source.controller].position;
             source.RemoveEffectEntity(portalEffect);
             GameEntry.EntityManager.ReturnEntity(EntityEnum.PortalEffect, portalEffect);
+            portalAudio.Stop();
         }
     }
 }

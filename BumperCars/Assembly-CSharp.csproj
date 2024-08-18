@@ -45,11 +45,13 @@
     <Analyzer Include="K:\Unity\Editor\2022.3.39f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GameMain\Sound\GlobalSoundRoot.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\CarPlayer.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\BossInfoUpdateEventArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\TestField.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\UltimateSkillUIUpdateArgs.cs" />
     <Compile Include="Assets\Scripts\GameMain\Config\GlobalConfig.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Sound\SoundManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Car\AI\CarAIState.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventManager.cs" />
     <Compile Include="Assets\Scripts\GameMain\Event\EventArgs\SwitchCarEventArgs.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\ScarletImplosionSkill.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\UI\SecretPanel.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Effect\StrongerEffect.cs" />
+    <Compile Include="Assets\Scripts\GameMain\Config\SoundConfig.cs" />
     <Compile Include="Assets\Scripts\GameMain\Procedure\ProcedureBattlePve.cs" />
     <Compile Include="Assets\Scripts\GameMain\Entity\EntityComponent.cs" />
     <Compile Include="Assets\Scripts\GameMain\Gameplay\Skill\SwitchSkill.cs" />

@@ -35,6 +35,7 @@ namespace Lachesis.GamePlay
         private IEnumerator MarvelTime(CarComponent source, MarvelEffect marvelEffect)
         {
             GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create($"[{source.carControllerName}]开始了奇迹时刻!"));
+            var marvelAudio = GameEntry.SoundManager.PlayerSound(source, SoundEnum.Marvel, false, 1.4f, false);
             for(int i=0;i<20;i++)
             {
                 if(source.controller==null) break;
@@ -50,6 +51,7 @@ namespace Lachesis.GamePlay
             }
             
             source.RemoveEffectEntity(marvelEffect);
+            marvelAudio.Stop();
             GameEntry.EntityManager.ReturnEntity(EntityEnum.MarvelEffect, marvelEffect);
         }
     }

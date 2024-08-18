@@ -265,6 +265,7 @@ namespace Lachesis.GamePlay
                 {
                     CarController.SwitchCar(car1,car2);
                     CarCamera.SwapController(battleModel.player1Camera, battleModel.player2Camera);
+                    GameEntry.SoundManager.PlayerSound(car1, SoundEnum.SpecialAudio, false);
                 }
                 else
                 {
@@ -382,6 +383,7 @@ namespace Lachesis.GamePlay
                         }
                         if( battleModel.carControllers[i] is CarPlayer carPlayer)
                         {
+                            GameEntry.SoundManager.PlayerSound(battleModel.carControllers[i], SoundEnum.PlayerDead, false, 1, false);
                             if(BattleModel.Instance.currentDungeonMode == DungeonMode.Single)
                             {
                                 GameEntry.instance.GameStartCoroutine(DelayToRevivePlayerSingleMode(carPlayer, lastColor));

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Lachesis.GamePlay
@@ -35,6 +33,8 @@ namespace Lachesis.GamePlay
                     {
                         CarCamera.Compress(m_battleModel.player1Camera, m_battleModel.player2Camera);
                     }
+
+                    GameEntry.SoundManager.PlayerSound(target, SoundEnum.SpecialAudio, false);
                 }
                 
                 var attackInfo = new AttackInfo();

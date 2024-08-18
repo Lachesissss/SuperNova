@@ -19,6 +19,7 @@ namespace Lachesis.GamePlay
         {
             base.OnReCreateFromPool(pos, rot, userData);
             spawnEffect.Play();
+            //GameEntry.SoundManager.PlayerSound(this, SoundEnum.CoinPlayerRevive, false);
         }
 
         public override void OnReCreateFromPool(object userData = null)
@@ -40,6 +41,7 @@ namespace Lachesis.GamePlay
                 var controller = other.GetComponent<CarBody>().carComponent;
                 GameEntry.EventManager.Invoke(this, CarriedScoreUpdateEventArgs.Create(controller.carControllerName, GameEntry.ConfigManager.GetConfig<GlobalConfig>().coinScore));
                 GameEntry.EventManager.Invoke(this, CoinPickedUpEventArgs.Create(1));
+                GameEntry.SoundManager.PlayerSound(controller, SoundEnum.PickUp, false);
                 GameEntry.EntityManager.ReturnEntity(EntityEnum.Coin, this);
             }
         }

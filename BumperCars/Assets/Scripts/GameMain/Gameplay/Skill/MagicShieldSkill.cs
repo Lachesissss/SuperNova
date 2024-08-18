@@ -1,5 +1,3 @@
-using System;
-
 namespace Lachesis.GamePlay
 {
     public class MagicShieldSkill : Skill
@@ -18,6 +16,7 @@ namespace Lachesis.GamePlay
         {
             if (source == null) return false;
             source.GetMagicShield();
+            GameEntry.SoundManager.PlayerSound(source, SoundEnum.MagicShield, false);
             return true;
         }
 

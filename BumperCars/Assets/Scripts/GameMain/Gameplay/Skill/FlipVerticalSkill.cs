@@ -36,6 +36,8 @@ namespace Lachesis.GamePlay
                         m_battleModel.player2Camera.SetFlipVertical(true);
                         GameEntry.instance.StartCoroutine(DelayToRecoverFlip(m_battleModel.player2Camera));
                     }
+
+                    GameEntry.SoundManager.PlayerSound(target, SoundEnum.SpecialAudio, false);
                 }
 
                 var attackInfo = new AttackInfo();
