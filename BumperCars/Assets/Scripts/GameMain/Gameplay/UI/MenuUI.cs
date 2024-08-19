@@ -13,12 +13,29 @@ namespace Lachesis.GamePlay
         public Button quitGameBtn;
         public Button illustrateBtn;
         public Button illustrateReturnBtn;
+        public Button settingBtn;
+        public Button settingCloseBtn;
         public TabItem ruleTab;
         public TabItem operationTab;
         public TabItem storyTab;
         public GameObject illustratePageGO;
-        public AudioSource m_menuUIAudioSource;
+        public GameObject settingPageGO;
+        public Slider mainVolumeSld;
+        public Slider audioEffectVolumeSld;
+        public Slider musicVolumeSld;
+        public Button p2JoySticksSwitchOnBtn;
+        public Button p2JoySticksSwitchOffBtn;
+        public GameObject p2JoySticksSwitchOnGO;
+        public GameObject p2JoySticksSwitchOffGO;
+        private AudioSource m_menuUIAudioSource;
         
+        private GlobalConfig m_globalConfig;
+
+        public override void OnInit(object userData = null)
+        {
+            base.OnInit(userData);
+            m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
+        }
 
         public override void OnReCreateFromPool(object userData = null)
         {
@@ -29,12 +46,24 @@ namespace Lachesis.GamePlay
             quitGameBtn.onClick.AddListener(OnQuitGame);
             illustrateBtn.onClick.AddListener(OpenIllustratePage);
             illustrateReturnBtn.onClick.AddListener(CloseIllustratePage);
+            settingBtn.onClick.AddListener(OpenSettingPage);
+            settingCloseBtn.onClick.AddListener(CloseSettingPage);
             ruleTab.selfButton.onClick.AddListener(OnRuleTabClicked);
             operationTab.selfButton.onClick.AddListener(OnOperationTabClicked);
             storyTab.selfButton.onClick.AddListener(OnStoryTabClicked);
+            mainVolumeSld.onValueChanged.AddListener(OnMainVolumeSldChanged);
+            audioEffectVolumeSld.onValueChanged.AddListener(OnAudioEffectVolumeSldChanged);
+            musicVolumeSld.onValueChanged.AddListener(OnMusicVolumeSldChanged);
+            p2JoySticksSwitchOnBtn.onClick.AddListener(SwitchOnP2JoySticks);
+            p2JoySticksSwitchOffBtn.onClick.AddListener(SwitchOffP2JoySticks);
             InitTab();
+            InitVolumeSld();
             illustratePageGO.SetActive(false);
-            m_menuUIAudioSource = GameEntry.SoundManager.PlayerSound(this, SoundEnum.MenuBg, true, 1, false, 0.1f);
+            settingPageGO.SetActive(false);
+            var isP2Js = GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks;
+            p2JoySticksSwitchOffGO.SetActive(!isP2Js);
+            p2JoySticksSwitchOnGO.SetActive(isP2Js);
+            m_menuUIAudioSource = GameEntry.SoundManager.PlayerSound(this, SoundEnum.MenuBg, true, 1, false);
         }
 
         public override void OnReturnToPool(bool isShutDown = false)
@@ -46,9 +75,16 @@ namespace Lachesis.GamePlay
             quitGameBtn.onClick.RemoveAllListeners();
             illustrateBtn.onClick.RemoveAllListeners();
             illustrateReturnBtn.onClick.RemoveAllListeners();
+            settingBtn.onClick.RemoveAllListeners();
+            settingCloseBtn.onClick.RemoveAllListeners();
             ruleTab.selfButton.onClick.RemoveAllListeners();
             operationTab.selfButton.onClick.RemoveAllListeners();
             storyTab.selfButton.onClick.RemoveAllListeners();
+            mainVolumeSld.onValueChanged.RemoveAllListeners();
+            audioEffectVolumeSld.onValueChanged.RemoveAllListeners();;
+            musicVolumeSld.onValueChanged.RemoveAllListeners();;
+            p2JoySticksSwitchOnBtn.onClick.RemoveAllListeners();
+            p2JoySticksSwitchOffBtn.onClick.RemoveAllListeners();
         }
         
         private void OnEnterSingleMode()
@@ -94,6 +130,18 @@ namespace Lachesis.GamePlay
             illustratePageGO.SetActive(false);
         }
         
+        private void OpenSettingPage()
+        {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
+            settingPageGO.SetActive(true);
+        }
+        
+        private void CloseSettingPage()
+        {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
+            settingPageGO.SetActive(false);
+        }
+        
         private void OnRuleTabClicked()
         {
             GameEntry.SoundManager.PlayerSound(this, SoundEnum.Tab);
@@ -102,11 +150,60 @@ namespace Lachesis.GamePlay
             storyTab.Disable();
         }
 
+        private void OnMainVolumeSldChanged(float value)
+        {
+            m_globalConfig.mainVolume = value;
+            GameEntry.EventManager.Invoke(this, VolumeChangeEventArgs.Create());
+        }
+        
+        private void OnAudioEffectVolumeSldChanged(float value)
+        {
+            m_globalConfig.audioEffectVolume = value;
+            GameEntry.EventManager.Invoke(this, VolumeChangeEventArgs.Create());
+        }
+        
+        private void OnMusicVolumeSldChanged(float value)
+        {
+            m_globalConfig.musicVolume = value;
+            GameEntry.EventManager.Invoke(this, VolumeChangeEventArgs.Create());
+        }
+        
         private void InitTab()
         {
             ruleTab.Enable();
             operationTab.Disable();
             storyTab.Disable();
+        }
+        
+        private void InitVolumeSld()
+        {
+            mainVolumeSld.value = m_globalConfig.mainVolume;
+            audioEffectVolumeSld.value = m_globalConfig.audioEffectVolume;
+            musicVolumeSld.value = m_globalConfig.musicVolume;
+        }
+        
+        private void OnBackToTittleBtnClicked()
+        {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.ButtonPress);
+            GameEntry.EventManager.Invoke(this, ProcedureChangeEventArgs.Create(typeof(ProcedureMenu)));
+        }
+        
+        private void SwitchOnP2JoySticks()
+        {
+            SwitchP2JoySticks(true);
+        }
+        
+        private void SwitchOffP2JoySticks()
+        {
+            SwitchP2JoySticks(false);
+        }
+        
+        private void SwitchP2JoySticks(bool isOn)
+        {
+            GameEntry.SoundManager.PlayerSound(this, SoundEnum.Tab);
+            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = isOn;
+            p2JoySticksSwitchOffGO.SetActive(!isOn);
+            p2JoySticksSwitchOnGO.SetActive(isOn);
         }
         
         private void OnOperationTabClicked()

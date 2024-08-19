@@ -147,7 +147,7 @@ namespace Lachesis.GamePlay
                 if(!attackNumWrited)
                 {
                     var path = m_globalConfig.isUsingRVO ? "Scripts/RVO/openRVO.txt" : "Scripts/RVO/closeRVO.txt";
-                    WriteToFile(path, $"attackNum:{attackNum} deadNum:{BattleModel.Instance.deadCnt}");
+                    //WriteToFile(path, $"attackNum:{attackNum} deadNum:{BattleModel.Instance.deadCnt}");
                     attackNumWrited = true;
                 }
                 
@@ -163,11 +163,13 @@ namespace Lachesis.GamePlay
             
         }
         
-        public void DoBoost()
+        public void DoBoost(float motor, float steer)
         {
             transform.position += deltaPos;
-            
-            var forceDirection = transform.forward;
+            if(motor is >= 0 and <= 0.05f) motor = 0.05f;
+            var motorVec = motor*transform.forward;   
+            var steerVec = steer*transform.right;   
+            var forceDirection =(motorVec+steerVec).normalized;
             forceDirection.y = 0;
             forceDirection = forceDirection.normalized;
             bodyRb.velocity = forceDirection.normalized * m_globalConfig.impactSpeed + bodyRb.velocity;

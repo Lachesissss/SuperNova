@@ -1,5 +1,6 @@
 using Lachesis.GamePlay;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GlobalConfig", menuName = "ScriptableObject/GlobalConfig", order = 0)]
 public class GlobalConfig : ScriptableObject
@@ -36,5 +37,10 @@ public class GlobalConfig : ScriptableObject
     public bool isUsingRVO = true;
     public int coinScore = 2;
     public float MagicShieldTime = 8f;
-    public SkillEnum ultimateSkill;
+    public float mainVolume = 1;
+    public float audioEffectVolume = 1;
+    public float musicVolume = 0.1f;
+    public float killPlayerUltimateCharge = 1f;
+    public float killAiUltimateCharge = 0.5f;
+    [FormerlySerializedAs("GetPointsUltimateCharge")] public float getPointsUltimateCharge = 0.5f;
 }

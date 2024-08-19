@@ -12,7 +12,7 @@ namespace Lachesis.GamePlay
         public List<SkillPickUpItem> skillPickUpItems;
         public Dictionary<CarController, Transform> spawnPosDict;
         private Dictionary<string,CarController> carDict;
-        public Dictionary<string,int> killOtherPlayerNumDict;
+        public Dictionary<string,float> UltimateChargeDict;
         public int deadCnt = 0;
         public CarCamera player1Camera;
         public CarCamera player2Camera;
@@ -27,7 +27,7 @@ namespace Lachesis.GamePlay
             skillPickUpItems = new();
             carDict = new();
             spawnPosDict = new();
-            killOtherPlayerNumDict = new();
+            UltimateChargeDict = new();
             currentDungeonMode = DungeonMode.Single;//默认是单人训练
             p1Ultimate = SkillEnum.TownPortal; //默认都是传送
             p2Ultimate = SkillEnum.TownPortal;
@@ -43,7 +43,7 @@ namespace Lachesis.GamePlay
             skillPickUpItems.Clear();
             carDict.Clear();
             spawnPosDict.Clear();
-            killOtherPlayerNumDict.Clear();
+            UltimateChargeDict.Clear();
         }
         
         public void SetBattleCamera(CarController p1Controller, CarController p2Controller)
@@ -61,7 +61,7 @@ namespace Lachesis.GamePlay
             if(!carDict.ContainsKey(carPlayer1.controllerName))
             {
                 carDict.Add(carPlayer1.controllerName, carPlayer1);
-                killOtherPlayerNumDict.Add(carPlayer1.controllerName, 0);
+                UltimateChargeDict.Add(carPlayer1.controllerName, 0);
             }
             return carPlayer1;
         }

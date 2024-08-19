@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Lachesis.GamePlay
 {
+
     [System.Serializable]
     public class ProcedureType
     {
@@ -22,7 +23,7 @@ namespace Lachesis.GamePlay
             typeName = type.AssemblyQualifiedName;
         }
     }
-    
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(ProcedureType))]
     public class ProcedureTypeDrawer : PropertyDrawer
     {
@@ -69,5 +70,6 @@ namespace Lachesis.GamePlay
             EditorGUI.EndProperty();
         }
     }
+#endif
 }
 

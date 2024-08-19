@@ -50,10 +50,10 @@ namespace Lachesis.GamePlay
                     otherRigidbody.velocity += (forceDirection.normalized * m_globalConfig.impactSpeed + rate * m_carBody.velocity)*(m_carBody.mass/otherRigidbody.mass);
 
                     // 暂时降低摩擦力
-                    StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, otherCar.entityEnum==EntityEnum.BossCar));
+                    GameEntry.instance.StartCoroutine(TemporarilyReduceFriction(otherWheelColliders, otherCar.entityEnum==EntityEnum.BossCar));
                     GameEntry.EntityManager.CreateEntity<StoneHitEffect>(EntityEnum.StoneHitEffect, otherCar.transform, effectDeltaPos);
                     // 重置碰撞标记
-                    StartCoroutine(ResetCollisionFlag());
+                    GameEntry.instance.StartCoroutine(ResetCollisionFlag());
                     if (m_SelfComponent.controller is CarPlayer || otherCar.controller is CarPlayer)
                         GameEntry.SoundManager.PlayerSound(m_SelfComponent, SoundEnum.CarAttack, false);
                 }

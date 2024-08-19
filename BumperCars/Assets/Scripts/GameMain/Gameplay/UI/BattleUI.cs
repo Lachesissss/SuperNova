@@ -28,6 +28,9 @@ namespace Lachesis.GamePlay
         public Button backToTittleBtn;
         public Button p2JoySticksSwitchOnBtn;
         public Button p2JoySticksSwitchOffBtn;
+        public Slider mainVolumeSld;
+        public Slider audioEffectVolumeSld;
+        public Slider musicVolumeSld;
         public GameObject p2JoySticksSwitchOnGO;
         public GameObject p2JoySticksSwitchOffGO;
         public GameObject p2JoySticksTextGO;
@@ -55,6 +58,9 @@ namespace Lachesis.GamePlay
         private Queue<string> popupTextQueue;
         private List<PopupTips> curShowTips;
         private AudioSource m_battleBg1Source;
+        private AudioSource m_battleBg2Source;
+        private bool m_isInFinalMatch;
+        private GlobalConfig m_globalConfig;
         public struct BattleUIData
         {
             public string p1Name;
@@ -71,13 +77,15 @@ namespace Lachesis.GamePlay
             base.OnInit(userData);
             popupTextQueue = new();
             curShowTips = new();
-            var isP2Js = GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks;
+            m_globalConfig = GameEntry.ConfigManager.GetConfig<GlobalConfig>();
+            var isP2Js = m_globalConfig.p2UsingJoySticks;
             p2JoySticksSwitchOffGO.SetActive(!isP2Js);
             p2JoySticksSwitchOnGO.SetActive(isP2Js);
             p2KeyBoardTextGO.SetActive(!isP2Js);
             p2JoySticksTextGO.SetActive(isP2Js);
             p2KeyBoardUltimateGO.SetActive(!isP2Js);
             p2JoySticksUltimateGO.SetActive(isP2Js);
+            
         }
         
         private void InitCoolingImg(Image img)
@@ -111,6 +119,9 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.AddListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.AddListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
             GameEntry.EventManager.AddListener(UltimateSkillUIUpdateArgs.EventId, OnUltimateSkillUIUpdate);
+            mainVolumeSld.onValueChanged.AddListener(OnMainVolumeSldChanged);
+            audioEffectVolumeSld.onValueChanged.AddListener(OnAudioEffectVolumeSldChanged);
+            musicVolumeSld.onValueChanged.AddListener(OnMusicVolumeSldChanged);
             settingBtn.onClick.AddListener(OnSettingBtnClicked);
             continueBtn.onClick.AddListener(OnContinueBtnClicked);
             closeBtn.onClick.AddListener(OnContinueBtnClicked);
@@ -119,6 +130,8 @@ namespace Lachesis.GamePlay
             p2JoySticksSwitchOffBtn.onClick.AddListener(SwitchOffP2JoySticks);
             player1Ultimate.SetLevel(0);
             player2Ultimate.SetLevel(0);
+            InitVolumeSld();
+            m_isInFinalMatch = false;
             if(userData is BattleUIData battleUIData)
             {
                 RefreshAll(battleUIData);
@@ -130,7 +143,7 @@ namespace Lachesis.GamePlay
             }
             curShowTips.Clear();
             popupTextQueue.Clear();
-            m_battleBg1Source = GameEntry.SoundManager.PlayerSound(this, SoundEnum.BattleBg1, true, 1, false, 0.1f);
+            m_battleBg1Source = GameEntry.SoundManager.PlayerSound(this, SoundEnum.BattleBg1, true, 1, false);
         }
         
         public override void OnReturnToPool(bool isShutDown = false)
@@ -143,6 +156,9 @@ namespace Lachesis.GamePlay
             GameEntry.EventManager.RemoveListener(PlayerCoolingUIUpdateEventArgs.EventId, OnPlayerCoolingUIUpdate);
             GameEntry.EventManager.RemoveListener(ShowUITipsEventArgs.EventId, OnUITipsShow);
             GameEntry.EventManager.RemoveListener(UltimateSkillUIUpdateArgs.EventId, OnUltimateSkillUIUpdate);
+            mainVolumeSld.onValueChanged.RemoveAllListeners();
+            audioEffectVolumeSld.onValueChanged.RemoveAllListeners();
+            musicVolumeSld.onValueChanged.RemoveAllListeners();
             settingBtn.onClick.RemoveAllListeners();
             continueBtn.onClick.RemoveAllListeners();
             closeBtn.onClick.RemoveAllListeners();
@@ -188,7 +204,7 @@ namespace Lachesis.GamePlay
         private void SwitchP2JoySticks(bool isOn)
         {
             GameEntry.SoundManager.PlayerSound(this, SoundEnum.Tab);
-            GameEntry.ConfigManager.GetConfig<GlobalConfig>().p2UsingJoySticks = isOn;
+            m_globalConfig.p2UsingJoySticks = isOn;
             p2JoySticksSwitchOffGO.SetActive(!isOn);
             p2JoySticksSwitchOnGO.SetActive(isOn);
             p2KeyBoardTextGO.SetActive(!isOn);
@@ -202,6 +218,28 @@ namespace Lachesis.GamePlay
             player1ScoreText.text = $"{p1Score}";
             player2ScoreText.text = $"{p2Score}";
             targetScoreText.text = $"目标:{m_targetScore}";
+            
+            if(p1Score>=m_targetScore-6)
+            {
+                if(!m_isInFinalMatch)
+                {
+                    m_isInFinalMatch = true;
+                    ShowPopupTips($"进入决赛阶段, {m_p1Name}即将获胜");
+                    m_battleBg1Source.Stop();
+                    m_battleBg2Source = GameEntry.SoundManager.PlayerSound(this, SoundEnum.BattleBg2, true, 1, false);
+                }
+                
+            }
+            if(p2Score>=m_targetScore-6)
+            {
+                if(!m_isInFinalMatch)
+                {
+                    m_isInFinalMatch = true;
+                    ShowPopupTips($"进入决赛阶段, {m_p2Name}即将获胜");
+                    m_battleBg1Source.Stop();
+                    m_battleBg2Source = GameEntry.SoundManager.PlayerSound(this, SoundEnum.BattleBg2, true, 1, false);
+                }
+            }
         }
 
         private void RefreshCarriedScore(int p1CarriedScore, int p2CarriedScore)
@@ -267,12 +305,12 @@ namespace Lachesis.GamePlay
         {
             if(e is UltimateSkillUIUpdateArgs args)
             {
-                if(BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(m_p1Name, out var value1))
+                if(BattleModel.Instance.UltimateChargeDict.TryGetValue(m_p1Name, out var value1))
                 {
                     player1Ultimate.SetLevel(value1); 
                 }
                 
-                if(BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(m_p2Name, out var value2))
+                if(BattleModel.Instance.UltimateChargeDict.TryGetValue(m_p2Name, out var value2))
                 {
                     player2Ultimate.SetLevel(value2); 
                 }
@@ -283,7 +321,7 @@ namespace Lachesis.GamePlay
         {
             if (m_controller1 != null)
             {
-                var len = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
+                var len = m_globalConfig.maxSkillCount;
                 for (int i=0;i<len;i++)
                 {
                     var skill = m_controller1.skillSlots[i];
@@ -303,7 +341,7 @@ namespace Lachesis.GamePlay
 
             if (m_controller2 != null)
             {
-                var len = GameEntry.ConfigManager.GetConfig<GlobalConfig>().maxSkillCount;
+                var len = m_globalConfig.maxSkillCount;
                 for (var i = 0; i < len; i++)
                 {
                     var skill = m_controller2.skillSlots[i];
@@ -438,6 +476,31 @@ namespace Lachesis.GamePlay
         private void RemoveItem(PopupTips item)
         {
             curShowTips.Remove(item);
+        }
+        
+        private void OnMainVolumeSldChanged(float value)
+        {
+            m_globalConfig.mainVolume = value;
+            GameEntry.EventManager.Invoke(this, VolumeChangeEventArgs.Create());
+        }
+        
+        private void OnAudioEffectVolumeSldChanged(float value)
+        {
+            m_globalConfig.audioEffectVolume = value;
+            GameEntry.EventManager.Invoke(this, VolumeChangeEventArgs.Create());
+        }
+        
+        private void OnMusicVolumeSldChanged(float value)
+        {
+            m_globalConfig.musicVolume = value;
+            GameEntry.EventManager.Invoke(this, VolumeChangeEventArgs.Create());
+        }
+        
+        private void InitVolumeSld()
+        {
+            mainVolumeSld.value = m_globalConfig.mainVolume;
+            audioEffectVolumeSld.value = m_globalConfig.audioEffectVolume;
+            musicVolumeSld.value = m_globalConfig.musicVolume;
         }
         
         private Coroutine p1BoostCoroutine;

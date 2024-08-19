@@ -1,5 +1,6 @@
 using Lachesis.Core;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Lachesis.GamePlay
@@ -8,15 +9,17 @@ namespace Lachesis.GamePlay
     {
         public TextMeshProUGUI winnerText;
         public Button goBackToTittleBtn;
+        private AudioSource m_settlementUIAudioSource;
         public override void OnReCreateFromPool(object userData = null)
         {
             base.OnReCreateFromPool(userData);
             if(userData is SettlementData data)
             {
                 winnerText.text = $"胜利者: \n{data.winner}";
-                GameEntry.SoundManager.PlayerSound(this, SoundEnum.Win);
+                //GameEntry.SoundManager.PlayerSound(this, SoundEnum.Win);
             }
             goBackToTittleBtn.onClick.AddListener(OnGoBackToTitleBtnClicked);
+            m_settlementUIAudioSource = GameEntry.SoundManager.PlayerSound(this, SoundEnum.SettlementBg, true, 1, false);
         }
 
         private void OnGoBackToTitleBtnClicked()

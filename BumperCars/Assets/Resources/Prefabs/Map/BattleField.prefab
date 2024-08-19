@@ -622,7 +622,7 @@ Transform:
   m_GameObject: {fileID: 3925155589572494333}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalPosition: {x: 0, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2212,6 +2212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38259113d88c86b47bf29182ca192033, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entity: {fileID: 0}
 --- !u!1001 &1842035704618698813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2641,6 +2642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14220947a9718a44fadd9fff282b3851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entity: {fileID: 0}
   levelUpEffect: {fileID: 3630743522692951650}
   type: 1
 --- !u!64 &2711983712016801432
@@ -4124,6 +4126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14220947a9718a44fadd9fff282b3851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entity: {fileID: 0}
   levelUpEffect: {fileID: 837215620553900927}
   type: 0
 --- !u!64 &4244980170101703321
@@ -6296,7 +6299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6388137454875221231, guid: 572af3617a37ddc44a45a6559bf402f6, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.75
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6388137454875221231, guid: 572af3617a37ddc44a45a6559bf402f6, type: 3}
       propertyPath: m_LocalPosition.x

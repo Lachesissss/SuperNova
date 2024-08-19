@@ -113,6 +113,7 @@ namespace Lachesis.GamePlay
                 attackInfo.attackType = AttackType.Skill;
                 attackInfo.canDodge = false;
                 attackInfo.userData = skillEnum;
+                attackInfo.isChargeUltimate = false;
                 attackInfo.attackDamge = (int)Mathf.Ceil(source.bodyRb.mass * 3 / target.bodyRb.mass);
                 GameEntry.EventManager.Invoke(this, AttackEventArgs.Create(attackInfo, OnHit));
             }

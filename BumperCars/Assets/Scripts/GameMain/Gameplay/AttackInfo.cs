@@ -11,6 +11,7 @@ namespace Lachesis.GamePlay
         public object userData;
         public int attackDamge;
         public bool canDodge = true;
+        public bool isChargeUltimate = true;
     }
 
     public enum AttackType

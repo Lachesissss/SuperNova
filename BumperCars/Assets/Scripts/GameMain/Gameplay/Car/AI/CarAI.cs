@@ -114,6 +114,7 @@ namespace Lachesis.GamePlay
                 Debug.LogWarning("在Controller有控制对象的时候SetCar会将当前控制对象回收，请确认是否符合预期");
             }
             carComponent = car;
+            lastEmergencyBrakingTime = 0;
             m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
             SetCarInfo();
         }

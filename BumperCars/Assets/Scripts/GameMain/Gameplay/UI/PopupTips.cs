@@ -12,7 +12,7 @@ namespace Lachesis.GamePlay
 
         private Action<PopupTips> m_finishCallback;
         private float m_restLife = 0;
-        private const float Life = 2;
+        private const float Life = 5f;
         
         protected void Finish()
         {

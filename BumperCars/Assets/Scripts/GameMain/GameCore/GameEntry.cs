@@ -54,7 +54,21 @@ namespace Lachesis.GamePlay
             SkillManager = GetModule<SkillManager>();
             RVOManager = GetModule<RVOManager>();
             SoundManager = GetModule<SoundManager>();
-            
+            int screenWidth = Screen.currentResolution.width;
+            int screenHeight = Screen.currentResolution.height;
+    
+            // 计算当前屏幕的纵横比
+            float aspectRatio = (float)screenWidth / (float)screenHeight;
+    
+            //如果纵横比接近16:10
+            if (Mathf.Abs(aspectRatio - 16.0f / 10.0f) < 0.1f)
+            {
+                Screen.SetResolution(3840, 2400, true);
+            }
+            else
+            {
+                Screen.SetResolution(3840, 2160, true);
+            }
 
             if (ProcedureManager == null)
             {

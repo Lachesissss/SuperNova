@@ -124,7 +124,7 @@ namespace Lachesis.GamePlay
 
         public void TryUltimateSkill()
         {
-            if (BattleModel.Instance.killOtherPlayerNumDict.TryGetValue(controllerName, out int value)&&value>=3)
+            if (BattleModel.Instance.UltimateChargeDict.TryGetValue(controllerName, out float value)&&value>=3)
             {
                 SkillEnum ultimateSkill;
                 if(controllerName == m_globalConfig.p1Name)
@@ -144,7 +144,7 @@ namespace Lachesis.GamePlay
                 if(uSkill.TryActivate(carComponent))
                 {
                     Debug.Log("成功释放终极技能");
-                    BattleModel.Instance.killOtherPlayerNumDict[controllerName] = 0;
+                    BattleModel.Instance.UltimateChargeDict[controllerName] = 0;
                     GameEntry.EventManager.Invoke(this, UltimateSkillUIUpdateArgs.Create());
                 }
                 else

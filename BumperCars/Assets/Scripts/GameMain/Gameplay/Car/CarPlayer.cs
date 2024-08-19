@@ -68,7 +68,8 @@ namespace Lachesis.GamePlay
         private void TryBoost()
         {
             if(!canBoost) return;
-            carComponent.DoBoost();
+
+            carComponent.DoBoost(MotorDelta, SteeringDelta);
             var coolingInfo = new CoolingInfo();
             coolingInfo.playerName = controllerName;
             coolingInfo.isBoostCoolingInfoChanged = true;

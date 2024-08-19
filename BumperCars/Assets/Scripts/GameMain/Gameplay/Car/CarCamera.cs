@@ -295,53 +295,54 @@ namespace Lachesis.GamePlay
         private static IEnumerator DelayToCompressRightStrong(CarCamera leftCamera, CarCamera rightCamera)
         {
             isCompressing = true;
-            float changeTime = 2f;
-            float curTime = changeTime;
-            float startTime = Time.time;
-            float endTime = Time.time;
+            // float changeTime = 2f;
+            // float curTime = changeTime;
+            // float startTime = Time.time;
+            // float endTime = Time.time;
             Rect left = new Rect(0,0,0.5f,1);
             leftCamera.m_camera.rect = left;
             Rect right = new Rect(0.5f,0,0.5f,1);
             rightCamera.m_camera.rect = right;
-            while (curTime>0)
-            {
-                curTime-=(endTime - startTime);
-                startTime = Time.time;
-                yield return new WaitForEndOfFrame();
-                endTime = Time.time;
-                var dt = ((endTime - startTime)/changeTime)*0.25f;
-                left.width-=dt;
-                leftCamera.m_camera.rect = left;
-                right.x-=dt;
-                right.width+=dt;
-                rightCamera.m_camera.rect = right;
-            }
+            // while (curTime>0)
+            // {
+            //     curTime-=(endTime - startTime);
+            //     startTime = Time.time;
+            //     yield return new WaitForEndOfFrame();
+            //     endTime = Time.time;
+            //     var dt = ((endTime - startTime)/changeTime)*0.25f;
+            //     left.width-=dt;
+            //     leftCamera.m_camera.rect = left;
+            //     right.x-=dt;
+            //     right.width+=dt;
+            //     rightCamera.m_camera.rect = right;
+            // }
             left.width=0.25f;
             leftCamera.m_camera.rect = left;
             right.x=0.25f;
             right.width = 0.75f;
             rightCamera.m_camera.rect = right;
             
-            yield return new WaitForSeconds(8f);
-            curTime = changeTime;
-            startTime = Time.time;
-            endTime = Time.time;
-            while (curTime>0)
-            {
-                curTime-=(endTime - startTime);
-                startTime = Time.time;
-                yield return new WaitForEndOfFrame();
-                endTime = Time.time;
-                var dt = ((endTime - startTime)/changeTime)*0.25f;
-                left.width+=dt;
-                leftCamera.m_camera.rect = left;
-                right.x+=dt;
-                right.width-=dt;
-                rightCamera.m_camera.rect = right;
-            }
+            yield return new WaitForSeconds(12f);
+            // curTime = changeTime;
+            // startTime = Time.time;
+            // endTime = Time.time;
+            // while (curTime>0)
+            // {
+            //     curTime-=(endTime - startTime);
+            //     startTime = Time.time;
+            //     yield return new WaitForEndOfFrame();
+            //     endTime = Time.time;
+            //     var dt = ((endTime - startTime)/changeTime)*0.25f;
+            //     left.width+=dt;
+            //     leftCamera.m_camera.rect = left;
+            //     right.x+=dt;
+            //     right.width-=dt;
+            //     rightCamera.m_camera.rect = right;
+            // }
             left.width=0.5f;
             leftCamera.m_camera.rect = left;
             right.x=0.5f;
+            left.width = 0.5f;
             rightCamera.m_camera.rect = right;
             isCompressing = false;
         }
@@ -349,53 +350,54 @@ namespace Lachesis.GamePlay
         private static IEnumerator DelayToCompressLeftStrong(CarCamera leftCamera, CarCamera rightCamera)
         {
             isCompressing = true;
-            float changeTime = 2f;
-            float curTime = changeTime;
-            float startTime = Time.time;
-            float endTime = Time.time;
+            // float changeTime = 2f;
+            // float curTime = changeTime;
+            // float startTime = Time.time;
+            // float endTime = Time.time;
             Rect left = new Rect(0,0,0.5f,1);
             leftCamera.m_camera.rect = left;
             Rect right = new Rect(0.5f,0,0.5f,1);
             rightCamera.m_camera.rect = right;
-            while (curTime>0)
-            {
-                curTime-=(endTime - startTime);
-                startTime = Time.time;
-                yield return new WaitForEndOfFrame();
-                endTime = Time.time;
-                var dt = ((endTime - startTime)/changeTime)*0.25f;
-                left.width+=dt;
-                leftCamera.m_camera.rect = left;
-                right.x+=dt;
-                right.width-=dt;
-                rightCamera.m_camera.rect = right;
-            }
+            // while (curTime>0)
+            // {
+            //     curTime-=(endTime - startTime);
+            //     startTime = Time.time;
+            //     yield return new WaitForEndOfFrame();
+            //     endTime = Time.time;
+            //     var dt = ((endTime - startTime)/changeTime)*0.25f;
+            //     left.width+=dt;
+            //     leftCamera.m_camera.rect = left;
+            //     right.x+=dt;
+            //     right.width-=dt;
+            //     rightCamera.m_camera.rect = right;
+            // }
             left.width=0.75f;
             leftCamera.m_camera.rect = left;
             right.x=0.75f;
             right.width = 0.25f;
             rightCamera.m_camera.rect = right;
             
-            yield return new WaitForSeconds(8f);
-            curTime = changeTime;
-            startTime = Time.time;
-            endTime = Time.time;
-            while (curTime>0)
-            {
-                curTime-=(endTime - startTime);
-                startTime = Time.time;
-                yield return new WaitForEndOfFrame();
-                endTime = Time.time;
-                var dt =((endTime - startTime)/changeTime)*0.25f;
-                left.width-=dt;
-                leftCamera.m_camera.rect = left;
-                right.x-=dt;
-                right.width+=dt;
-                rightCamera.m_camera.rect = right;
-            }
+            yield return new WaitForSeconds(12f);
+            // curTime = changeTime;
+            // startTime = Time.time;
+            // endTime = Time.time;
+            // while (curTime>0)
+            // {
+            //     curTime-=(endTime - startTime);
+            //     startTime = Time.time;
+            //     yield return new WaitForEndOfFrame();
+            //     endTime = Time.time;
+            //     var dt =((endTime - startTime)/changeTime)*0.25f;
+            //     left.width-=dt;
+            //     leftCamera.m_camera.rect = left;
+            //     right.x-=dt;
+            //     right.width+=dt;
+            //     rightCamera.m_camera.rect = right;
+            // }
             left.width=0.5f;
             leftCamera.m_camera.rect = left;
             right.x=0.5f;
+            right.width = 0.5f;
             rightCamera.m_camera.rect = right;
             isCompressing = false;
         }

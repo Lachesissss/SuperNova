@@ -10,6 +10,7 @@ namespace Lachesis.GamePlay
         public SoundEnum soundType;
         public AudioClip clip;
         public bool isLoop;
+        public bool isMusic;
     }
 
     [CreateAssetMenu(fileName = "SoundConfig", menuName = "ScriptableObject/SoundConfig", order = 4)]

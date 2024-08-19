@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Lachesis.GamePlay
 {
+
     [Serializable]
     public class SkillType
     {
@@ -21,7 +22,7 @@ namespace Lachesis.GamePlay
             typeName = type.AssemblyQualifiedName;
         }
     }
-    
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(SkillType))]
     public class SkillTypeDrawer : PropertyDrawer
     {
@@ -68,5 +69,6 @@ namespace Lachesis.GamePlay
             EditorGUI.EndProperty();
         }
     }
+    #endif
 }
 

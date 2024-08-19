@@ -6,6 +6,13 @@ namespace Lachesis.GamePlay
     public class GlobalSoundRoot : Entity
     {
         private readonly Dictionary<SoundEnum, List<AudioSource>> m_audioSourceDict = new();
+        private GlobalConfig m_globalConfig;
+
+        public override void OnInit(object userData = null)
+        {
+            base.OnInit(userData);
+            m_globalConfig =GameEntry.ConfigManager.GetConfig<GlobalConfig>();
+        }
 
         public void AddGlobalSound(SoundEnum soundEnum)
         {
@@ -24,7 +31,7 @@ namespace Lachesis.GamePlay
         /// <param name="soundEnum">声音类型</param>
         /// <param name="isGlobal">是否覆盖之前相同类型的声音</param>
         /// <param name="pitch">播放速率</param>
-        public AudioSource PlayerSound(SoundEnum soundEnum, bool isGlobal, float pitch, float volume)
+        public PlayingAudio PlayerSound(SoundEnum soundEnum, bool isGlobal, float pitch)
         {
             if (m_audioSourceDict.TryGetValue(soundEnum, out var sourceList))
             {
@@ -44,6 +51,7 @@ namespace Lachesis.GamePlay
                 }
 
 
+                var cfg = GameEntry.SoundManager.GetSoundConfig(soundEnum);
                 if (idleSource)
                 {
                     idleSource.Play();
@@ -51,7 +59,6 @@ namespace Lachesis.GamePlay
                 else
                 {
                     idleSource = gameObject.AddComponent<AudioSource>();
-                    var cfg = GameEntry.SoundManager.GetSoundConfig(soundEnum);
                     idleSource.loop = cfg.isLoop;
                     idleSource.clip = cfg.clip;
                     idleSource.playOnAwake = false;
@@ -61,8 +68,8 @@ namespace Lachesis.GamePlay
                 }
 
                 idleSource.pitch = pitch;
-                idleSource.volume = volume;
-                return idleSource;
+                idleSource.volume =(cfg.isMusic?m_globalConfig.musicVolume*0.3f:m_globalConfig.audioEffectVolume*0.6f)* m_globalConfig.mainVolume;
+                return new PlayingAudio(idleSource, cfg);
             }
 
             Debug.LogError($"没有找到{soundEnum}对应的AudioSource列表");

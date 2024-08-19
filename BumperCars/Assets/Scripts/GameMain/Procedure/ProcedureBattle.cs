@@ -71,10 +71,7 @@ namespace Lachesis.GamePlay
                 DoubleModeEnter();
             }
 
-            //测试,创建技能卡
-            // GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, Vector3.zero, Quaternion.identity, SkillEnum.Lighting);
-            // GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, new Vector3(-2, 0, 2), Quaternion.identity, SkillEnum.Stronger);
-            // GameEntry.EntityManager.CreateEntity<SkillPickUpItem>(EntityEnum.SkillPickUpItem, new Vector3(2, 0, -2), Quaternion.identity, SkillEnum.FlipVertical);
+            GameEntry.EventManager.Invoke(this, ShowUITipsEventArgs.Create("战斗开始!!!"));
         }
         
         private void SingleModeEnter()
@@ -312,12 +309,17 @@ namespace Lachesis.GamePlay
             if (e is PlayerArriveHomeEventArgs args)
                 if (m_playerScoreDict.ContainsKey(args.playerName))
                 {
+                    int getPointNum =  m_playerCarriedScoreDict[args.playerName]/2;
                     m_playerScoreDict[args.playerName] += m_playerCarriedScoreDict[args.playerName];
                     m_playerCarriedScoreDict[args.playerName] = 0;
                     GameEntry.EventManager.Invoke(this,
                         ScoreUIUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
                     GameEntry.EventManager.Invoke(this,
                         CarriedScoreUIUpdateEventArgs.Create(m_playerCarriedScoreDict[m_globalConfig.p1Name], m_playerCarriedScoreDict[m_globalConfig.p2Name]));
+                    
+                    battleModel.UltimateChargeDict[args.playerName]+=(getPointNum*m_globalConfig.getPointsUltimateCharge);
+                    battleModel.UltimateChargeDict[args.playerName] = Mathf.Min(3, battleModel.UltimateChargeDict[args.playerName]);
+                    GameEntry.EventManager.Invoke(UltimateSkillUIUpdateArgs.EventId, UltimateSkillUIUpdateArgs.Create());
                 }
         }
         
@@ -383,7 +385,7 @@ namespace Lachesis.GamePlay
                         }
                         if( battleModel.carControllers[i] is CarPlayer carPlayer)
                         {
-                            GameEntry.SoundManager.PlayerSound(battleModel.carControllers[i], SoundEnum.PlayerDead, false, 1, false);
+                            //GameEntry.SoundManager.PlayerSound(battleModel.carControllers[i], SoundEnum.PlayerDead, false, 1, false);
                             if(BattleModel.Instance.currentDungeonMode == DungeonMode.Single)
                             {
                                 GameEntry.instance.GameStartCoroutine(DelayToRevivePlayerSingleMode(carPlayer, lastColor));
@@ -443,19 +445,26 @@ namespace Lachesis.GamePlay
                             
                     if (m_playerScoreDict.ContainsKey(killer))
                     {
-                        m_playerScoreDict[killer] += 1; //击杀分数直接加1，并夺取被杀者分数
+                        m_playerScoreDict[killer] += 1; //击杀分数直接加1，并夺取被杀者一半的分数
                         if (m_playerCarriedScoreDict.ContainsKey(attackInfo.underAttacker))
-                            m_playerCarriedScoreDict[killer] += m_playerCarriedScoreDict[carController.controllerName];
+                            m_playerCarriedScoreDict[killer] += (m_playerCarriedScoreDict[carController.controllerName]/2);
 
                         GameEntry.EventManager.Invoke(ScoreUIUpdateEventArgs.EventId,
                             ScoreUIUpdateEventArgs.Create(m_playerScoreDict[m_globalConfig.p1Name], m_playerScoreDict[m_globalConfig.p2Name]));
                     }
                     
-                    if(battleModel.killOtherPlayerNumDict.ContainsKey(killer)&&battleModel.killOtherPlayerNumDict.ContainsKey(attackInfo.underAttacker))
+                    if(battleModel.UltimateChargeDict.ContainsKey(killer)&&attackInfo.isChargeUltimate)
                     {
-                        if(battleModel.killOtherPlayerNumDict[killer]<3)
+                        if(battleModel.UltimateChargeDict[killer]<3)
                         {
-                            battleModel.killOtherPlayerNumDict[killer]++;
+                            if(battleModel.UltimateChargeDict.ContainsKey(attackInfo.underAttacker))
+                            {
+                                battleModel.UltimateChargeDict[killer]+=m_globalConfig.killPlayerUltimateCharge;
+                            }
+                            else
+                            {
+                                battleModel.UltimateChargeDict[killer]+=m_globalConfig.killAiUltimateCharge;
+                            }
                             GameEntry.EventManager.Invoke(UltimateSkillUIUpdateArgs.EventId, UltimateSkillUIUpdateArgs.Create());
                         }
                     }
