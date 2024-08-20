@@ -52,6 +52,7 @@ namespace Lachesis.GamePlay
         public void ResetCarAIState()
         {
             waypoints.Clear();
+            destination = null;
             m_RVOManager.UpdateAgentTarget(carComponent.transform, GetCurTarget());
             currentWayPoint = 0;
             allowMovement = false;
@@ -91,6 +92,7 @@ namespace Lachesis.GamePlay
             m_CarAIFsm.Start<CarAIPatrolState>();
             NavMeshLayerBite = 0;
             lastEmergencyBrakingTime=0;
+            destination = null;
             CalculateNavMashLayerBite();
             
         }
@@ -114,6 +116,7 @@ namespace Lachesis.GamePlay
                 Debug.LogWarning("在Controller有控制对象的时候SetCar会将当前控制对象回收，请确认是否符合预期");
             }
             carComponent = car;
+            destination = null;
             lastEmergencyBrakingTime = 0;
             m_RVOManager.AddAgent(carComponent.transform, GetCurTarget());
             SetCarInfo();
@@ -127,6 +130,7 @@ namespace Lachesis.GamePlay
                 GameEntry.EntityManager.ReturnEntity(carComponent.entityEnum, carComponent);
                 m_RVOManager.RemoveAgent(carComponent.transform);
                 carComponent = null;
+                destination = null;
             }
         }
         
